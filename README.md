@@ -13,8 +13,9 @@ author's direction. Correctness is checked against the DOS original rather
 than taken on trust; [method/METHOD.md](method/METHOD.md) is the procedure
 every port follows.
 
-**Status: private publication candidate, not approved for distribution.** See
-[docs/PUBLICATION.md](docs/PUBLICATION.md). The license is undecided.
+**Status: preview.** None of the games is complete. No license has been
+chosen yet: the code is published for reading, all rights reserved. How the
+repository was screened is in [docs/PUBLICATION.md](docs/PUBLICATION.md).
 
 | game | directory | state |
 |---|---|---|
@@ -35,6 +36,18 @@ every port follows.
 The states follow F030Method's review of 2026-10-10 and each port's own
 README; they are measured in the patched Hatari of F030Arcade, not on a real
 Falcon. None of the games is complete.
+
+## Download
+
+[Release 0.1-preview](https://github.com/AnimaInCorpore/F030DOS/releases/tag/v0.1-preview):
+`F030DOS-0.1-preview.zip` with the Falcon programs of Comanche, F29
+Retaliator, Pool of Radiance and Wing Commander and a `README.TXT` (what each
+game needs from your copy, each game's state, SHA-256 sums). No game data is
+included: copy the files of your own DOS installation next to each program as
+`README.TXT` says. Requirements: a Falcon030 with 14 MB of RAM and an RGB or
+VGA monitor. Comanche, Pool of Radiance and Wing Commander were checked
+against their games' files and contain none of them; F29's program could not
+be checked (its game files were not at hand), and `README.TXT` says so.
 
 ## Where development happens
 
@@ -96,12 +109,21 @@ make wc1                  # wc1.tos; make -C games/wc1 data unpacks your disks i
 make release VERSION=0.1  # release/F030DOS-0.1/ and release/F030DOS-0.1.zip
 ```
 
+Put each game's files where its README says first (`games/<game>/assets/`,
+or the extracted folders the port names), so the check below can run; a game
+whose files are absent is packed with "not checked" in `README.TXT`.
+
 `tools/release.py` builds the ports that have a Falcon program, checks each is
 a TOS executable, compares it with the game files present locally (any
 32-byte block of the game inside a program stops the release; blocks with
 fewer than 8 distinct byte values and counting sequences are ignored) and writes a
 `README.TXT` with what each player has to supply, each game's state and the
 SHA-256 of every file. No game data is packed.
+
+Then tag `v<version>` and attach the zip to a GitHub release (`gh release
+create v<version> release/F030DOS-<version>.zip`) with short notes: what is
+new, what is fixed, and how it was measured. Update the Download section
+above in the same commit as the tag.
 
 ## Keeping the copy current
 

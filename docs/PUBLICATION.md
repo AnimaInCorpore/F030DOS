@@ -7,8 +7,10 @@ commit of each. F030WC1 was added the same day at the owner's request, after
 its working tree got a first commit (disks and build trees ignored); this
 reverses the earlier "publication skipped" decision recorded in F030Method.
 
-Status: **private review candidate; not approved for public distribution.**
-License: undecided.
+Status: **public** since 2026-10-14, at the owner's decision, with release
+`v0.1-preview` (tagged at d32bd12). The rights review below (blocker 1) was the
+owner's call and was not done item by item. License: none chosen; all rights
+reserved.
 
 ## Preparation
 
@@ -39,7 +41,7 @@ License: undecided.
   WC1's programs built here are byte-identical to the ones built in their
   development repositories (2026-10-14).
 
-## Remaining blockers
+## Open items
 
 1. **Provenance and rights review.** Analysis documents, function records and
    the ports' sources quote addresses, constants and short code fragments of

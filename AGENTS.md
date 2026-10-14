@@ -43,8 +43,12 @@ are mandatory.
   `--allow-embedded` to `tools/release.py` only with the owner's approval.
 - Keep the states in `tools/release.py` and the root `README.md` in step with
   each port's README when syncing.
-- Publishing a release, pushing to a public remote or changing the
-  repository's visibility needs the owner's explicit approval.
+- A release is `make release VERSION=<v>`, a `v<v>` tag and a GitHub release
+  with the zip (README.md, Release). Run it with each game's files in place so
+  the embedded-content check runs; `README.TXT` names any program it could not
+  check (F29 in 0.1-preview).
+- Creating a release or changing the repository's visibility needs the
+  owner's explicit approval each time.
 
 ## Tools and emulator
 
