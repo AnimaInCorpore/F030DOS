@@ -46,10 +46,10 @@ run-comanche: comanche
 	cd games/comanche && HATARI=$(HATARI) TOS=$(TOS402) bash tools/run.sh
 
 f29: pybin
-	cd games/f29 && F29_ROOTS=$(abspath ..) bash tools/build-run.sh
-	cd games/f29 && F29_ROOTS=$(abspath ..) bash tools/build-dsp.sh
+	cd games/f29 && F29_ROOTS=$(abspath $(ARCADE)/..) bash tools/build-run.sh
+	cd games/f29 && F29_ROOTS=$(abspath $(ARCADE)/..) bash tools/build-dsp.sh
 run-f29: f29
-	cd games/f29 && F29_ROOTS=$(abspath ..) HATARI=$(HATARI) TOS=$(TOS402) bash tools/run.sh
+	cd games/f29 && F29_ROOTS=$(abspath $(ARCADE)/..) HATARI=$(HATARI) TOS=$(TOS402) bash tools/run.sh
 
 por: pybin
 	$(MAKE) -C games/por build VASM=$(VASM) VLINK=$(VLINK)
