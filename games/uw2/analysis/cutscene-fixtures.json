@@ -1,0 +1,185 @@
+{
+  "background": {
+    "height": 200,
+    "name": "LBACK000.BYT",
+    "pixel_sha256": "fc909e96598bcf32f8bbdb197aba71ffdcb4d80d277073f925a793607a23a830",
+    "source": "work/extracted/D3/CUTS/LBACK000.BYT",
+    "source_sha256": "fc909e96598bcf32f8bbdb197aba71ffdcb4d80d277073f925a793607a23a830",
+    "width": 320
+  },
+  "format": "UW2 intro cutscene fixture manifest",
+  "script": {
+    "bytes": 498,
+    "name": "CS000.N00",
+    "source": "work/extracted/D4/CUTS/CS000.N00",
+    "source_sha256": "3ca8070ae8c34fbe76b543170c864b414a0017790377a6d61b278c00963b9512"
+  },
+  "segments": [
+    {
+      "frame_sha256": [
+        "1f1c994948c4fc363a66af3a9f388489ba6422397d196f8434112d2ad8c2be65",
+        "75f5caa1dcdc0ef04e9ca807e284a01721a8d08465ffac2ea4ccb0f6c6315325",
+        "3c83dddaf270ae7a1b784b8110820628adac0303bccfdda167cf6914d0ba687e",
+        "3c83dddaf270ae7a1b784b8110820628adac0303bccfdda167cf6914d0ba687e",
+        "5611283f837fc8b43fe283dd78005ca8477aa0380ef32c4645aca9e8d0ad8219",
+        "5611283f837fc8b43fe283dd78005ca8477aa0380ef32c4645aca9e8d0ad8219",
+        "7383d872368a7daf11249d4c815bc7453b7f3d3c097d32e21d8cc4cb7e863b16",
+        "7383d872368a7daf11249d4c815bc7453b7f3d3c097d32e21d8cc4cb7e863b16",
+        "97e12c48b442eeb4be13469b801f1060e89c0031cbe240051fdcf0d41b4d79e9",
+        "02d7ca366b9eea01901343dacefbc485e209522a8c75190aa06da68abc5a7bb3",
+        "abed5d15d88d84f36a8626a179d39332858577a05aa8a28281bfe957a95f3605",
+        "abed5d15d88d84f36a8626a179d39332858577a05aa8a28281bfe957a95f3605",
+        "986bacccc613415f4770e11ed307dc608a61a7bd70c24f91bec834dae7435caa",
+        "986bacccc613415f4770e11ed307dc608a61a7bd70c24f91bec834dae7435caa",
+        "5e9404556321e04c7d98fa1037e6c1fd0877ebc306807509aef4d5a8d6bc6764",
+        "5e9404556321e04c7d98fa1037e6c1fd0877ebc306807509aef4d5a8d6bc6764",
+        "757a2a454e8afe3d5f4072e454f7dff9302d1a8a9c9c024f04620720ec05f56e",
+        "757a2a454e8afe3d5f4072e454f7dff9302d1a8a9c9c024f04620720ec05f56e",
+        "de1f90eae8fb0bc320684a9b62fe0a97188b074ec9fad31576eca5f73907dd76",
+        "87569aa2c4bd87a09f894b1cf8c02f516fa3fac6ca530e06cdf72283684b0ef1",
+        "1f1c994948c4fc363a66af3a9f388489ba6422397d196f8434112d2ad8c2be65"
+      ],
+      "height": 200,
+      "name": "CS000.N01",
+      "page_count": 2,
+      "page_modes": [
+        {
+          "balance": "payload",
+          "base_record": 0,
+          "declared_bytes": 59072,
+          "index": 0,
+          "record_count": 10,
+          "size_sum": 59072
+        },
+        {
+          "balance": "payload",
+          "base_record": 10,
+          "declared_bytes": 21513,
+          "index": 1,
+          "record_count": 11,
+          "size_sum": 21513
+        }
+      ],
+      "palette_sha256": "24dfbb04eacf53b14ec2a780193ef11d314f50d57b8a8bf2864b385ebbec1361",
+      "record_count": 21,
+      "source": "work/extracted/D4/CUTS/CS000.N01",
+      "source_sha256": "4efcfdc3a9c2c84b1666cec09bd5e735da34ea8b009704e4ea6b4bb5103aa8e9",
+      "width": 320
+    },
+    {
+      "frame_sha256": [
+        "fab8aa01192901de203c7496abdc12b6ad172fd6c113ad5f9092c38698fba024",
+        "24a44985b5a524b7bcde306b51509850915e168247349417284289f303236ddd",
+        "bf36b27672c15d558cd5957daa483e09383e24cf4dff2640e75de1c62ac1f16b",
+        "4e8029e2305864c2e17b2adbd154b28b170f29c748e3230af38b7ac892b33d25",
+        "5ad646b7e34d517cf1b7107eadbf556b2647df5a7d876cbfea97388bfe83b2c9",
+        "0c1868560accea05f810b9d3246058c5e3b27e0ebe8b31c0495fe4c52f387dbb",
+        "165d5ec141cc0715982ea9f2baf6ef2efd0c5fcd116e93dbcb08d54217c5935d",
+        "57dd8acd2b2dae365c0b4414b8b11253b8caa0291b7304876a0f3014d554f3e8",
+        "09856af814b5dc5d75a0a476893ca9b3a44b86b5b2498727dcb2e72f7ef64779",
+        "09856af814b5dc5d75a0a476893ca9b3a44b86b5b2498727dcb2e72f7ef64779",
+        "09856af814b5dc5d75a0a476893ca9b3a44b86b5b2498727dcb2e72f7ef64779",
+        "a65fa0d4b1738b69f29fd7b23edf18da37d40d55cbbb56e591c5b23082061215",
+        "7efd082164731cdfad53d79fede36823835c95f292d224f9f92af11b1dac6d76",
+        "26b8624f78dc65514789568f96fb78e627b183d862755fe982f7358cc28c7895",
+        "4b441865b800f32721795557bd81b7380df3892312b827bb2496abf99162a785",
+        "367295a657d994d5b47adadb0e561b544fbb747f616276e229367e2b50bbf55c",
+        "df34b8fd84900b6cb43f73b1f637f723abbf47a85aa180f5209962001eeeb1fa",
+        "2f95d8c77abc56372b2da9ab7234a200d27980e9899aac77732d50cb397e04a0",
+        "112271c5aebb780b4ee0086e8e49ec136520627cdb3e4ac9aaafcdd2d7d84e1e",
+        "0eb57fe4f6d3972e352d79e18c7cce859113ada7d10e0e30dec1bb57abae646f",
+        "0eb57fe4f6d3972e352d79e18c7cce859113ada7d10e0e30dec1bb57abae646f",
+        "0eb57fe4f6d3972e352d79e18c7cce859113ada7d10e0e30dec1bb57abae646f",
+        "3c3dc1ad55d30710a75c0d07c5c887dbe127f53416308170f1cb1d49f4fd493e",
+        "0eb57fe4f6d3972e352d79e18c7cce859113ada7d10e0e30dec1bb57abae646f",
+        "c7f5db1a933017f57c893aeb4fbd05b1255d244eb5cf3e52c18f227af6323f52",
+        "8e245c0df089e8f94745abeae39d6e14bfd534b69eb10d157be92124f7d930a0",
+        "469fdbd949e3527662a2fb848ee5415100be472087fffdbbcda4770a83748cb5",
+        "84e2e5a26ef510730873fb0a9017ad041bbe41d6e7c56834866db1ebd71c8d16",
+        "c83959702ba91468cacab5b16fcefd1f70b10df0680af2a0d1c15ddeeab658c1",
+        "7e00468dd18b53fbb1babaa6f0a52a5d63d6019f1c446e891eb098e80805e2ea",
+        "09856af814b5dc5d75a0a476893ca9b3a44b86b5b2498727dcb2e72f7ef64779",
+        "09856af814b5dc5d75a0a476893ca9b3a44b86b5b2498727dcb2e72f7ef64779",
+        "09856af814b5dc5d75a0a476893ca9b3a44b86b5b2498727dcb2e72f7ef64779",
+        "09856af814b5dc5d75a0a476893ca9b3a44b86b5b2498727dcb2e72f7ef64779",
+        "09856af814b5dc5d75a0a476893ca9b3a44b86b5b2498727dcb2e72f7ef64779",
+        "09856af814b5dc5d75a0a476893ca9b3a44b86b5b2498727dcb2e72f7ef64779",
+        "fab8aa01192901de203c7496abdc12b6ad172fd6c113ad5f9092c38698fba024"
+      ],
+      "height": 200,
+      "name": "CS000.N12",
+      "page_count": 2,
+      "page_modes": [
+        {
+          "balance": "payload",
+          "base_record": 16,
+          "declared_bytes": 31249,
+          "index": 0,
+          "record_count": 21,
+          "size_sum": 31249
+        },
+        {
+          "balance": "payload",
+          "base_record": 0,
+          "declared_bytes": 64126,
+          "index": 1,
+          "record_count": 16,
+          "size_sum": 64126
+        }
+      ],
+      "palette_sha256": "a211fe951452b359ef7643452f6c08e45b260d8935f4adc0f2220a485c7e5895",
+      "record_count": 37,
+      "source": "work/extracted/D4/CUTS/CS000.N12",
+      "source_sha256": "a9d62d384aa95a1c57d7a8c1340bc98d03206aa823992f3d7e4628f87fbd393c",
+      "width": 320
+    },
+    {
+      "frame_sha256": [
+        "563f5ed86018012104a5de244c574f4af5b1aa9d3c901d591d1724f116d24aa0",
+        "563f5ed86018012104a5de244c574f4af5b1aa9d3c901d591d1724f116d24aa0",
+        "563f5ed86018012104a5de244c574f4af5b1aa9d3c901d591d1724f116d24aa0",
+        "5f581281c6c6627f87d861cb58d1e616091cca78f69ac891eb6f499606cbb2c8",
+        "5f581281c6c6627f87d861cb58d1e616091cca78f69ac891eb6f499606cbb2c8",
+        "5f581281c6c6627f87d861cb58d1e616091cca78f69ac891eb6f499606cbb2c8",
+        "8fa2802371dfaa77a27b06b1bdd9c3333ba992f82f40ee3639688439efb57677",
+        "8fa2802371dfaa77a27b06b1bdd9c3333ba992f82f40ee3639688439efb57677",
+        "8fa2802371dfaa77a27b06b1bdd9c3333ba992f82f40ee3639688439efb57677",
+        "19e617ac4c6f33d1f8e79e91840db4ec3c8e760f643b7d2cb5ba7f9dc68105c4",
+        "19e617ac4c6f33d1f8e79e91840db4ec3c8e760f643b7d2cb5ba7f9dc68105c4",
+        "19e617ac4c6f33d1f8e79e91840db4ec3c8e760f643b7d2cb5ba7f9dc68105c4",
+        "03356c126c0cf38105f628d1b7bf28d3ea3c70212bc73a924c28e3a7dc6917c8",
+        "03356c126c0cf38105f628d1b7bf28d3ea3c70212bc73a924c28e3a7dc6917c8",
+        "03356c126c0cf38105f628d1b7bf28d3ea3c70212bc73a924c28e3a7dc6917c8",
+        "3f5a5401817c6d6c3839c8c06e94d6355963f68db08a158a10175e8c13cdc817",
+        "3f5a5401817c6d6c3839c8c06e94d6355963f68db08a158a10175e8c13cdc817",
+        "3f5a5401817c6d6c3839c8c06e94d6355963f68db08a158a10175e8c13cdc817",
+        "2899fb458d097309d9cb157988d83fb720cc7474d4e0240c357ad5f4990018b3",
+        "2899fb458d097309d9cb157988d83fb720cc7474d4e0240c357ad5f4990018b3",
+        "2899fb458d097309d9cb157988d83fb720cc7474d4e0240c357ad5f4990018b3",
+        "3ad3c349bb71837901da01ae4470b258e4f0cd28b114995ad49b95d8d8c6f579",
+        "3ad3c349bb71837901da01ae4470b258e4f0cd28b114995ad49b95d8d8c6f579",
+        "3ad3c349bb71837901da01ae4470b258e4f0cd28b114995ad49b95d8d8c6f579",
+        "563f5ed86018012104a5de244c574f4af5b1aa9d3c901d591d1724f116d24aa0"
+      ],
+      "height": 200,
+      "name": "CS000.N02",
+      "page_count": 1,
+      "page_modes": [
+        {
+          "balance": "payload",
+          "base_record": 0,
+          "declared_bytes": 56808,
+          "index": 0,
+          "record_count": 25,
+          "size_sum": 56808
+        }
+      ],
+      "palette_sha256": "0ab08b544d171cb379bfccdc444f56db1e7fd735adedc503efeb2599eb3b619b",
+      "record_count": 25,
+      "source": "work/extracted/D4/CUTS/CS000.N02",
+      "source_sha256": "4d2d716cfcd24ea5ad597c078a84b6580cf8b0807311692e3fb14c7d73292436",
+      "width": 320
+    }
+  ],
+  "version": 1
+}

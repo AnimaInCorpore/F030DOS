@@ -1,0 +1,14 @@
+parsed 1453 main-image functions, 559 tail functions
+dos_findfirst rationale                       file=0x138ef -> FUN_206b_003b          @ 206b:003b  file-range=[0x138eb,0x13906)  inrefs=0  size=27  CONTAINS_TARGET=True
+dos_filecontrol rationale                     file=0x13b19 -> FUN_206b_0211          @ 206b:0211  file-range=[0x13ac1,0x13b24)  inrefs=1  size=99  CONTAINS_TARGET=True
+dos_filecontrol TRUE (mov ah,44 site)         file=0x13b27 -> FUN_206b_0274          @ 206b:0274  file-range=[0x13b24,0x13b4a)  inrefs=0  size=38  CONTAINS_TARGET=True
+dos_lseek rationale                           file=0x13b7e -> FUN_206b_029b          @ 206b:029b  file-range=[0x13b4b,0x13b88)  inrefs=21  size=61  CONTAINS_TARGET=True
+dos_lseek TRUE (mov ah,42 site)               file=0x13ba7 -> FUN_206b_02e9          @ 206b:02e9  file-range=[0x13b99,0x13bc2)  inrefs=0  size=41  CONTAINS_TARGET=True
+dos_open rationale                            file=0x13eb2 -> FUN_20b9_011a          @ 20b9:011a  file-range=[0x13eaa,0x13ef6)  inrefs=0  size=76  CONTAINS_TARGET=True
+dos_close rationale                           file=0x1500d -> FUN_2174_06be          @ 2174:06be  file-range=[0x14ffe,0x15025)  inrefs=2  size=39  CONTAINS_TARGET=True
+dos_close_after_msg rationale (AH9 site)      file=0x15a65 -> FUN_2244_029d          @ 2244:029d  file-range=[0x158dd,0x158e1)  inrefs=2  size=4  CONTAINS_TARGET=False
+dos_close_after_msg rationale (cited)         file=0x15a7c -> FUN_2244_029d          @ 2244:029d  file-range=[0x158dd,0x158e1)  inrefs=2  size=4  CONTAINS_TARGET=False
+msg_displaystring rationale                   file=0x21d68 -> FUN_2eb4_001e          @ 2eb4:001e  file-range=[0x21d5e,0x21d6e)  inrefs=0  size=16  CONTAINS_TARGET=True
+dos_close_drive site1 AH3E                    file=0x3d9c8 -> FUN_4a1f_02b5          @ 4a1f:02b5  file-range=[0x3d6a5,0x3d7bf)  inrefs=0  size=282  CONTAINS_TARGET=False
+dos_close_drive site2 AH3E                    file=0x3d9d1 -> FUN_4a1f_02b5          @ 4a1f:02b5  file-range=[0x3d6a5,0x3d7bf)  inrefs=0  size=282  CONTAINS_TARGET=False
+dos_close_drive site GET_CURRENT_DRIVE AH30   file=0x3db00 -> FUN_4a74_017e          @ 4a74:017e  file-range=[0x3dabe,0x3dc6e)  inrefs=0  size=432  CONTAINS_TARGET=True

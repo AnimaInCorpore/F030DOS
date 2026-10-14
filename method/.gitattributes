@@ -1,0 +1,5 @@
+# F030Method — .gitattributes
+* text=auto
+# dos/ masters are synced byte-for-byte into the projects (dos/sync.py --push
+# writes these exact bytes) — keep their bytes exact, no eol conversion.
+dos/* -text

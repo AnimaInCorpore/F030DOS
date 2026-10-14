@@ -1,0 +1,30 @@
+{
+  "scope": "unpatched DOS build, no sound, CuteMouse 2.1b4 /P, default scenario controls",
+  "expected_file_opens": [
+    "..\\dat\\scenstat.bin", "..\\dat\\game001.scn", "..\\dat\\map01.set",
+    "..\\dat\\map01.stm", "..\\dat\\axarrow1.shp", "..\\dat\\axarrow1.shp"
+  ],
+  "events": [
+    {"at": 6, "kind": "key", "key": "spc"},
+    {"at": 9, "kind": "key", "key": "spc"},
+    {"at": 12, "kind": "key", "key": "spc"},
+    {"at": 15, "kind": "capture", "name": "main_menu"},
+    {"at": 16, "kind": "move", "x": 96, "y": -32},
+    {"at": 17, "kind": "button", "down": true},
+    {"at": 17.15, "kind": "button", "down": false},
+    {"at": 19, "kind": "capture", "name": "scenario_menu"},
+    {"at": 20, "kind": "move", "x": -154, "y": 34},
+    {"at": 21, "kind": "button", "down": true},
+    {"at": 21.15, "kind": "button", "down": false},
+    {"at": 23, "kind": "capture", "name": "poland_selected"},
+    {"at": 24, "kind": "move", "x": 0, "y": 69},
+    {"at": 25, "kind": "button", "down": true},
+    {"at": 25.15, "kind": "button", "down": false},
+    {"at": 28, "kind": "capture", "name": "poland_briefing"},
+    {"at": 31, "kind": "key", "key": "spc"},
+    {"at": 34, "kind": "capture", "name": "axis_turn"},
+    {"at": 38, "kind": "key", "key": "spc"},
+    {"at": 43, "kind": "capture", "name": "poland_tactical"},
+    {"at": 44, "kind": "quit"}
+  ]
+}

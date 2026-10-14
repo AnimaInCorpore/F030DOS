@@ -1,0 +1,31 @@
+# F030TieFighter — .gitattributes
+* text=auto
+
+# Binaries (game data + extracted images)
+*.exe binary
+*.bin binary
+*.img binary
+*.raw binary
+*.zip binary
+*.7z binary
+*.lfd binary
+*.lfb binary
+*.pnl binary
+*.int binary
+*.tfr binary
+*.gmd binary
+*.pal binary
+*.fnt binary
+*.ani binary
+*.flc binary
+*.lbm binary
+*.com binary
+
+# Text stays CRLF on this Windows checkout
+*.md text eol=crlf
+*.py text eol=crlf
+*.bat text eol=crlf
+*.txt text
+*.gdb text
+*.ini text
+*.cfg text

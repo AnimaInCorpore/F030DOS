@@ -1,0 +1,47 @@
+# Publication candidate: only paths that tools/publication.py lists as
+# candidates are tracked.  Game media, data converted from it, captures and
+# build products stay local; these rules keep them out of `git status`.
+/build/
+/release/
+
+games/*/assets/
+games/*/game/
+games/*/img/
+games/*/build/
+games/*/release/
+games/*/obj/
+games/*/re/unpacked/
+games/*/re/listings/
+games/*/re/resources/
+games/*/work/expanded/
+games/*/work/extracted/
+games/*/work/ghidra/
+games/*/work/ghidra_export/
+games/*/work/reasm/out/
+games/*/tools/toolchain/
+games/*/tests/fixtures/
+games/*/reference/
+games/tie/work/dos32a/
+games/tie/work/zrdx/
+
+*.7z
+*.zip
+*.img
+*.hdd
+*.iso
+*.exe
+*.dll
+*.pdf
+*.tos
+*.prg
+*.lod
+*.bin
+*.raw
+*.png
+*.ppm
+*.wav
+*.log
+*.ini
+__pycache__/
+*.pyc
+.DS_Store

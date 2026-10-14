@@ -1,0 +1,17 @@
+text=auto
+*.LZH binary
+*.LZH binary
+*.GR binary
+*.TR binary
+*.ARK binary
+*.PAK binary
+*.VOC binary
+*.XMI binary
+*.BYT binary
+*.DAT binary
+*.SYS binary
+*.CM binary
+*.AN binary
+*.ANM binary
+*.EXE binary
+*.ZIP binary

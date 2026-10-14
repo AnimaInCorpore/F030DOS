@@ -1,0 +1,40 @@
+# The supplied archive is local reference material; never commit it.
+assets/*
+!assets/.gitkeep
+
+# Exact archive extraction and all generated analysis output.
+game/*
+!game/.gitkeep
+work/listings/
+work/img_build/
+work/qemu_out/
+work/dos_files/
+work/*.log
+work/*.txt
+work/*.json
+img/
+
+# Tool output and local scratch.
+__pycache__/
+*.pyc
+*.lst
+*.tmp
+re/unpacked/
+re/listings/
+
+# Local DOS installation media.
+*.7z
+*.iso
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+/*-dbg.txt
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

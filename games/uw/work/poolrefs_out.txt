@@ -1,0 +1,10 @@
+# 270 pool strings in 0x5F000..0x62000
+# total hits: 6
+
+0x60200  'x_skills': 6 hit(s)
+    file 0x3ef6a (off,seg)  in 1 @ 4a74:045a
+    file 0x3ef6c (seg,off)  in 1 @ 4a74:045a
+    file 0x425b5 (off,seg)  in 2 @ 4e03:03a1
+    file 0x425b7 (seg,off)  in 2 @ 4e03:03a1
+    file 0x438e1 (off,seg)  in 1 @ 4fe2:01b8
+    file 0x438e3 (seg,off)  in 1 @ 4fe2:01b8

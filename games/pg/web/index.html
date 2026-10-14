@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panzer General — port contracts</title>
+<style>
+  :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #151b19; color: #e7eade; }
+  body { max-width: 920px; margin: 6vh auto; padding: 24px; }
+  h1 { font-size: clamp(30px,5vw,52px); letter-spacing: -.04em; margin-bottom: 12px; }
+  p { line-height: 1.6; color: #b9c4b5; max-width: 740px; }
+  .eyebrow { color: #d4c58b; text-transform: uppercase; letter-spacing: .12em; font-size: 12px; }
+  button { font: inherit; padding: 12px 18px; border-radius: 5px; border: 1px solid #8f9c80; background: #334236; color: white; cursor: pointer; }
+  #status { padding: 20px 0; font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  td, th { text-align: left; padding: 12px 8px; border-bottom: 1px solid #364139; }
+  th { color: #9fae97; }
+  td:last-child { color: #cbd8a6; }
+  code { font-size: 13px; }
+</style>
+<body>
+  <div class="eyebrow">Falcon030 port · First contracts</div>
+  <h1>Panzer General</h1>
+  <p>Map loading, geometry, unit classes and random-state transitions have executable JavaScript references and native m68k counterparts. This page checks their outputs against captured original DOS results. Playable game integration remains in progress.</p>
+  <button id="run">Run DOS contract comparison</button>
+  <div id="status" role="status" aria-live="polite">Ready</div>
+  <table><thead><tr><th>Fixture</th><th>DOS function</th><th>Evidence</th><th>Result</th></tr></thead><tbody id="rows"></tbody></table>
+  <p>Expected outputs come from the original executable, including 16-bit wrapping and 32-bit returns. The independent Falcon030 Hatari harness checks the same fixtures. These are function checks; this page is not a playable game.</p>
+  <script type="module">
+    import { checkFixture } from './reference/check-fixture.mjs';
+    import { checkLoader, checkLoaderStrings } from './reference/check-loader.mjs';
+    import { checkRng } from './reference/check-rng.mjs';
+    import { checkUnitClasses } from './reference/check-unit-classes.mjs';
+    const fixtures = await (await fetch('../tests/fixtures/dos-geometry.json')).json();
+    const loader = await (await fetch('../tests/fixtures/dos-loader.json')).json();
+    const rng = await (await fetch('../tests/fixtures/dos-rng.json')).json();
+    const classes = await (await fetch('../tests/fixtures/dos-unit-classes.json')).json();
+    const resources = {};
+    const hash = async bytes => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
+      b => b.toString(16).padStart(2, '0')).join('');
+    for (const [name, identity] of Object.entries(loader.resources)) {
+      const bytes = new Uint8Array(await (await fetch(`../game/DAT/${name}`)).arrayBuffer());
+      if (bytes.length !== identity.bytes || await hash(bytes) !== identity.sha256)
+        throw Error(`Resource identity differs: ${name}`);
+      resources[name] = bytes;
+    }
+    const status = document.querySelector('#status');
+    const rows = document.querySelector('#rows');
+    async function run() {
+      document.querySelector('#run').disabled = true;
+      rows.replaceChildren();
+      try {
+        for (const fixture of fixtures.cases) {
+          checkFixture(fixture);
+          const tr = document.createElement('tr');
+          for (const value of [fixture.id, fixture.functionId,
+            fixture.kind === 'connected-poland' ? 'Connected DOS route' : 'Isolated DOS execution', 'Equal']) {
+            const td = document.createElement('td'); td.textContent = value; tr.append(td);
+          }
+          rows.append(tr);
+        }
+        const result = checkLoader(loader, resources);
+        for (let i = 0; i < result.reads.length; i++) {
+          if (await hash(result.reads[i].data) !== loader.output.reads[i].sha256)
+            throw Error(`Loader read ${i} bytes differ from DOS`);
+        }
+        const tr = document.createElement('tr');
+        for (const value of ['Poland SET/STM', loader.functionId,
+          '23 reads · globals · six arrays', 'Equal']) {
+          const td = document.createElement('td'); td.textContent = value; tr.append(td);
+        }
+        rows.append(tr);
+        const strings = checkLoaderStrings(loader);
+        const stringRow = document.createElement('tr');
+        for (const value of [`${strings} string cases`, 'sub_00060907 / sub_00060926',
+          'Paired DOS entry / return', 'Equal']) {
+          const td = document.createElement('td'); td.textContent = value; stringRow.append(td);
+        }
+        rows.append(stringRow);
+        const rngCount = checkRng(rng);
+        checkUnitClasses(classes);
+        for (const values of [[`${rngCount} RNG cases`, 'sub_00063375 / 6337B / 6339F',
+          'Seed writes · overflow · chained state', 'Equal'],
+          ['400 unit classes', 'sub_0003AFF3', 'Classes · averages · final RNG seed', 'Equal']]) {
+          const row = document.createElement('tr');
+          for (const value of values) {
+            const td = document.createElement('td'); td.textContent = value; row.append(td);
+          }
+          rows.append(row);
+        }
+        const total = fixtures.cases.length + 1 + strings + rngCount + 1;
+        status.textContent = `${total} / ${total} reference results equal DOS`;
+        document.body.dataset.result = 'passed';
+      } catch (error) {
+        status.textContent = error.message; document.body.dataset.result = 'failed';
+      } finally {
+        document.querySelector('#run').disabled = false;
+      }
+    }
+    document.querySelector('#run').addEventListener('click', run);
+    run();
+  </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+# Evidence-carrying disassembly seeds for the hash-identified Panzer General
+# executable (PANZER.EXE, SHA-256 115ADA29...9A86; unpatched base tree).
+#
+# Address space: LE object 1 (code), linear "vaddr", object base 0x10000.
+#   file     = vaddr + 0x582A4 - 0x10000      (LE page 1 at file 0x582A4)
+#   runtime  = vaddr + 0x16D000               (measured oracle placement, RAM 0x17D000)
+# Function symbols are sub_<vaddr>. See analysis/executable.md ("Correction: LE
+# base", "Startup stall") and tools/re/disasm_le.py, which refuses a seed outside
+# object 1, inside known data, or mid-instruction.
+#
+# Format: KIND vaddr=0x... evidence=<doc/measurement> confidence=high|medium
+# Kinds: ENTRY (declared entry), FUNC (function start), CODE (non-function
+# entry), ANTISEED (rejected candidate with the reason).
+
+# --- declared entry ----------------------------------------------------------
+# LE entry object 1 + 0x579EC -> file 0xAFC90: EB 78 over the Watcom banner.
+ENTRY vaddr=0x679EC evidence=le_map.py:entry,banner@file0xAFC92 confidence=high
+
+# --- measured in the DOS oracle (RAM dump + breakpoints, 2026-10-05) ----------
+# Each address was observed executing or is the verified start of a routine whose
+# body was disassembled from the RAM dump; evidence in analysis/executable.md.
+FUNC vaddr=0x4AAEF evidence=bp-trace:InitMouseAndTimer(640,480) confidence=high
+FUNC vaddr=0x46D8E evidence=stall-stack:Delay(ms) confidence=high
+FUNC vaddr=0x49DD7 evidence=disasm:only-writer-of-tick-word 0x1E21BA confidence=high
+FUNC vaddr=0x4985C evidence=disasm:dpmi-alloc-dos-block-in-InitMouseAndTimer confidence=medium
+FUNC vaddr=0x655B7 evidence=disasm:AIL-register_timer confidence=high
+FUNC vaddr=0x656DF evidence=disasm:AIL-start_timer confidence=high
+FUNC vaddr=0x65791 evidence=disasm:AIL-set_timer_period confidence=high
+FUNC vaddr=0x657E8 evidence=disasm:AIL-set_timer_frequency confidence=high
+FUNC vaddr=0x652FC evidence=disasm:AIL-timer-table-reset confidence=high
+FUNC vaddr=0x6534B evidence=disasm:AIL-hook-INT8-and-save-vector confidence=high
+FUNC vaddr=0x651F3 evidence=gate-installed-by-int21-ah25:AIL-master-timer-ISR confidence=high
+FUNC vaddr=0x6736D evidence=AIL-slot0-callback-in-stalled-dump confidence=high
+FUNC vaddr=0x2AFB7 evidence=AIL-slot1-callback-in-stalled-dump confidence=high
+FUNC vaddr=0x679D1 evidence=called-with-int-number-in-eax:int86x-wrapper confidence=medium
+
+# --- anti-seeds ----------------------------------------------------------------
+# Seed-store entry verified in the unchanged DOS body, private oracle invocation
+# and stack-balanced return; analysis/functions/sub_0006339F.md.
+FUNC vaddr=0x6339F evidence=poland-rng-1:checked-entry-and-return confidence=high
+# (none yet; add rejected candidates here beside the reason.)
+
+# --- runtime pointer values at the main menu (oracle RAM dump, 2026-10-05) -----
+# Object-2 globals that hold function pointers into object 1 (written outside the
+# decoded code, so not found statically): seen at the menu, writers unobserved.
+# runtime = vaddr + 0x16D000; data global at RAM 0x1E0000 + object-2 offset.
+FUNC vaddr=0x63D40 evidence=menu-dump:[obj2+0x74F8],[obj2+0x7500] (a bare ret: default handler) confidence=medium
+FUNC vaddr=0x6A9ED evidence=menu-dump:[obj2+0x74FC] confidence=medium
+FUNC vaddr=0x572BB evidence=menu-dump:[obj2+0x7D24] confidence=medium
+FUNC vaddr=0x572DA evidence=menu-dump:[obj2+0x7D28] confidence=medium
+FUNC vaddr=0x63F4F evidence=menu-dump:[obj2+0x7D30] confidence=medium
+FUNC vaddr=0x6D677 evidence=menu-dump:[obj2+0xB7CC] confidence=medium
+
+# Object-2 globals whose runtime value points OUTSIDE objects 1 and 2: calls go to
+# code loaded at run time: the display driver LIB/DRV/VESA480.DLL, loaded at RAM
+# 0x218AED; the globals 0x55B8..0x55E8 hold its 13-entry export vector in order
+# (global 0x55B8+4*i = base + export i; analysis/display-driver.md). Not code in
+# the EXE. These are NOT code seeds.
+DYNPTR loc=0x55B8 runtime=0x219BC9 module=VESA480.DLL evidence=menu-dump
+DYNPTR loc=0x55BC runtime=0x21C968 module=VESA480.DLL evidence=menu-dump
+DYNPTR loc=0x55C0 runtime=0x21CB31 module=VESA480.DLL evidence=menu-dump
+DYNPTR loc=0x55CC runtime=0x219BFE module=VESA480.DLL evidence=menu-dump
+DYNPTR loc=0x55D0 runtime=0x219D50 module=VESA480.DLL evidence=menu-dump
+DYNPTR loc=0x55D4 runtime=0x21C2A4 module=VESA480.DLL evidence=menu-dump
+DYNPTR loc=0x55D8 runtime=0x21C837 module=VESA480.DLL evidence=menu-dump
+DYNPTR loc=0x55DC runtime=0x21C86E module=VESA480.DLL evidence=menu-dump
+DYNPTR loc=0x55E4 runtime=0x21AFCD module=VESA480.DLL evidence=menu-dump

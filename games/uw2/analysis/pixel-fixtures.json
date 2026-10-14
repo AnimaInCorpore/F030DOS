@@ -1,0 +1,39 @@
+{
+  "assets": [
+    {
+      "asset_bytes": 1068,
+      "asset_sha256": "7005c6f09d46412a512406f45afd11f2e0ea308949f1487c163632927147b51e",
+      "aux_palette_index": 0,
+      "height": 16,
+      "name": "objects-000",
+      "palette_index": 0,
+      "palette_sha256": "b635971f9eda904fe80cb683ee6912704ff23da20946ee4a1733407c5fc8d21d",
+      "pixel_sha256": "7e20fb6da2ccf42dd8ac551ab5adf0bb0ad92c22f1594aad24edefc3ce7e9898",
+      "source": "work/extracted/D3/DATA/OBJECTS.GR",
+      "source_kind": "gr8",
+      "source_record": 0,
+      "source_record_sha256": "80c55a10637d778aa87d7230329fcf830dbf3aa644ff8b241c19c753d7241390",
+      "source_sha256": "d6109a5d9ebbe161d36649737841fd21fa8de5b2f6e32ba94fbe3b3ac539aff7",
+      "width": 16
+    },
+    {
+      "asset_bytes": 4908,
+      "asset_sha256": "15dcce37a86696465b885d115f73e9e66e29bc2ee2f74761e84df67ec900fdbb",
+      "aux_palette_index": 65535,
+      "height": 64,
+      "name": "t64-000",
+      "palette_index": 0,
+      "palette_sha256": "b635971f9eda904fe80cb683ee6912704ff23da20946ee4a1733407c5fc8d21d",
+      "pixel_sha256": "a8548f639698c64d9b756e933c680713e974999150351f010dc08127848cb59c",
+      "source": "work/extracted/D2/DATA/T64.TR",
+      "source_kind": "tr",
+      "source_record": 0,
+      "source_record_sha256": "a8548f639698c64d9b756e933c680713e974999150351f010dc08127848cb59c",
+      "source_sha256": "e1f639c38902058469d280857844c19195a4e3ffefed619121c6a74b77d2f944",
+      "width": 64
+    }
+  ],
+  "format": "UW2I fixture manifest",
+  "palette_format": "PALS.DAT 6-bit DAC entries",
+  "version": 1
+}

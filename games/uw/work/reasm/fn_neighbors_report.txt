@@ -1,0 +1,40 @@
+
+=== dos_close 2nd/3rd site region  F=0x15030 ===
+  BEFORE: FUN_2174_062d          2174:062d  file=[0x14f6d,0x14f7c)  size=15 inrefs=2
+  BEFORE: FUN_2174_063c          2174:063c  file=[0x14f7c,0x14fac)  size=48 inrefs=2
+  BEFORE: FUN_2174_06be          2174:06be  file=[0x14ffe,0x15025)  size=39 inrefs=2
+  AFTER : FUN_2174_0710          2174:0710  file=[0x15050,0x150b2)  size=98 inrefs=1
+  AFTER : dos_open               2174:0772  file=[0x150b2,0x150db)  size=41 inrefs=1
+  AFTER : FUN_2174_079c          2174:079c  file=[0x150dc,0x150e2)  size=6 inrefs=2
+
+=== dos_close_after_msg gap  F=0x15a7c ===
+  BEFORE: FUN_2244_0295          2244:0295  file=[0x158d5,0x158d9)  size=4 inrefs=1
+  BEFORE: FUN_2244_0299          2244:0299  file=[0x158d9,0x158dd)  size=4 inrefs=1
+  BEFORE: FUN_2244_029d          2244:029d  file=[0x158dd,0x158e1)  size=4 inrefs=2
+  AFTER : FUN_22a0_0014          22a0:0014  file=[0x15c14,0x15d61)  size=333 inrefs=0
+  AFTER : FUN_22a0_0161          22a0:0161  file=[0x15d61,0x15e45)  size=228 inrefs=0
+  AFTER : FUN_22a0_0245          22a0:0245  file=[0x15e45,0x15f24)  size=223 inrefs=0
+
+=== dos_close_drive site1 gap  F=0x3d9c8 ===
+  BEFORE: FUN_4a1f_0093          4a1f:0093  file=[0x3d483,0x3d4db)  size=88 inrefs=0
+  BEFORE: FUN_4a1f_00eb          4a1f:00eb  file=[0x3d4db,0x3d5bb)  size=224 inrefs=0
+  BEFORE: FUN_4a1f_02b5          4a1f:02b5  file=[0x3d6a5,0x3d7bf)  size=282 inrefs=0
+  AFTER : FUN_4a74_00ef          4a74:00ef  file=[0x3da2f,0x3da92)  size=99 inrefs=0
+  AFTER : FUN_4a74_0154          4a74:0154  file=[0x3da94,0x3dabe)  size=42 inrefs=0
+  AFTER : FUN_4a74_017e          4a74:017e  file=[0x3dabe,0x3dc6e)  size=432 inrefs=0
+
+=== dos_close_drive site GET_CURRENT_DRIVE  F=0x3db00 ===
+  BEFORE: FUN_4a74_00ef          4a74:00ef  file=[0x3da2f,0x3da92)  size=99 inrefs=0
+  BEFORE: FUN_4a74_0154          4a74:0154  file=[0x3da94,0x3dabe)  size=42 inrefs=0
+  BEFORE: FUN_4a74_017e          4a74:017e  file=[0x3dabe,0x3dc6e)  size=432 inrefs=0
+  AFTER : FUN_4a74_032e          4a74:032e  file=[0x3dc6e,0x3dd45)  size=215 inrefs=0
+  AFTER : FUN_4a74_0406          4a74:0406  file=[0x3dd46,0x3dd9a)  size=84 inrefs=0
+  AFTER : dos_close_drive        4a74:045a  file=[0x3dd9a,0x3de45)  size=171 inrefs=1
+
+=== msg_displaystring CSV target file-check  F=0x22ea5 ===
+  BEFORE: FUN_2f1f_08c0          2f1f:08c0  file=[0x22cb0,0x22d7a)  size=202 inrefs=0
+  BEFORE: FUN_2f1f_098c          2f1f:098c  file=[0x22d7c,0x22ea5)  size=297 inrefs=1
+  BEFORE: msg_displaystring      2f1f:0ab5  file=[0x22ea5,0x2319e)  size=761 inrefs=0
+  AFTER : FUN_2fe8_015b          2fe8:015b  file=[0x231db,0x231dd)  size=2 inrefs=21
+  AFTER : FUN_2fe8_015d          2fe8:015d  file=[0x231dd,0x2356e)  size=913 inrefs=1
+  AFTER : FUN_301e_01c0          301e:01c0  file=[0x235a0,0x235b7)  size=23 inrefs=1

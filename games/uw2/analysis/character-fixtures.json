@@ -1,0 +1,112 @@
+{
+  "format": "UW2 character-creation browser fixture manifest",
+  "version": 1,
+  "screen_source_geometry": {
+    "dos_width": 640,
+    "dos_height": 400,
+    "browser_width": 320,
+    "browser_height": 200,
+    "capture_file_width": 1280,
+    "capture_file_height": 800,
+    "capture_file_scale_from_dos_dump": 2,
+    "input_driver_width": 640,
+    "input_driver_height": 200,
+    "presentation": "scale DOS capture to 320x200, then round-trip through chunky RGB565"
+  },
+  "strings_block": {
+    "source": "D1\\DATA\\STRINGS.PAK",
+    "source_sha256": "5ebca1bebd7baeeb40eb3d290286e456a6a133fb4f88c2bc1feb28ad17e5b201",
+    "id": 2,
+    "prefix": [
+      "",
+      "Choose character sex:",
+      "Select handedness:",
+      "Pick a class:",
+      "Pick a skill:",
+      "",
+      "Select difficulty:",
+      "Name: ",
+      "Keep this character?",
+      "Male",
+      "Female",
+      "Right",
+      "Left",
+      "Standard",
+      "Easy",
+      "Yes",
+      "No",
+      "Str:",
+      "Dex:",
+      "Int:",
+      "Vit:",
+      "Mana:",
+      "Exp:",
+      "Fighter",
+      "Mage",
+      "Bard",
+      "Tinker",
+      "Druid",
+      "Paladin",
+      "Ranger",
+      "Shepherd",
+      "Attack",
+      "Defense",
+      "Barehand",
+      "Sword",
+      "Axe",
+      "Mace",
+      "Missile",
+      "Mana",
+      "Lore",
+      "Casting",
+      "Traps",
+      "Search",
+      "Track",
+      "Stealth",
+      "Repair",
+      "Charisma",
+      "Picklock",
+      "Acrobat",
+      "Appraise",
+      "Swimming"
+    ]
+  },
+  "screens": [
+    {
+      "id": "main-menu",
+      "source": "D4\\ORACLE\\MAIN-MENU.PNG",
+      "source_sha256": "739b40ea868cb01ada4e8ed72bcda0bbb78ef78db2bfded1395b4d2c65812a5d",
+      "capture": "work/qemu_out/drive_oracle_menu3.png",
+      "cursor_oracle": {
+        "source": "D4\\ORACLE\\MAIN-MENU-CURSOR.PNG",
+        "source_sha256": "b07ff3aa825e7fc87494162954e6785001bdf116ea66f6901499069eb638b96d",
+        "capture": "work/qemu_out/drive_m3.png",
+        "primary_cursor_box_px": [380, 372, 52, 52],
+        "alternate_cursor_box_px": [380, 432, 52, 52]
+      },
+      "state": "main-menu",
+      "mouse_only": true
+    },
+    {
+      "id": "character-sex",
+      "source": "D4\\ORACLE\\CHARACTER-SEX.PNG",
+      "source_sha256": "0331dcab55922c550ffb9881e4e6892219967a2ae71f6ea0c094ec22dc0bc63e",
+      "capture": "work/qemu_out/drive_oracle_sex.png",
+      "cursor_oracle": {
+        "source": "D4\\ORACLE\\CHARACTER-SEX-CURSOR.PNG",
+        "source_sha256": "cbdc7b0335079fbce87036d387346c724ce1fb7cf8bf9ae8e5f58c9b7b3798cc",
+        "capture": "work/qemu_out/drive_oracle_sex_cursor.png",
+        "primary_cursor_box_px": [380, 432, 52, 52],
+        "alternate_cursor_box_px": [928, 372, 52, 52]
+      },
+      "state": "character-sex",
+      "mouse_only": true
+    }
+  ],
+  "flow_authority": "DOS oracle only; browser execution remains diagnostic until the recovered input consumer is connected",
+  "flow": [
+    "main-menu/Create Character",
+    "character-sex/Male|Female",
+    "handedness/Right|Left (next slice)"
+  ]
+}

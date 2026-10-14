@@ -1,0 +1,74 @@
+# F030TieFighter — .gitignore
+# Rule: the repo holds everything needed to re-run the analysis (docs, plans,
+# scripts, sweeps, probes, the pristine 92 MB game copy). Bulk media that can
+# be re-fetched/re-derived stays local.
+
+# Source ROM (413 MB) — extract with 7-Zip into game/SWTieCD/TIECD (already in repo)
+/Star Wars TIE Fighter (Collectors CD-ROM) (1995).zip
+
+# CD image (595 MB, distribution only — the game runs from the TIECD folder)
+game/SWTieCD/cd/
+
+# Genuine MS-DOS 6.22 install floppies: the .7z at repo root is the source of
+# truth; the extracted tree under img/ is derived
+img/Microsoft MS-DOS 6.22*/
+
+# QEMU disk images — all re-buildable, see analysis/qemu-boot.md.
+# tie.hdd: 256 MB, `python work/build_dos_hdd.py`. Its .geom.json sidecar is tiny
+# but derived, so it goes too. bootprep.img is committed (1.5 MB).
+# tie-dos.img is the superseded superfloppy (the old `DIR C:` bug).
+img/tie.hdd
+img/tie.hdd.geom.json
+img/tie-dos.img
+img/tie-dos.img.bak
+
+# Upstream extender source trees (kept for reference; their own .git is ignored,
+# they are subtrees here — see work/README.md + analysis/extender-eval.md)
+work/dos32a/.git/
+work/dos32a/.gitattributes
+work/dos32a/.gitignore
+work/zrdx/.git/
+
+# Transient observation output (serial sinks are no-ops in this QEMU build anyway)
+img/serial*.log
+img/qemu-exit.txt
+
+# Stale duplicate extraction (superseded by game/SWTieCD — the reference copy;
+# missing the EXEs, has a stray .exo file). Keep local, not in repo.
+/SWTieCD/
+
+# Python junk
+__pycache__/
+*.pyc
+
+# Image build scratch + headless run output (all regenerable)
+work/img_build/
+work/qemu_out/
+work/dos_files/
+
+# Ghidra project database (27 MB binary, fully regenerable — analysis/functions.md §7).
+# The .raw object slices and *_seeds.txt next to it are small and kept, like the
+# existing z_tie_32.raw/z_tie_16.raw precedent.
+work/ghidra/TIE.gpr
+work/ghidra/TIE.rep/
+
+# P4.2 ratchet outputs (regenerate with work/ratchet16.py)
+work/ratchet/
+work/ratchet32/
+work/build/
+
+# bulk decompile corpus (4.9 MB, regenerate per work/README.md)
+work/ghidra_export/obj1_c.c
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+/*-dbg.txt
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

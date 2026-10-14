@@ -1,0 +1,7 @@
+* text=auto
+*.bat text eol=crlf
+*.DAT binary
+*.EXE binary
+*.IMA binary
+*.zip binary
+

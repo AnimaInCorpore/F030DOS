@@ -1,0 +1,4 @@
+# Keep every text file LF in the working tree on both machines (git-bash and
+# the Python/sh decoders do not want CRLF); binaries are left untouched by
+# type-detection.
+* text=auto eol=lf

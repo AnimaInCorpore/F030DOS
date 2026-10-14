@@ -1,0 +1,8 @@
+* text=auto
+*.iso binary
+*.EXE binary
+*.exe binary
+*.CRH binary
+*.FLY binary
+*.WVL binary
+*.PTF binary

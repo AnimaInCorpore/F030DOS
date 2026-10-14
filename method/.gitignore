@@ -1,0 +1,19 @@
+# F030Method — .gitignore
+__pycache__/
+
+# built by dos/trace/Makefile
+dos/trace/*.so
+dos/trace/*.dll
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+/*-dbg.txt
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

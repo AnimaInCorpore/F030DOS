@@ -1,0 +1,326 @@
+# Resolved indirect jump targets in X.EXE.
+#
+# Format: SEG:OFF  # justification
+# Read automatically by tools/re/disasm.py via --seeds.
+
+# ---------------------------------------------------------------------------
+# call word ptr cs:[bx-0x2BC6] at 0000:D2DA
+# Table base (0 - 0x2BC6) & 0xFFFF = 0xD43A, 7 entries.
+# Index comes from `and bl,0x0F / shl bl,1`.
+# Every handler tests cs:[0xD5C8] against 4 -> graphics adapter class.
+# This is the pixel format dispatcher (CGA/Tandy/EGA/VGA), not a decompressor.
+# ---------------------------------------------------------------------------
+0000:D524   # entry 0 - ret, empty slot
+0000:D448   # entry 1 - cx=0x2000 (8 KB plane)
+0000:D456   # entry 2 - cx=0x2880
+0000:D496   # entry 3 - cx=0x3C00, bitplane expansion via rcr
+0000:D4C7   # entry 4
+0000:D4F2   # entry 5
+0000:D525   # entry 6 - chain: D448, D456, D448, D496
+
+# ---------------------------------------------------------------------------
+# jmp ax at 0000:D2EE - `mov ax,0xD329` sits immediately before it
+# ---------------------------------------------------------------------------
+0000:D329
+
+# ---------------------------------------------------------------------------
+# call word ptr [si] at 0000:29D5
+# `mov si,0x29EF` at 0x29CC. The table is walked bit by bit through AL
+# (shl al,1 / jae skip), so at most 8 entries - a subsystem init mask.
+# Called with al=0xFF at 0x004F, so all subsystems.
+# ---------------------------------------------------------------------------
+0000:26F0   # bit 3
+0000:26F5   # bit 4
+0000:2836   # bit 5
+0000:2916   # bit 6
+0000:29B8   # bit 7 - int 15h AX=0xC200, PS/2 mouse
+# Bits 0-2 point at 0x29DF (ret), empty slots
+
+# ---------------------------------------------------------------------------
+# jmp ax at 0000:5B8C - text interpreter, control codes 0..9
+# `shl ax,1 / add ax,0x5BE6` with ax = sign_extend(al-9), so the table runs
+# backwards from 0x5BE6: code 9 -> 0x5BE6, code 0 -> 0x5BD4.
+# Slots 2..8 are short jmp trampolines, slot 9 is code.
+# ---------------------------------------------------------------------------
+0000:5BD6   # code 1 - pop bx / ret
+0000:5BA4   # code 2
+0000:5BAC   # code 3
+0000:5BB1   # code 4
+0000:5BB8   # code 5
+0000:5BBC   # code 6
+0000:5BC1   # code 7
+0000:5BCA   # code 8
+0000:5BE6   # code 9 - lodsb / xor ah,ah / shl ax,1 / mov dx,ax
+
+# ---------------------------------------------------------------------------
+# jmp bp at 0000:5B92 - glyph renderer, preselected by `mov bp,imm`
+# Characters 0x20..0x67 end up here.
+# ---------------------------------------------------------------------------
+0000:58FB   # via 0x5B4C
+0000:5852   # via 0x5B51
+0000:599A   # via 0x5B56 and 0x5B6B
+
+# ---------------------------------------------------------------------------
+# jmp word ptr [bx] at 0000:E4CC - menu dispatcher
+#
+# Sequence: `mov cl,N` sets the entry count, `call 0xE49F` reads a key
+# ('1'..'9','0' -> index 0..9) and checks it with `cmp al,cl`, then
+# `call 0xE4C5` dispatches through a table that sits INLINE after the call
+# site (`pop bx / add bx,ax / jmp [bx]`).
+#
+# Three call sites, found by byte scan (tools/re/xref.py E4B9-E4CC).
+# ---------------------------------------------------------------------------
+
+# Call site 0000:C561, table 0xC564, 7 entries.
+# Bounded by `jb 0xC572` at 0xC55F, which makes 0xC572 code.
+0000:C6C5
+0000:C58E
+0000:C5B4
+
+# Call site 0000:D751, table 0xD754, 8 entries (`mov cl,8` at 0xD74A).
+0000:D872
+0000:E199
+0000:DC02
+0000:E106
+0000:DCB5
+0000:D766
+0000:E6F3
+0000:74CA
+
+# Call site 0000:E67D, table 0xE680, 7 entries.
+# Bounded by the inline-string routine starting at 0xE68E (`mov al,8`).
+0000:D676
+0000:874E
+0000:74E0
+0000:7051
+0000:6F0B
+0000:E6AB
+
+# ---------------------------------------------------------------------------
+# call word ptr [bx-0x70C4] at 0000:8F26 -> base (0-0x70C4)&0xFFFF = 0x8F3C
+# 4 entries: the first handler begins at 0x8F44, which bounds the table.
+# ---------------------------------------------------------------------------
+0000:8F44
+0000:8F94
+0000:8F99
+0000:9312
+
+# ---------------------------------------------------------------------------
+# call word ptr [bx-0x5929] at 0000:F263 -> base (0-0x5929)&0xFFFF = 0xA6D7
+# Index from `mov bx,[0xA720] / shl bl,1`.
+# 13 entries: from 0xA6F1 on there is 0x5C58, ASCII "00" and zeros, no pointers.
+# All 13 targets lie in 0xA8F9..0xAE09, so they are plausibly contiguous.
+# ---------------------------------------------------------------------------
+0000:A9BC
+0000:A93B
+0000:AE09
+0000:ADD3
+0000:ADE7
+0000:ADC2
+0000:ADF7
+0000:AD98
+0000:ADB0
+0000:A979
+0000:A95A
+0000:A8F9
+
+# ---------------------------------------------------------------------------
+# Unresolved - no fixed target:
+#
+# jmp si at 0000:5B60 / 0000:5B66
+#   Inline-string idiom: `pop si` takes the return address as a pointer to a
+#   string sitting right after the call, and `jmp si` resumes past the string
+#   terminator. The target differs per call site.
+#   String end = byte with bit 7 set.
+#
+# jmp word ptr [bx] at 0000:E4CC
+#   `pop bx / add bx,ax / jmp [bx]` - the jump table sits inline after each
+#   call site. The target differs per call site.
+#
+# lcall [0xFC14], 35 sites
+#   Points out of X.EXE into a loaded overlay, see docs/ARCHIVE-FORMAT.md.
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# call bx at 0000:9849, inside the 0x9811 scan loop called from 0xCC8C.
+# bx is loaded from a single, unconditional `mov bx,0x9930` at 0000:9811 -
+# not a table, a plain function pointer. Confirmed by decoding the raw bytes
+# at 0x9930 directly: 14 sensible instructions ending in `ret`, immediately
+# followed by more clean code (a per-theatre table lookup at 0x9C84, mirroring
+# the one at 0x75FC documented in RE-NOTES.md). See docs/GAME-LOOP.md.
+# ---------------------------------------------------------------------------
+0000:9930
+
+# ---------------------------------------------------------------------------
+# jmp word ptr [bx - 0x5F45] at 0000:9E37 - keyboard dispatch table
+#
+# Raw key code mapped (cmp al,0x60 / jb / sub al,0x20), bx = al*2, table at
+# 0xA0BB (64 entries). Most are the default handler 0x9E2A (ret). A bounds
+# check `cmp bx,0x9FB9 / jb 0x9E2A` filters entries below 0x9FB9 out to the
+# default - proven by finding this check, not assumed. Found and confirmed
+# independently: 0x9E4A's target reads [0xB444], already documented as fuel
+# remaining in FLIGHT-MODEL.md, and decodes cleanly as a throttle-step
+# handler - corroborates the whole table, not just that one slot.
+# ---------------------------------------------------------------------------
+0000:9F85
+0000:9FB4
+0000:9EC2
+0000:9E8E
+0000:9FB9
+0000:9E54
+0000:9E7F
+0000:A09D
+0000:9DE9
+0000:9DF9
+0000:9E11
+0000:9E16
+0000:9DED
+0000:9E4A
+
+# ---------------------------------------------------------------------------
+# call word ptr [bp + 0x49] at 0000:35BC - object virtual method dispatch
+#
+# A game-object structure carries a callback pointer at +0x49. Found by
+# scanning the image for `mov [bp+0x49], imm16` (byte pattern C7 46 49) -
+# four unique targets, all confirmed as clean, self-consistent code. One is
+# corroborated independently: 0x36D9 opens with a call into 0x1378, which is
+# the aircraft-position preamble already documented in FLIGHT-MODEL.md
+# feeding the squared-distance routine at 0x1383.
+#
+# The same struct has a second callback at +0x2C (call [bp+0x2C] at
+# 0x337F, three targets) and a third at +0x7D (one target found alongside
+# the +0x2C scan). Targets cross-reference cleanly: 0xB4B4 tests [0xB3E6],
+# one of the three spawn-armed flags from the 0x42BD work in GAME-LOOP.md
+# whose reader was an open question there.
+# ---------------------------------------------------------------------------
+0000:36D9
+0000:3695
+0000:377F
+0000:3664
+0000:BA77
+0000:BB3E
+0000:BB8B
+0000:BB46
+
+# ---------------------------------------------------------------------------
+# call word ptr cs:[bx - 0x2BC6] at 0000:D2DA - one more proven entry
+#
+# The table at 0xD43A (documented earlier in this file) has 16 raw slots,
+# confirmed by reading them directly rather than trusting a description:
+# indices 7/14 and 8/15 repeat. Of the previously-unresolved slots, only
+# two survive scrutiny:
+#
+#   idx  7 (0x802E) - REJECTED. Decodes as plausible-looking code at a
+#     glance, but the raw bytes are ASCII: "...OVERWHELMED BY A MASSIVE..."
+#     - a status/message string, not a handler. Added to KNOWN_DATA.
+#   idx  9 (0x04D5), idx 11 (0x04BA) - REJECTED, unresolved. Both begin
+#     with byte 0xF1 (ICEBP, essentially never legitimate), and the
+#     instructions immediately after look far more coherent starting one
+#     byte later - an off-by-one that was not resolved, so left out rather
+#     than guessed.
+#   idx 10 (0x0E76) - REJECTED. `out dx,al` with dx never set by anything
+#     in the same few instructions - either a fragment of a larger routine
+#     entered mid-body, or a misread; not proven either way.
+#   idx 12 (0xE900) - accepted below: writes [0xF3A2] (the theatre), clean
+#     surrounding code, no red flags.
+#   idx 13 (0x0083) - REJECTED. Sits inside the already-documented startup
+#     sequence (segment-table build loop, see RE-NOTES.md) - reading it as
+#     a separate BIOS-dispatch handler double-counts already-reached code.
+# ---------------------------------------------------------------------------
+0000:C83E
+0000:E900
+
+# ---------------------------------------------------------------------------
+# call word ptr [si] at 0000:29D5 - flag-change callback dispatcher
+#
+# One table, not two. `si` starts at 0x29EF and walks forward 2 bytes per
+# bit of a changed-flags mask (0x25A9), 16 iterations - so 0x29EF..0x2A0D
+# is the whole table, and 0x29FF is simply where iteration 8 lands, not a
+# second table's base. Confirmed by reading the loop itself (0x29CF-0x29DD):
+# a single `inc si / inc si` per pass, no branch back to a different base.
+#
+# The bytes at 0x2A0F onward (past the real 16th slot) are unrelated -
+# 0x57BE/0xB02A/0xD000/0x2D74 were seeded as a phantom "inverse table"
+# based on that misreading and are not included.
+#
+# Of the 16 real slots, three are the trivial no-op handler (0x29DF) and
+# the rest are these ten:
+# ---------------------------------------------------------------------------
+0000:26F0
+0000:26F5
+0000:2836
+0000:2916
+0000:29B8
+0000:25AA
+0000:25AF
+0000:270F
+0000:284B
+0000:2928
+
+# ---------------------------------------------------------------------------
+# Byte-scanned game-logic routines, found the same way as the bulk pass
+# documented earlier in this file (scan for call-site clustering), each
+# individually decoded and checked for coherent control flow before
+# inclusion. Several corroborate or extend already-documented work:
+# 0xC3BB is the VGA register reset from the cockpit-panel session
+# (GAME-LOOP.md); 0xA60F reads [0x54A], the variable flagged open in the
+# Bresenham/k-d-tree work; 0xE8C2 and 0x0966 read/call addresses already
+# established elsewhere ([0xECA1], 0xC3BB, 0xA60F); 0x9782 calls the
+# already-fully-documented 0x9811 scan; 0xB44B/0xB446 tail-call the
+# established print routine 0x58B6.
+#
+# Excluded from the source list this was drawn from, with reasons:
+#   0x7627/0x763F/0x766F - the source material's own prose calls this
+#     region "per-theatre data" elsewhere while seeding it as code here;
+#     decode stalls within a few instructions at the latter two. Left as
+#     unreached rather than trust a self-contradicting source.
+#   0x1BA8 - decodes to `enter -0x36B9,-3`, a nonsensical negative
+#     frame size - not real code.
+#   0x6013, 0x5DF5 - same unset-register-before-out/stosb pattern as
+#     0x0E76 above; not proven.
+# ---------------------------------------------------------------------------
+0000:4839
+0000:5D04
+0000:5CFE
+0000:04F0
+0000:053D
+0000:F87E
+0000:23B3
+0000:05BB
+0000:C174
+0000:C22A
+0000:C233
+0000:C26E
+0000:C275
+0000:1087
+0000:6065
+0000:BF70
+0000:E8C2
+0000:D53D
+0000:B44B
+0000:28F2
+0000:3A64
+0000:B4B4
+0000:E0BD
+0000:C3BB
+0000:A60F
+0000:B8D0
+0000:03BE
+0000:0445
+0000:0966
+0000:0969
+0000:289D
+0000:3963
+0000:3966
+0000:396F
+0000:3A55
+0000:3A5D
+0000:8737
+0000:873A
+0000:9782
+0000:B446
+0000:B85C
+0000:3E5B
+0000:3E61
+0000:5EED
+0000:931C

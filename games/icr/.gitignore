@@ -1,0 +1,42 @@
+# Supplied floppy images are immutable local reference material.
+assets/*
+!assets/.gitkeep
+
+# Extracted game files and generated DOS/runtime output.
+game/*
+!game/.gitkeep
+img/
+work/listings/
+work/img_build/
+work/qemu_out/
+work/dos_files/
+work/*.log
+work/*.txt
+work/*.json
+work/INDYCAR.MERGED
+work/track_extract/
+work/track_compare/
+work/quarantine/
+
+# Local analysis/tool scratch.
+__pycache__/
+*.pyc
+*.lst
+*.tmp
+re/unpacked/
+re/listings/
+*.7z
+*.iso
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+/*-dbg.txt
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

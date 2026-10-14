@@ -1,0 +1,5 @@
+# 270 pool strings
+# decoded 129240 instructions
+# strings with refs: 0
+
+

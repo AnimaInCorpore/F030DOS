@@ -1,0 +1,50 @@
+# Build and emulator artefacts
+build/
+release/
+*.o
+*.lst
+*.log
+__pycache__/
+*.pyc
+# vasm writes its default output here when invoked without -o
+a.out
+
+# Local game data and derived resources
+assets/*.7z
+assets/extracted/
+assets/reference/voxelspace/
+re/resources/
+re/unpacked/
+re/listings/
+# Regenerated from the committed re/annotations.txt store
+re/annotations.rz
+
+# Hatari debugger artefacts
+*.ini
+frame.bin
+tools/dosbox/PAL.BIN
+# stdout/stderr and debugger dumps from interactive runs at the repo root
+/hatari.out.txt
+/hatari.err.txt
+/comanche-dbg.txt
+
+# DOS oracle (docs/DOS-ORACLE.md). The harness itself is committed --
+# work/*.py and work/mbr.asm are the shared half, synced from
+# ../F030Method/dos/, plus the per-game build_dos_hdd.py / set_boot_mode.py.
+# Everything it *produces* is derived, large, or not ours to redistribute:
+# comanche.hdd carries genuine MS-DOS 6.22 and the whole game tree.
+img/
+work/img_build/
+work/qemu_out/
+work/mfd_out/
+work/replay_dos/
+
+# Scratch screen captures dropped at the repo root by the emulator/capture
+# helpers (desktop-capture*.png, live-hatari*.png, ...). Root level only --
+# the repo tracks no images anywhere, and committed art stays under assets/.
+/*.png
+/*.ppm
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

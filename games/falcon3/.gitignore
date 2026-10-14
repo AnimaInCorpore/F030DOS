@@ -1,0 +1,50 @@
+# Generated Falcon 3.0 reference data. Keep the supplied source image local.
+assets/*
+!assets/.gitkeep
+game/cd/*
+!game/cd/.gitkeep
+game/FALCON3/*
+!game/FALCON3/.gitkeep
+
+# Derived analysis output and emulator artefacts.
+work/extracted/
+work/listings/
+work/img_build/
+work/qemu_out/
+work/dos_files/
+work/*.log
+work/mzinfo.txt
+work/midi-venv/
+work/music-analysis/
+img/
+build/
+release/
+
+# Tool output.
+re/listings/
+re/unpacked/
+re/resources/
+__pycache__/
+*.pyc
+*.o
+*.lst
+*.ini
+*.tmp
+
+# Local DOS installation media and scratch.
+*.7z
+*.zip
+.pi/
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+/*-dbg.txt
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

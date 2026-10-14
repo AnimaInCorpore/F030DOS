@@ -1,0 +1,12 @@
+# Evidence-carrying disassembly seeds for MagCarp/CARPET/CARPET.EXE.
+#
+# MZ entry 0000:0216 (file 0x276; load-image offset 0x216) is the first
+# bounded loader seed: the parsed MZ header points here, and its first
+# instruction is the Watcom CRT jump over the embedded runtime banner. The LE
+# entry is metadata (object 1, offset
+# 0x52178), not a flat file offset; do not add it here until the LE page map and
+# protected-mode address model are decoded. Add indirect targets only with a
+# measured caller, relocation, runtime EIP, or other evidence, and cite it in
+# analysis/ beside the addition.
+
+MZ 0000:0216  entry  header e_cs:e_ip; file 0x276; first instruction E9 CB 00

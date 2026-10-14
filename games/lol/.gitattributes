@@ -1,0 +1,12 @@
+* text=auto
+*.iso binary
+*.EXE binary
+*.exe binary
+*.PAK binary
+*.TLK binary
+*.TAB binary
+*.FNT binary
+*.TDS binary
+*.LM binary
+*.386 binary
+*.COM binary

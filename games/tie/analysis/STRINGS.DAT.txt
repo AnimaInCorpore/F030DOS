@@ -1,0 +1,696 @@
+   0 00ae0  20  Auto Ejection System
+   1 00af5  18  Hyper Drive System
+   2 00b08  22  Lasers and Ion Cannons
+   3 00b1f  21  Flight Control System
+   4 00b35   7  Engines
+   5 00b3d  18  Targeting Computer
+   6 00b50  13  Shield System
+   7 00b5e  21  Warhead Launch System
+   8 00b74  11  Beam System
+   9 00b80  21  Communications System
+  10 00b96  26  Error! Not Enough Memory!
+
+  11 00bb1  54  Error! The following file is missing or inaccessible: 
+  12 00be8  31  Initializing Combat Sequence...
+  13 00c08  27  Charging Weapons Systems...
+  14 00c24  28  Powering Up Sensor Arrays...
+  15 00c41  25  Aligning Targeting HUD...
+  16 00c5b  40  Configuring Combat Multi-view Display...
+  17 00c84  31  Disk Error! Is CD-ROM Inserted?
+  18 00ca4  31  Press 'R' to Retry, 'F' to Fail
+  19 00cc4  35  Center joystick, then click button.
+  20 00ce8  47  Move joystick to upper left, then click button.
+  21 00d18  48  Move joystick to lower right, then click button.
+  22 00d49   6  Level:
+  23 00d50  14  Segments Left:
+  24 00d5f  14  Segments Done:
+  25 00d6e  12  Targets Hit:
+  26 00d7b   6  Score:
+  27 00d82  36  Press SPACEBAR or button to continue
+  28 00da7   3  ---
+  29 00dab   8  arrived.
+  30 00db4  10  destroyed.
+  31 00dbf   9  attacked.
+  32 00dc9   9  captured.
+  33 00dd3  10  inspected.
+  34 00dde   8  boarded.
+  35 00de7  17  finished docking.
+  36 00df9   9  disabled.
+  37 00e03  37  survived until other goals completed.
+  38 00e29   3  ---
+  39 00e2d   3  ---
+  40 00e31  18  completed mission.
+  41 00e44   3  ---
+  42 00e48   3  ---
+  43 00e4c   3  ---
+  44 00e50   3  ---
+  45 00e54   3  ---
+  46 00e58   3  ---
+  47 00e5c  12  dropped off.
+  48 00e69  11  reinforced.
+  49 00e75   3  ---
+  50 00e79   4  was 
+  51 00e7e   8  was not 
+  52 00e87   3  ---
+  53 00e8b   8  must be 
+  54 00e94   3  ---
+  55 00e98   4  has 
+  56 00e9d   8  has not 
+  57 00ea6   3  ---
+  58 00eaa  10  must have 
+  59 00eb5   3  ---
+  60 00eb9   5  were 
+  61 00ebf   9  were not 
+  62 00ec9   3  ---
+  63 00ecd   8  must be 
+  64 00ed6   3  ---
+  65 00eda   5  have 
+  66 00ee0   9  have not 
+  67 00eea   3  ---
+  68 00eee  10  must have 
+  69 00ef9   4  100%
+  70 00efe   3  75%
+  71 00f02   3  50%
+  72 00f06   3  25%
+  73 00f0a  12  At least one
+  74 00f17  11  All but one
+  75 00f23   3  ---
+  76 00f27   3  ---
+  77 00f2b  11  All but you
+  78 00f37   3  You
+  79 00f3b   3  All
+  80 00f3f   3  75%
+  81 00f43   3  50%
+  82 00f47   3  25%
+  83 00f4b  12  At least one
+  84 00f58  11  All but one
+  85 00f64   3  AND
+  86 00f68   2  OR
+  87 00f6b  20  Primary Goals Failed
+  88 00f80  24  Primary Goals Incomplete
+  89 00f99  23  Primary Goals Completed
+  90 00fb1  22  Secondary Goals Failed
+  91 00fc8  26  Secondary Goals Incomplete
+  92 00fe3  25  Secondary Goals Completed
+  93 00ffd  18  Bonus Goals Failed
+  94 01010  22  Bonus Goals Incomplete
+  95 01027  21  Bonus Goals Completed
+  96 0103d   4   of 
+  97 01042   8   of all 
+  98 0104b   6  group 
+  99 01052   8  All But 
+ 100 0105b   4  and 
+ 101 01060   2  , 
+ 102 01063  13  flight groups
+ 103 01071  13  rookie pilots
+ 104 0107f  13  novice pilots
+ 105 0108d  14  veteran pilots
+ 106 0109c  14  officer pilots
+ 107 010ab  10  ace pilots
+ 108 010b6  14  top-ace pilots
+ 109 010c5  16  stationary craft
+ 110 010d6  23  craft returning to base
+ 111 010ee  17  non-evading craft
+ 112 01100  25  craft flying in formation
+ 113 0111a  16  rendezvous craft
+ 114 0112b  14  disabled craft
+ 115 0113a  23  craft awaiting boarding
+ 116 01152  20  craft on free patrol
+ 117 01167  23  craft attacking escorts
+ 118 0117f  27  craft attacking in response
+ 119 0119b  18  escorting fighters
+ 120 011ae  27  craft attempting to disable
+ 121 011ca  22  craft delivering cargo
+ 122 011e1  19  craft seizing cargo
+ 123 011f5  22  craft exchanging cargo
+ 124 0120c  15  capturing craft
+ 125 0121c  22  craft destroying cargo
+ 126 01233  22  craft picking-up cargo
+ 127 0124a  19  craft seizing cargo
+ 128 0125e  16  waiting fighters
+ 129 0126f  17  waiting starships
+ 130 01281  20  patrolling starships
+ 131 01296  41  starships waiting for all returning craft
+ 132 012c0  39  starships waiting to dispatch all craft
+ 133 012e8  36  starships waiting for boarding craft
+ 134 0130d  46  starships waiting for boarding craft to appear
+ 135 0133c  20  craft on free patrol
+ 136 01351  27  craft attempting to disable
+ 137 0136d  27  craft attempting to disable
+ 138 01389  27  starships returning to base
+ 139 013a5  11  Rebel craft
+ 140 013b1  14  Imperial craft
+ 141 013c0   6   craft
+ 142 013c7  11  space craft
+ 143 013d3   7  weapons
+ 144 013db  10  satellites
+ 145 013e6   3  ---
+ 146 013ea   3  ---
+ 147 013ee   3  ---
+ 148 013f2   3  ---
+ 149 013f6  12  starfighters
+ 150 01403  15  transport craft
+ 151 01413  13  utility craft
+ 152 01421  15  freighter craft
+ 153 01431   9  starships
+ 154 0143b   9  platforms
+ 155 01445   3  ---
+ 156 01449   3  ---
+ 157 0144d   5  mines
+ 158 01453   3  ---
+ 159 01457   3  ---
+ 160 0145b   3  ---
+ 161 0145f   3  ---
+ 162 01463   3  ---
+ 163 01467   3  ---
+ 164 0146b   3  ---
+ 165 0146f   4   +/-
+ 166 01474   2   [
+ 167 01477   2   ]
+ 168 0147a  10   BACKSPACE
+ 169 01485   2   \
+ 170 01488   7   RETURN
+ 171 01490   2   H
+ 172 01493   6   ALT-E
+ 173 0149a   2   Q
+ 174 0149d   2   C
+ 175 014a0   2   V
+ 176 014a3   3   F8
+ 177 014a7   3   F9
+ 178 014ab  13   ; or SHIFTF9
+ 179 014b9   4   F10
+ 180 014be  14   ' or SHIFTF10
+ 181 014cd   2   S
+ 182 014d0   4   0-9
+ 183 014d5   2   .
+ 184 014d8   3   F1
+ 185 014dc   3   F2
+ 186 014e0   8   / or F3
+ 187 014e9   8   * or F4
+ 188 014f2   2   Z
+ 189 014f5   4   T/Y
+ 190 014fa   2   U
+ 191 014fd   2   R
+ 192 01500   2   E
+ 193 01503   2   A
+ 194 01506   2   I
+ 195 01509   4   ,/<
+ 196 0150e  11   SHIFTF5-F7
+ 197 0151a   6   F5-F7
+ 198 01521   2   W
+ 199 01524   2   X
+ 200 01527   2   B
+ 201 0152a   6   ALT-C
+ 202 01531  11   ALT-P or P
+ 203 0153d   6   ALT-T
+ 204 01544   6   ALT-D
+ 205 0154b   8   ALT-M/S
+ 206 01554   2   M
+ 207 01557   2   L
+ 208 0155a   2   G
+ 209 0155d   2   D
+ 210 01560   8   SHIFT-Z
+ 211 01569   2   K
+ 212 0156c   7   ESCAPE
+ 213 01574  26  Increase/Decrease Throttle
+ 214 0158f  19  Set Throttle to 1/3
+ 215 015a3  19  Set Throttle to 2/3
+ 216 015b7  17  Set Full Throttle
+ 217 015c9  17  Set Zero Throttle
+ 218 015db  21  Match Speed of Target
+ 219 015f1  22  Enter/Abort Hyperspace
+ 220 01608   5  Eject
+ 221 0160e  19  Quit; Abort Mission
+ 222 01622  17  Start/Stop Camera
+ 223 01634   9  View Film
+ 224 0163e  28  Set Beam Weapon Recharge Lvl
+ 225 0165b  24  Set Laser Recharge Level
+ 226 01674  25  Boost Lasers from Shields
+ 227 0168e  25  Set Shield Recharge Level
+ 228 016a8  25  Boost Shields from Lasers
+ 229 016c2  28  Toggle Shields Fwd/Back/Even
+ 230 016df  21  Select View Direction
+ 231 016f5  14  Toggle Cockpit
+ 232 01704  21  Reset to Forward View
+ 233 0171a  19  Follow Missile View
+ 234 0172e  13  External View
+ 235 0173c  22  Toggle Camera Pan Mode
+ 236 01753  21  Toggle Threat Display
+ 237 01769  23  Select Next/Prev Target
+ 238 01781  19  Select Newest Bogie
+ 239 01795  20  Select Closest Bogie
+ 240 017aa  23  Select Nearest Attacker
+ 241 017c2  33  Select Attacker of Current Target
+ 242 017e4  19  Toggle Target Boxes
+ 243 017f8  26  Select Next/Prev Component
+ 244 01813  20  Store current target
+ 245 01828  20  Recall stored target
+ 246 0183d  13  Select Weapon
+ 247 0184b  17  Cross-link Weapon
+ 248 0185d  20  Activate Beam Weapon
+ 249 01872  18  Calibrate Joystick
+ 250 01885  10  Pause game
+ 251 01890  33  Select 2X/4X/1X Time Acceleration
+ 252 018b2  19  Set Graphics Detail
+ 253 018c6  21  Toggle Music/Sound FX
+ 254 018dc  19  Toggle Inflight Map
+ 255 018f0  18  Toggle Message Log
+ 256 01903  20  Toggle Mission Goals
+ 257 01918  24  Toggle Damage Assessment
+ 258 01931  21  Toggle Wingman Orders
+ 259 01947  20  Toggle Key Reference
+ 260 0195c  23  Toggle Inflight Options
+ 261 01974   5  Shown
+ 262 0197a   5  Icons
+ 263 01980   6  Hidden
+ 264 01987  13  þOHþRostiles:
+ 265 01995  14  þOIþJmperials:
+ 266 019a4  13  þONþFeutrals:
+ 267 019b2  38  þOSPACEBARþV: Toggles þW2-DþV/3-D mode
+ 268 019d9  38  þOSPACEBARþV: Toggles 2-D/þW3-DþV mode
+ 269 01a00  32  þOCþV: Centers map on þOtþVarget
+ 270 01a21  37  TIE Fighter CD [Final V1.0] 10/24/95
+ 271 01a47  43  Mission paused.  Press any key to continue
+ 272 01a73  16  Mission resumed
+ 273 01a84  20  Laser cannons armed
+ 274 01a99  18  Ion cannons armed
+ 275 01aac  18  * launchers armed
+ 276 01abf  32  * launchers set to [single fire
+ 277 01ae0  30  * launchers set to [dual fire
+ 278 01aff  14  Proton torpedo
+ 279 01b0e  18  Concussion missile
+ 280 01b21  28  Cannons set to [single fire
+ 281 01b3e  26  Cannons set to [dual fire
+ 282 01b59  21  Cannons [fire linked
+ 283 01b6f  24  Deflector shields set *
+ 284 01b88  22  [full strength forward
+ 285 01b9f  30  [even strength forward and aft
+ 286 01bbe  18  [full strength aft
+ 287 01bd1  13  Cannon* rate
+ 288 01bdf  13  Shield* rate
+ 289 01bed  41   power redirected to engines at [maximum]
+ 290 01c17  41   power redirected to engines at [minimum]
+ 291 01c41  24  s recharging at [normal]
+ 292 01c5a  27  s recharging at [increased]
+ 293 01c76  25  s recharging at [maximum]
+ 294 01c90  16  [*] system is *
+ 295 01ca1  23  damaged and inoperative
+ 296 01cb9   8  repaired
+ 297 01cc2   6  Engine
+ 298 01cc9  14  Flight control
+ 299 01cd8   5  Laser
+ 300 01cde  10  Ion Cannon
+ 301 01ce9  16  Warhead Launcher
+ 302 01cfa  11  Beam Weapon
+ 303 01d06  18  Targeting computer
+ 304 01d19  20  Auto-ejection system
+ 305 01d2e  16  Deflector shield
+ 306 01d3f  10  Hyperdrive
+ 307 01d4a  33  Graphics detail set to [*] level
+ 308 01d6c   6  lowest
+ 309 01d73   3  low
+ 310 01d77   4  high
+ 311 01d7c   7  highest
+ 312 01d84  36  Preparing for jump to light speed..
+ 313 01da9  24  Hyperspace jump aborted
+ 314 01dc2  26  Hyperspace jump completed
+ 315 01ddd  35  New craft alert, [& *] at [&] km
+ 316 01e01  36  New craft alert, [& *s] at [&] km
+ 317 01e26  21                       
+ 318 01e3c  59  Congratulations! Level Completed.  Time Left:       Bonus:
+ 319 01e78  25  Bonus points awarded: &
+ 320 01e92  67  An enemy craft is attempting missile lock, [should it be targeted?
+ 321 01ed6  33  Missile Warning! [Key to Target?
+ 322 01ef8  21  Missile was targeted
+ 323 01f0e  54  Object detected in jump path, hyperspace jump aborted
+ 324 01f45  18  Replay camera [on
+ 325 01f58  19  Replay camera [off
+ 326 01f6c  30  Error! Failed to start camera
+ 327 01f8b  38  Camera footage is being saved to disk
+ 328 01fb2  21  Camera footage saved
+ 329 01fc8  20  Camera film used up
+ 330 01fdd  33  Loading camera footage from disk
+ 331 01fff  17  No film recorded
+ 332 02011  15  At end of film
+ 333 02021  13  Film started
+ 334 0202f  13  Film stopped
+ 335 0203d  16  Film advance on
+ 336 0204e  17  Film advance off
+ 337 02060  22  Film rewound to start
+ 338 02077  28  Camera now in [FOLLOW] mode
+ 339 02094  26  Camera now in [FREE] mode
+ 340 020af  28  Mission ends in [2] minutes
+ 341 020cc  27  Mission ends in [1] minute
+ 342 020e8  50  Mission time expired, hyperspace sequence begun..
+ 343 0211b  58  Hit [Space Bar] to activate tractor beam and enter hangar
+ 344 02156  55  Mission objectives can not be finished, abort mission!
+ 345 0218e  17  Enter file name:
+ 346 021a0  25  File Exists! Replace it?
+ 347 021ba  18  Replay clip saved
+ 348 021cd  22  Replay clip not saved
+ 349 021e4  12  File Error!
+ 350 021f1  26  Engine throttle set to [*
+ 351 0220c   8  no power
+ 352 02215   9  1/3 power
+ 353 0221f   9  2/3 power
+ 354 02229  10  full power
+ 355 02234  45  Component tracking in CMD display turned [*]
+ 356 02262   3  OFF
+ 357 02266   2  ON
+ 358 02269  16  S-Foils opening
+ 359 0227a  16  S-Foils closing
+ 360 0228b  34  S-Foils have reached [*] position
+ 361 022ae   4  open
+ 362 022b3   6  closed
+ 363 022ba  57  Transfering partial power from shields to [cannon system
+ 364 022f4  51  Transfering partial power from cannons to [shields
+ 365 02328  11  [* * &] *
+ 366 02334   8  [* *] *
+ 367 0233d  22  has entered hyperspace
+ 368 02354  19  has been [destroyed
+ 369 02368  18  has been [disabled
+ 370 0237b  18  has been [repaired
+ 371 0238e  18  has been [captured
+ 372 023a1  11  has [docked
+ 373 023ad  17  has been targeted
+ 374 023bf  31  [* &] from flight group [*] *
+ 375 023df   8  [* *] *
+ 376 023e8  17  * launcher empty
+ 377 023fa   8  * fired
+ 378 02403   9  *s fired
+ 379 0240d  18  has entered hangar
+ 380 02420  33  Message acknowledged: [* * &] *
+ 381 02442  30  Message acknowledged: [* *] *
+ 382 02461  12  heading home
+ 383 0246e  18  coming to your aid
+ 384 02481  23  making evasive maneuver
+ 385 02499  26  waiting for further orders
+ 386 024b4  23  proceeding with mission
+ 387 024cc  23  using designated target
+ 388 024e4  15  ignoring target
+ 389 024f4  34  reports docking operation complete
+ 390 02517  25  [* * &] reporting in: *
+ 391 02531  22  [* *] reporting in: *
+ 392 02548  14  holding steady
+ 393 02557   9  on patrol
+ 394 02561  16  protecting craft
+ 395 02572  30  patrolling for craft to attack
+ 396 02591  24  patrolling for escorters
+ 397 025aa  25  setting up for attack run
+ 398 025c4  16  attacking target
+ 399 025d5  22  doing evasive maneuver
+ 400 025ec  23  following flight leader
+ 401 02604  28  looking for craft to disable
+ 402 02621  13  flying escort
+ 403 0262f  26  looking for craft to board
+ 404 0264a  28  looking for craft to capture
+ 405 02667  28  looking for craft to pick up
+ 406 02684  28  performing docking operation
+ 407 026a1  26  flying to rendezvous point
+ 408 026bc  23  awaiting boarding craft
+ 409 026d4  17  awaiting boarding
+ 410 026e6  15  holding station
+ 411 026f6  11  flying home
+ 412 02702  15  entering hangar
+ 413 02712  14  exiting hangar
+ 414 02721  19  entering hyperspace
+ 415 02735  18  exiting hyperspace
+ 416 02748  21  following flight plan
+ 417 0275e  24  awaiting return of craft
+ 418 02777  24  awaiting launch of craft
+ 419 02790  15  changing orders
+ 420 027a0  23  awaiting further orders
+ 421 027b8   7  waiting
+ 422 027c0  18  dropping off craft
+ 423 027d3   0  
+ 424 027d4   0  
+ 425 027d5   0  
+ 426 027d6   0  
+ 427 027d7   0  
+ 428 027d8   0  
+ 429 027d9   0  
+ 430 027da  53  Excellent job!  Primary mission objectives completed
+ 431 02810   2  *
+ 432 02813  24  You have ejected safely
+ 433 0282c  41  &0000 points awarded for previous levels
+ 434 02856  39  Cannot enter simulation at this point!
+ 435 0287e   8  Launcher
+ 436 02887   6  Cannon
+ 437 0288e  14  You have died
+ 438 0289d   0  
+ 439 0289e  20  Entering hyperspace
+ 440 028b3  42  Threat display target no longer available
+ 441 028de  19  has been [inspected
+ 442 028f2  45  This craft is not equipped with a [*] system
+ 443 02920  18  No craft targeted
+ 444 02933   2  *
+ 445 02936  30  Craft not responding to order
+ 446 02955  52  Superb work! Secondary mission objectives completed
+ 447 0298a  52  Superlative job! Bonus mission objectives completed
+ 448 029bf  28  No reinforcements available
+ 449 029dc  40  Request for reinforcements acknowledged
+ 450 02a05  47  Reinforcements already sent, no more available
+ 451 02a35  24  [*] has docked with [*]
+ 452 02a4e  31  [* *] entering area at [&] km
+ 453 02a6e  45  [& *s] from FG [*] entering area at [&] km
+ 454 02a9c  23  Advanced proton torpedo
+ 455 02ab4  27  Advanced concussion missile
+ 456 02ad0  16  Heavy space bomb
+ 457 02ae1  12  Heavy rocket
+ 458 02aee  14  Magnetic pulse
+ 459 02afd  34  No hyperdrive unit, return to [*]
+ 460 02b20  44  No hyperdrive unit, return to [*] or to [*]
+ 461 02b4d  25  * beam] system activated
+ 462 02b67  28  * beam] system de-activated
+ 463 02b84   7  Tractor
+ 464 02b8c   7  Jamming
+ 465 02b94   5  Decoy
+ 466 02b9a  11  Beam* rate
+ 467 02ba6  49  Hit [Space Bar] to confirm reinforcement request
+ 468 02bd8  25  resupplies are on the way
+ 469 02bf2  38  Time accelerated to [&]X normal time
+ 470 02c19  16  Normal time set
+ 471 02c2a  17  Warhead targeted
+ 472 02c3c  33  Press [Space Bar] to end mission
+ 473 02c5e  42  Collision with another craft has occured!
+ 474 02c89  61  Enemy Interdictor prevents hyperdrive unit from functioning!
+ 475 02cc7  41  Message acknowledged: [Flight Group *] *
+ 476 02cf1  27  Matching speed with target
+ 477 02d0d  60  Trying to match speeds with target, throttle set to maximum
+ 478 02d4a  44  You have destroyed a craft on your own side
+ 479 02d77  18  Missile destroyed
+ 480 02d8a  42  Warhead impact drained all cannon energy!
+ 481 02db5  36  Engine overdrive boosters [engaged]
+ 482 02dda  39  Engine overdrive boosters [disengaged]
+ 483 02e02  45  Engine overdrive boosters can not be engaged
+ 484 02e30  29  Brightness set to level [&]
+ 485 02e4e  33   Gouraud Shading and Lighting is:
+ 486 02e70  39   Starfighter Polygon Detail Setting is:
+ 487 02e98  36   Starship Polygon Detail Setting is:
+ 488 02ebd  34   Marking and Texture Polygons are:
+ 489 02ee0  44   Backdrop Planets, Galaxies and Nebulae are:
+ 490 02f0d  17   Space Debris is:
+ 491 02f1f  30   Engine Glow Color Cycling is:
+ 492 02f3e  44   Starfield and Hyperspace Detail Setting is:
+ 493 02f6b  44   Player vs. Starfighter Collision Damage is:
+ 494 02f98  24   Player's Spacecraft is:
+ 495 02fb1  24   Player's Ammunition is:
+ 496 02fca  42   Inflight Sound Effects Volume Setting is:
+ 497 02ff5  34   Inflight Music Volume Setting is:
+ 498 03018  35   Inflight Speech Volume Setting is:
+ 499 0303c   3  Off
+ 500 03040   2  On
+ 501 03043   3  Low
+ 502 03047   4  High
+ 503 0304c   3  Low
+ 504 03050   6  Medium
+ 505 03057   4  High
+ 506 0305c   6  Lowest
+ 507 03063   3  Low
+ 508 03067   4  High
+ 509 0306c   7  Highest
+ 510 03074  10  Vulnerable
+ 511 0307f  12  Invulnerable
+ 512 0308c   7  Limited
+ 513 03094   9  Unlimited
+ 514 0309e   4  DIST
+ 515 030a3   3  SHD
+ 516 030a7   4  HULL
+ 517 030ac   3  SYS
+ 518 030b0   4  TRG:
+ 519 030b5   8  NO CARGO
+ 520 030be  10  THIS CRAFT
+ 521 030c9  16  CURRENT ORDERS: 
+ 522 030da   4  NONE
+ 523 030df  15  CURRENT TARGET:
+ 524 030ef  20  CURRENT DESTINATION:
+ 525 03104  21  DISTANCE FROM TARGET:
+ 526 0311a  24  DISTANCE TO DESTINATION:
+ 527 03133  15  TIME REMAINING:
+ 528 03143  15  TIME TO TARGET:
+ 529 03153  20  TIME TO DESTINATION:
+ 530 03168  16  START POSITION 1
+ 531 03179  16  START POSITION 2
+ 532 0318a  16  START POSITION 3
+ 533 0319b  16  START POSITION 4
+ 534 031ac  10  WAYPOINT 1
+ 535 031b7  10  WAYPOINT 2
+ 536 031c2  10  WAYPOINT 3
+ 537 031cd  10  WAYPOINT 4
+ 538 031d8  10  WAYPOINT 5
+ 539 031e3  10  WAYPOINT 6
+ 540 031ee  10  WAYPOINT 7
+ 541 031f9  10  WAYPOINT 8
+ 542 03204  16  RENDEZVOUS POINT
+ 543 03215  16  HYPERSPACE POINT
+ 544 03226   4  HULL
+ 545 0322b   4  HULL
+ 546 03230   4  WING
+ 547 03235   8  FUSELAGE
+ 548 0323e   8  LASR TUR
+ 549 03247   8  LASR GUN
+ 550 03250   6  ENGINE
+ 551 03257   6  BRIDGE
+ 552 0325e   8  SHLD GEN
+ 553 03267   8  ENRG GEN
+ 554 03270   8  WHEAD LN
+ 555 03279   8  COMM SYS
+ 556 03282   8  BEAM SYS
+ 557 0328b   8  COMM SYS
+ 558 03294   8  DOCK PLT
+ 559 0329d   8  LAND PLT
+ 560 032a6   6  HANGAR
+ 561 032ad   5  CARGO
+ 562 032b3   4  HULL
+ 563 032b8   7  ANTENNA
+ 564 032c0   4  WING
+ 565 032c5   8  LASR TUR
+ 566 032ce   8  WHEAD LN
+ 567 032d7   8  COMM SYS
+ 568 032e0   8  BEAM SYS
+ 569 032e9   8  COMM SYS
+ 570 032f2   7  COCKPIT
+ 571 032fa   4  HULL
+ 572 032ff   4  HULL
+ 573 03304   4  HULL
+ 574 03309   4  HULL
+ 575 0330e   4  HULL
+ 576 03313   8  --------
+ 577 0331c   8        OK
+ 578 03325   8   STOPPED
+ 579 0332e   8  DISABLED
+ 580 03337   8  CAPTURED
+ 581 03340   8          
+ 582 03349   8    HOMING
+ 583 03352   8  SHLDS DN
+ 584 0335b   8  HULL DMG
+ 585 03364   8   WAITING
+ 586 0336d   7  TORPEDO
+ 587 03375   7  MISSILE
+ 588 0337d   5  LASER
+ 589 03383   5  LASER
+ 590 03389   3  ION
+ 591 0338d  11  ADV TORPEDO
+ 592 03399  11  ADV MISSILE
+ 593 033a5  10  SPACE BOMB
+ 594 033b0   6  ROCKET
+ 595 033b7   9  MAG PULSE
+ 596 033c1   9  MAG PULSE
+ 597 033cb   9  MAG PULSE
+ 598 033d5   7  UNKNOWN
+ 599 033dd   8  Comm Sat
+ 600 033e6   8  Comm Sat
+ 601 033ef   8  Comm Sat
+ 602 033f8   8  Comm Sat
+ 603 03401   8  Comm Sat
+ 604 0340a   4  Mine
+ 605 0340f   4  Mine
+ 606 03414   4  Mine
+ 607 03419   4  Mine
+ 608 0341e   4  Mine
+ 609 03423   5  Probe
+ 610 03429   5  Probe
+ 611 0342f   5  Probe
+ 612 03435   8  Nav Buoy
+ 613 0343e   8  Nav Buoy
+ 614 03447   5  Pilot
+ 615 0344d   6  X-wing
+ 616 03454   6  Y-wing
+ 617 0345b   6  A-wing
+ 618 03462   6  B-wing
+ 619 03469  11  TIE Fighter
+ 620 03475  15  TIE Interceptor
+ 621 03485  10  TIE Bomber
+ 622 03490  12  TIE Advanced
+ 623 0349d  12  TIE Defender
+ 624 034aa   0  
+ 625 034ab   0  
+ 626 034ac  12  Missile Boat
+ 627 034b9   6  T-wing
+ 628 034c0  15  Z-95 Headhunter
+ 629 034d0  15  R-41 Starchaser
+ 630 034e0  15  Assault Gunboat
+ 631 034f0   7  Shuttle
+ 632 034f8  14  Escort Shuttle
+ 633 03507  12  Patrol Craft
+ 634 03514  11  Scout Craft
+ 635 03520   9  Transport
+ 636 0352a  13  Assault Trans
+ 637 03538  12  Escort Trans
+ 638 03545   3  Tug
+ 639 03549  11  Utility Tug
+ 640 03555  11  Container A
+ 641 03561  11  Container B
+ 642 0356d  11  Container C
+ 643 03579  11  Container D
+ 644 03585  12  Heavy Lifter
+ 645 03592   0  
+ 646 03593   9  Freighter
+ 647 0359d  11  Cargo Ferry
+ 648 035a9  16  Modular Conveyor
+ 649 035ba  15  Container Trans
+ 650 035ca   0  
+ 651 035cb  13  Muurian Trans
+ 652 035d9  15  Corellian Trans
+ 653 035e9   0  
+ 654 035ea  18  Corellian Corvette
+ 655 035fd  13  Mod. Corvette
+ 656 0360b  17  Nebulon B Frigate
+ 657 0361d  19  Nebulon B-2 Frigate
+ 658 03631  19  C-3 Passenger Liner
+ 659 03645  15  Carrack Cruiser
+ 660 03655  14  Strike Cruiser
+ 661 03664  14  Escort Carrier
+ 662 03673  11  Dreadnaught
+ 663 0367f  16  Calamari Cruiser
+ 664 03690  19  Lt Calamari Cruiser
+ 665 036a4  11  Interdictor
+ 666 036b0  17  Victory Star Dest
+ 667 036c2  18  Imperial Star Dest
+ 668 036d5   9  Superstar
+ 669 036df  11  Container E
+ 670 036eb  11  Container F
+ 671 036f7  11  Container G
+ 672 03703  11  Container H
+ 673 0370f  11  Container I
+ 674 0371b  12  Platform XQ1
+ 675 03728  12  Platform XQ2
+ 676 03735  12  Platform XQ3
+ 677 03742  12  Platform XQ4
+ 678 0374f  12  Platform XQ5
+ 679 0375c  12  Platform XQ6
+ 680 03769   8  Platform
+ 681 03772   8  Platform
+ 682 0377b   8  Platform
+ 683 03784  10  X7 Factory
+ 684 0378f  52  Do you want to view your flight recorder film (Y/N)?
+ 685 037c4  45   SHIFT-A    Assign current target to wingman.
+ 686 037f2  42   SHIFT-B    Board me to reload and repair.
+ 687 0381d  21   SHIFT-C    Cover me.
+ 688 03833  27   SHIFT-E    Evasive action!
+ 689 0384f  44   SHIFT-G    Go ahead; continue with mission.
+ 690 0387c  22   SHIFT-H    Head home.
+ 691 03893  34   SHIFT-I    Ignore current target.
+ 692 038b6  22   SHIFT-R    Report in.
+ 693 038cd  32   SHIFT-S    Send reinforcements.
+ 694 038ee  36   SHIFT-W    Wait for further orders.

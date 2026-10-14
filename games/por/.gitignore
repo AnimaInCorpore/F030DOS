@@ -1,0 +1,67 @@
+# derived / regenerable (rebuild with work/stage.sh)
+work/expanded/
+work/probe/
+work/*.log
+
+# build outputs
+obj/
+release/*.tos
+release/PORCACHE/
+release/*.bin
+release/*.BIN
+release/*.log
+release/*.ini
+build/
+
+# emu scratch
+img/*.img
+img/*.hdd
+img/*.hdd.geom.json
+work/img_build/
+work/qemu_out/
+
+# editor / OS strays
+.vscode/
+
+# macOS strays
+.DS_Store
+._*
+*.tmp
+
+# python
+work/__pycache__/
+tools/__pycache__/
+
+# generated disassembly listings (rebuild: work/disasm.py, work/disasm_ovr.py)
+work/start16.txt
+work/game16.txt
+work/*_thunks.json
+
+# Ghidra project and generated exports (rebuild: analysis/tools.md recipe)
+work/ghidra/
+work/ghidra_export/
+
+# reassembly proof outputs (rebuild: make reasm)
+work/reasm/
+work/rebuilt/
+
+# ghidra unit images / entry lists (rebuild: work/extract_units.py)
+work/ghidra/units/
+work/ghidra/entries/
+
+# DOS oracle working tree (rebuild: make oracle-stage)
+img/oracle/GAME/
+img/oracle/DISK1/
+img/oracle/DISK2/
+img/oracle/HD/
+img/oracle/*.log
+img/oracle/full.conf
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+/*-dbg.txt

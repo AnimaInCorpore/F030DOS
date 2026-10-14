@@ -1,0 +1,6 @@
+# Falcon 3.0 indirect-control-flow seeds.
+#
+# The MZ entry (1AA3:076C) is added automatically by tools/re/disasm.py.
+# Add only targets supported by a table decode, a relocation/runtime trace, or
+# another explicit observation. Keep the evidence in analysis/ beside each
+# addition.

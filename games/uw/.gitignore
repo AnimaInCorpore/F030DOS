@@ -1,0 +1,52 @@
+# scratch / regenerable
+work/img_build/
+work/*.log
+work/ghidra_solo*/
+.pi/
+
+# Windows strays
+nul
+*.tmp
+Thumbs.db
+
+# local emu scratch (artifacts are reproducible via work/build_dos_hdd.py)
+# (img/ itself is tracked -- the genuine DOS 6.22 floppies live there)
+# The built disk is 33 MB and fully reproducible from the floppies + work/expanded:
+#   python work/build_dos_hdd.py       -> img/uw.hdd (+ .geom.json)
+# See analysis/qemu-boot.md.
+img/uw.hdd
+img/uw.hdd.geom.json
+work/qemu_out/
+# x86trace telemetry (6 MB, regenerable: see analysis/uwexe.md §14 for the
+# exact run_trace.py / trace_coverage.py / trace_overlay.py command lines)
+work/trace/
+work/dos_files/
+work/qemu.fifo*
+
+# reassembled-build staging + disk image (regenerable: python work/reasm/uwreasm.py,
+# then python work/build_dos_hdd.py --no-boot --game-dir work/reasm/out/game --out img/uw_reasm.hdd)
+# game/UW.EXE there is the patched edit-propagation demo, not the plain rebuild;
+# every other file duplicates work/expanded/ verbatim -- see analysis/reassembly.md.
+work/reasm/out/game/
+img/uw_reasm.hdd
+img/uw_reasm.hdd.geom.json
+
+# Python junk
+__pycache__/
+*.pyc
+
+# downloaded reference pages (regenerable)
+work/*.html
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+/*-dbg.txt
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

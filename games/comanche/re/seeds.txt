@@ -1,0 +1,3 @@
+# Resolved indirect-control-flow targets for the Comanche executable.
+# Keep one SEG:OFF address per line and record the evidence in comments.
+

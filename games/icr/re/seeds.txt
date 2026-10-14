@@ -1,0 +1,68 @@
+# Evidence-carrying disassembly seeds for the hash-identified IndyCar Racing
+# executable. Add a seed only after the executable/container and address model
+# are established; cite the evidence in analysis/ beside each addition.
+
+# analysis/executable.md, measured 2026-08-26 with a whole-RAM dump at the
+# copy-protection prompt: the image is not one flat span. Code in the block
+# that spans the LE-page/appended boundary maps at file = runtime - 0x13EEDC,
+# and that module's data at file = runtime - 0x13FEDC -- one page apart, so a
+# code delta must not be used to resolve a data address.
+CODE_DELTA runtime_minus_file=0x0013eedc range_file=0x00050400..0x000b4400
+DATA_DELTA runtime_minus_file=0x0013fedc range_file=0x000a1124..
+
+# analysis/executable.md: the LE object page map is the identity and the page
+# size is 0x1000, so file = vaddr + 0x1A400 across both objects.
+LE_PAGEMAP file_minus_vaddr=0x0001a400 vaddr=0x00010000..0x00076000
+
+# analysis/executable.md "Declared entrypoint": NOT a seed yet. The LE EIP
+# field reads as object-relative (ESP = object 2's virtual size exactly),
+# giving vaddr 0x5D254 = file 0x77654; the previously recorded file 0x67654 is
+# the other reading. Neither lands on a function boundary and the image is not
+# loaded at its declared object bases, so no entrypoint seed is asserted here.
+
+# analysis/copy-protection.md, measured 2026-08-26. All four confirmed by the
+# game's own acceptance flag while driving the oracle past the gate.
+PROT_HASH        file=0x00080444 runtime=0x001bf320  # hash of 3 chars, lowercased
+PROT_ANSWER      file=0x00080474 runtime=0x001bf350  # answer callback + compare
+PROT_CHALLENGE   file=0x0008072b runtime=0x001bf607  # rand mod 169, table read
+PROT_TOLOWER     file=0x0009d95b runtime=0x001dc837  # A-Z tolower
+PROT_LCG         file=0x0006669b runtime=0x001a5577  # seed *= 0x19660D @0x1E3DBC
+PROT_TAB_PAGELINE file=0x000b29c8 runtime=0x001f28a4 count=169 stride=2
+PROT_TAB_HASH     file=0x000ac584 runtime=0x001ec460 count=169 stride=4
+
+# analysis/renderer.md, measured 2026-08-26 from a practice session. The span
+# drawer patches its own immediates, so these file offsets locate the code but
+# NOT its constants; the file holds placeholders there.
+RENDER_HOT     file=0x00098000..0x0009afff  # 88% of session EIP samples
+RENDER_SPAN    file=0x0009a604 runtime=0x001d94e0  # patched span loops + setup
+
+# Runtime-only, no file offset: heap allocations, stable across two runs and
+# two game states. Confirmed by correlating a screendump with a RAM dump.
+FRAMEBUFFER_A  runtime=0x0023e130 size=0x0fa00 layout=320x200x8 pitch=320
+FRAMEBUFFER_B  runtime=0x0024db30 size=0x0fa00 note=draw target per [0x23e12c]
+FB_TARGET_PTR  runtime=0x0023e12c size=4 note=holds B in both dumps
+FRAMEBUFFER_VGA runtime=0x000a0000 note=byte-identical to A in both dumps
+PALETTE_LIVE   runtime=0x00216e94 runtime2=0x00217194 size=0x300 format=6bit_dac
+
+# analysis/renderer.md: the rasteriser above the span loops, recovered from
+# live stack frames. Its pitch immediate 0x140 IS in the file, unlike the span
+# loops' constants.
+RENDER_RASTER  file=0x00098578 runtime=0x001d7454  # row loop over edge tables
+RENDER_CALLER  file=0x000978fd runtime=0x001d67d9  # call site, 80/90 samples
+RENDER_DISPATCH file=0x00097904 runtime=0x001d67e0 # two-level jump table
+RENDER_SPANBUILD file=0x00097898 runtime=0x001d6774 # clears span state, then
+#   walks the item list and calls RENDER_RASTER. Entered by a COMPUTED address:
+#   no call, no jmp and no stored pointer to it exists anywhere in a 16 MB dump.
+DISPLAY_LIST_VM file=0x0007fed0 runtime=0x001bedac # lodsd; jmp [eax*4+0x1ebc40]
+DISPLAY_LIST_TAB runtime=0x001ebc40 count=19 stride=4  # opcode handlers
+DISPLAY_LIST_RUN file=0x0007fea4 runtime=0x001bed80 # wrapper, esi=[eax]
+SCENE_DISPATCH file=0x00059af8 runtime=0x001989d4 # 6 classes, table 0x1989bc
+OBJ_PARAM_SET  file=0x00097864 runtime=0x001d6740 # stores 6 dwords, ret 0xc
+OBJ_TABLES     runtime=0x001fb494,0x001fb4a8,0x001fb4ac,0x001fb500
+EDGE_DISPATCH_TAB runtime=0x001f4d30 note=targets of the two-level dispatcher
+EDGE_TAB_LEFT  runtime=0x0023c828 count=200 stride=4
+EDGE_TAB_RIGHT runtime=0x0023cb48 count=200 stride=4
+EDGE_TAB_STRIDE note=+0x12c0 selects a further array; >=6 parallel per-row sets
+ROW_FIRST      runtime=0x0023c818  # first scanline of the polygon
+ROW_LAST       runtime=0x0023c81c  # last scanline
+ROW_DEST_PTR   runtime=0x0023c804  # destination row pointer

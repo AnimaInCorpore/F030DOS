@@ -1,0 +1,361 @@
+# Resolved entry points in the 32-bit flat image (selector base = image 0x1700).
+# One plain 32-bit offset per line; record the evidence after #.
+#
+# "Image offset" here means an offset into the LOAD MODULE, after the 512-byte
+# MZ header - the model mzinfo.py, disasm.py and carve-flat.py all use. Reading
+# a table at file offset 0x1700+F instead of load-module offset 0x1700+F lands
+# 512 bytes early, in a neighbouring zero region, and makes a real dispatch
+# table look like uninitialised data. That has already happened once.
+
+1538   # 32-bit entry: bootstrap ljmp 0x20:1538 at image 0x0C01
+
+# `jmp dword ptr [0x2c69d]` at 0002BCDB/0002BCE9 is a single fixed pointer, not
+# an indexed table read - see docs/RE-WORKFLOW.md, "The seven-way dispatch-slot
+# system". These six addresses are dispatch_variants_2c6a1's entries, the values
+# the runtime variant-select copy (0002BA36-0002BA93) can write into that
+# pointer. Seeded here because disasm.py's recursive descent cannot follow that
+# copy; 0002B9F6 is variant [0], the default arm, shared by all seven slots.
+2B9F6  # dispatch_default_arm - variant [0] of every one of the seven tables
+2C443  # dispatch_variants_2c6a1 variant [1]
+2C3C9  # dispatch_variants_2c6a1 variants [2] and [3] (identical, as in every table)
+2C01E  # dispatch_variants_2c6a1 variant [4]
+2C488  # dispatch_variants_2c6a1 variant [5]
+
+# dispatch_variants_2c6d9's entries, feeding dispatch_slot_2c6d5 via
+# `jmp dword ptr [0x2c6d5]` at 0002BF82 - same correction and same mechanism.
+2C47E  # dispatch_variants_2c6d9 variant [1]
+2C254  # dispatch_variants_2c6d9 variants [2] and [3]
+2C0CA  # dispatch_variants_2c6d9 variant [4]
+2C48A  # dispatch_variants_2c6d9 variant [5]
+
+# Function-pointer table at 000040F2-00004142: 20 dwords at 4-byte stride, every
+# entry a content address, bounded by 0x80808080 filler below and a zero dword
+# above. Statically populated, so both indirect call sites that read it -
+# call dword ptr [0x412a] at 00004FF9 and [0x40fe] at 000050A8 - resolve without
+# a debugger. Only four distinct targets over 20 slots, so the slot index is a
+# mode or state selector rather than one handler per entry.
+4E0B   # fnptr table, 10 slots including [0x40fe] and [0x412a]
+1F49   # fnptr table, 4 slots
+1EF6   # fnptr table, 4 slots
+202E   # fnptr table, slots at 00004132+
+
+# Handler tables reached by the register-indirect calls. Each site loads its
+# target from a table at a known address, so none of them needed a debugger:
+# the backward slice is one instruction in every case.
+
+# mov eax,[ebx*4+0x19d68] then call eax at 0001922E. 6 slots, all distinct.
+22890   # table 00019D68, 1 of 6 slots
+22B00   # table 00019D68, 1 of 6 slots
+22E70   # table 00019D68, 1 of 6 slots
+22F90   # table 00019D68, 1 of 6 slots
+230B0   # table 00019D68, 1 of 6 slots
+231B2   # table 00019D68, 1 of 6 slots
+
+# mov eax,[ecx*4+0x20244] then call eax at 000234C8. 131 slots, 2 distinct -
+24860   # table 00020244, 130 of 131 slots
+2514D   # table 00020244, 1 of 131 slots
+
+# mov edx,[eax*4+0x2231c] then call edx at 00006941. 10 slots, all distinct.
+23297   # table 0002231C, 1 of 10 slots
+23392   # table 0002231C, 1 of 10 slots
+233A3   # table 0002231C, 1 of 10 slots
+233BF   # table 0002231C, 1 of 10 slots
+233DB   # table 0002231C, 1 of 10 slots
+233F7   # table 0002231C, 1 of 10 slots
+23413   # table 0002231C, 1 of 10 slots
+23424   # table 0002231C, 1 of 10 slots
+23446   # table 0002231C, 1 of 10 slots
+23462   # table 0002231C, 1 of 10 slots
+
+# Single pointer slots, both statically populated.
+D950   # [0x19c94], call eax at 0000D3F5 -- high-detail terrain renderer
+
+# The other two terrain renderers and their setups. 000137F0 is the second
+# value 000261F4/00026207 can install into [0x19c94], selected by [0x25dd9];
+# the setups are reached by a plain call from their own renderer, so they need
+# no seed of their own, but they are listed to keep the family together.
+137F0  # terrain_renderer_96, the other [0x19c94] target
+7D25   # terrain_setup_192, called from 0000D950
+107A0  # terrain_setup_96, called from 000137F0
+2A99C  # [0x2a980], call ebx at 00006507 and 0002B945
+
+# mov ecx,[ebx+0x2c5d9] then call ecx at 0002B9EA. 16 dwords, zero-terminated,
+# 8 distinct; 0002B9F3 fills slots 9-15 as the default arm. Found by walking the
+# initialised clusters of the data segment rather than from the call site.
+2BB09  # table 0002C5D9 slots 0,1,2
+2B9F7  # table 0002C5D9 slot 3
+2BBC1  # table 0002C5D9 slot 4
+2BBD0  # table 0002C5D9 slot 5
+2BBBB  # table 0002C5D9 slot 6
+2BB01  # table 0002C5D9 slot 7
+2BBDA  # table 0002C5D9 slot 8
+2B9F3  # table 0002C5D9 slots 9-15, the default arm
+
+# mov edx,[ebx*4+0x7bc9] then call edx at 00007D72. The displacement is not the
+# table base: valid indices start at 1, so the table is at 00007BCD and runs 8
+# entries, closed by `mov ax,ax` / `ret` filler. Previously recorded as
+# zero-filled and runtime-populated - that was a scan that stopped at the first
+# non-address dword, which here is the misaligned word at the displacement.
+7BF0   # table 00007BCD slot 1
+7C00   # table 00007BCD slot 2
+7C10   # table 00007BCD slot 3
+7C20   # table 00007BCD slot 4
+7C25   # table 00007BCD slots 5 and 8
+7C26   # table 00007BCD slot 6
+7CC5   # table 00007BCD slot 7
+
+# The remaining five dispatch groups, found by the same variant-select copy
+# (0002BA36-0002BA93). dispatch_slot_2c649/2c665/2c681/2c6b9/2c6f1 and their
+# variant tables; see docs/RE-WORKFLOW.md, "The seven-way dispatch-slot system".
+
+# dispatch_variants_2c64d's entries (variants [1]-[5]; [0] is the shared default arm)
+2C432   # dispatch_variants_2c64d variant [1]
+2C312   # dispatch_variants_2c64d variant [2]
+2C135   # dispatch_variants_2c64d variant [4]
+2C485   # dispatch_variants_2c64d variant [5]
+
+# dispatch_variants_2c669's entries (variants [1]-[5]; [0] is the shared default arm)
+2C43B   # dispatch_variants_2c669 variant [1]
+2C37F   # dispatch_variants_2c669 variant [2]
+2C01D   # dispatch_variants_2c669 variant [4]
+2C486   # dispatch_variants_2c669 variant [5]
+
+# dispatch_variants_2c685's entries (variants [1]-[5]; [0] is the shared default arm)
+2C43C   # dispatch_variants_2c685 variant [1]
+2C354   # dispatch_variants_2c685 variant [2]
+2C0FA   # dispatch_variants_2c685 variant [4]
+2C487   # dispatch_variants_2c685 variant [5]
+
+# dispatch_variants_2c6bd's entries (variants [1]-[5]; [0] is the shared default arm)
+2C45F   # dispatch_variants_2c6bd variant [1]
+2C380   # dispatch_variants_2c6bd variant [2]
+2C07D   # dispatch_variants_2c6bd variant [4]
+2C489   # dispatch_variants_2c6bd variant [5]
+
+# dispatch_variants_2c6f5's entries (variants [1]-[5]; [0] is the shared default arm)
+2C47F   # dispatch_variants_2c6f5 variant [1]
+2C1EA   # dispatch_variants_2c6f5 variant [2]
+2C18A   # dispatch_variants_2c6f5 variant [4]
+2C482   # dispatch_variants_2c6f5 variant [5]
+
+# depth_band_dispatch: 18-record threshold/dispatch chain. It is reached by
+# `push imm32` / `jmp ebx` from column_span_emitters_40 - 22 such sites, one
+# per record - not by a call, which is why the sweep does not reach it and why
+# a scan for raw dwords and call rel32 was reported as finding no caller. The
+# array is 20 records at 0001B345-0001B5C5, and 1B385 - the old seed - was
+# record 2, which is where the "18 records" count came from. The array is not a
+# routine: it is the marcher inside terrain_renderer_40, whose true entry is
+# 0001B26C, called from 00007909. Seeding the entry rather than the marcher
+# decodes the whole renderer.
+1B26C  # terrain_renderer_40 entry, called from 00007909
+
+# The viewport fill family. 185BF was seeded here as an "entry with no known
+# caller"; it is neither. It is the interior of 0001757E, reached because the
+# unreached-region table prints image offsets and 185BF was read from it as a
+# flat address. 0001757E IS referenced - 000261AF stores it into [00019CA4]'s
+# neighbouring vtable - so the family needs no seed at all now that the
+# selector is known. Kept as explicit entries because the vtable is written at
+# runtime and the sweep cannot follow it.
+1757E  # viewport_fill_plain, installed into vtable [19C98]/[19CA0] by 000261AF
+1CAD0  # viewport_fill_half, installed into vtable [19C9C] by 000261AF
+16EBF  # viewport_fill_src_a; the gap that actually ranked fifth by material
+17230  # viewport_fill_src_b, selected when [00025DD8]==0x7D
+1C920  # viewport_fill_src_c, selected when [00025DD8]==0x7D
+
+# cockpit_event_dispatch. Also an interior address from the same error, but the
+# code it reaches is real and the al=2-7 -> consol1s.dta..consol5s.dta mapping
+# was confirmed by decoding each res_open_e site and reading the filename that
+# follows it. Kept until the true entry is established.
+192C5  # cockpit_event_dispatch, interior address; true entry not established
+
+# --- routines with no caller a scan can see --------------------------------
+# Found by tools/re/gap-seeds.py: unreached runs that OPEN with the linker's
+# 2E 8B C0 inter-routine filler, so the run starts where a routine starts.
+# Interrupt handlers reached through a vector and routines entered only by a
+# computed jump both land here; neither is visible to a call scan.
+#
+# They are recorded rather than regenerated because gap-seeds.py reads the
+# listing, so a run without them produces a listing with the gaps back, and
+# the next run finds them again - the seeds have to persist or the coverage
+# oscillates between two states.
+1eeb
+4fd4
+521e
+531e
+537e
+74be
+7690
+7860
+f34e
+f37e
+f3ae
+f3de
+f40e
+f43e
+f46e
+f49e
+f4ce
+f4fe
+f52e
+f55e
+f58e
+f5be
+f5ee
+f61e
+f64e
+f67e
+f6ae
+f6de
+f70e
+f73e
+f76e
+f79e
+f7ce
+f7fe
+f82e
+f85e
+f88e
+f8be
+f8ee
+f91e
+f94e
+f97e
+f9ae
+f9de
+fa0e
+fa3e
+fa6e
+fa9e
+face
+fafe
+fb2e
+fb5e
+fb8e
+fbbe
+fbee
+fc1e
+fc4e
+fc7e
+fcae
+fcde
+fd0e
+fd3e
+fd6e
+fd9e
+15b60
+16bae
+1722e
+18caf
+19c88
+1c1ce
+1c1fe
+1c22e
+1c25e
+1c28e
+1c2be
+1c2ee
+1c31e
+1c34e
+1c37e
+1c3ae
+1c3de
+1c40e
+1c43e
+1c46e
+1c49e
+1c4ce
+1c4fe
+1c52e
+1c55e
+1c58e
+1c5be
+1c5ee
+1c61e
+1c64e
+1c67e
+1c6ae
+1c6de
+1c70e
+1c73e
+1c76e
+1c79e
+1c7ce
+1c7fe
+1c82e
+1c85e
+1c88e
+1c8be
+1c8ee
+22aff
+22dce
+236ce
+237af
+23ace
+23b4f
+23cee
+23f5f
+244df
+2467e
+76b0
+7710
+779f
+1b7f
+1d1e
+204f
+7a9e
+
+# --- interrupt trampolines and routines entered only by vector -------------
+# 00001888 is a run of `int N / iret / nop` four-byte stubs for vectors 40-4F
+# and 30-32; each is entered through its vector and ends in iret, so one seed
+# per stub is the only way in. The rest are routines whose only caller is an
+# interrupt or a computed jump, found by inspecting the runs the walk left.
+00001888
+0000188c
+00001890
+00001894
+00001898
+0000189c
+000018a0
+000018a4
+000018a8
+000018ac
+000018b0
+000018b4
+000018b8
+000018bc
+000018c0
+000018c4
+000018c8
+000018cc
+000018d0
+000075b0
+00001409
+0002bbf3
+00007530
+000168d8
+0002bfab
+00016b2f
+000058b5
+
+# platform_dispatch stubs: 17-byte trampolines, each `push [0000138C] / push
+# eax / mov eax,imm / jmp`, with no caller anywhere - the store already noted
+# the region as "10 jmp targets, no callers".
+0000141a
+0000142b
+0000143c
+0000144d
+0000145e
+0000146f
+00001480
+00001491
+000014a1
+
+# The object weapon-fire handler, reached only through the per-object handler
+# array at 00021FB0: 000233EB does `mov dword [ecx*4 + 00021FB0], 00022D33`,
+# and the image ships the same pointer pre-filled in 29 further slots from
+# 00021FB4 to 00022028. Recursive descent cannot follow either, so 00022D33
+# had no label and the routine read as a tail of the one above it. It searches
+# 0x64 object slots downward from 0x82 for a free one - `cmp byte
+# [ebx+00021921],0` - and spawns a projectile: state timer cleared, type 8,
+# per-tick handler 000236D0, speed 0x04000000.
+22D33  # object_fire_projectile, installed into the handler array at 00021FB0

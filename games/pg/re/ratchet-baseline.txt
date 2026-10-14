@@ -1,0 +1,8 @@
+# Reassembly ratchet baseline for PANZER.EXE object 1 (tools/re/ratchet_le.py).
+# A coverage regression below must be an explicit, reviewed correction.
+object1_sha256=3017d29f6e45f7413daea975d3d1ca2a09e069007e9e05eaa0ef84fe71250832
+instructions=97204
+exact=96462
+alt_encoding=678
+demoted=64
+real_instruction_bytes=329118

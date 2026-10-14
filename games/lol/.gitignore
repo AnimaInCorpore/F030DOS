@@ -1,0 +1,51 @@
+# Supplied CD image and derived CD/reference trees.
+assets/*
+!assets/.gitkeep
+game/cd/*
+!game/cd/.gitkeep
+
+# Staged install, listings, unpacked payloads and emulator artefacts.
+work/install/
+work/listings/
+work/unpacked/
+work/img_build/
+work/qemu_out/
+work/dos_files/
+work/probes/
+work/*.log
+work/mzinfo.txt
+img/
+build/
+release/
+
+# Tool output and Python junk.
+re/listings/
+re/unpacked/
+__pycache__/
+*.pyc
+*.o
+*.lst
+*.tmp
+*.ini
+.pi/
+
+# Windows strays.
+nul
+Thumbs.db
+
+# Local DOS installation media and scratch archives.
+*.7z
+*.zip
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+/*-dbg.txt
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

@@ -1,0 +1,59 @@
+# scratch / regenerable
+work/img_build/
+work/qemu_out/
+work/dos_files/
+work/*.log
+.pi/
+
+# gr_render.py / tr_render.py verification output -- regenerate on demand
+work/*_pal*.png
+
+# asset_export.py output -- regenerate from the extracted DOS assets
+work/pixel_assets/
+
+# strings_decode.py --dump output: 580 KB of game text, fully regenerable with
+#   python work/strings_decode.py --dump work/uw2_strings_decoded.txt
+work/uw2_strings_decoded.txt
+
+# Windows strays
+nul
+*.tmp
+Thumbs.db
+
+# Built emu disk: 33 MB, fully reproducible from the genuine DOS 6.22 floppies
+# in img/ plus work/extracted:
+#   python work/build_dos_hdd.py       -> img/uw2.hdd (+ .geom.json)
+# See analysis/qemu-boot.md.
+img/uw2.hdd
+img/uw2.hdd.geom.json
+
+# Python junk
+__pycache__/
+*.pyc
+
+# uw2reasm.py output -- 29 MB of generated NASM source, listing and the
+# reassembled binary, all rebuilt by:
+#   python work/reasm/uw2reasm.py
+work/reasm/out/
+
+# agent/tool scratch -- disassembly and analysis working dirs, regenerable
+work/tmp/
+work/tmpagent/
+
+# Falcon target build outputs
+build/
+obj/
+release/
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+/*-dbg.txt
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

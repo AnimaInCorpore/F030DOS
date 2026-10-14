@@ -1,0 +1,46 @@
+# Build artefacts
+build/
+release/
+*.o
+*.lst
+hatari.log
+__pycache__/
+*.pyc
+
+# The original game and everything derived from it.
+#
+# This repository deliberately contains NO game data from Ocean / Digital Image
+# Design - neither the originals nor extracted, decompressed or rendered
+# versions of them. Users bring their own copy; see the README.
+assets/
+re/resources/
+re/unpacked/
+re/listings/
+
+# Hatari-Laufzeitartefakte im release-Verzeichnis
+*.ini
+*-dbg.txt
+frame.bin
+
+# DOS oracle (docs/DOS-ORACLE.md): the built disk image embeds the game, and the
+# img/ tree holds the genuine MS-DOS 6.22 floppies. Neither belongs in the repo
+# under the no-game-data rule above; both are rebuilt by
+#   python tools/dos/build_dos_hdd.py
+img/
+build/img_build/
+build/qemu_out/
+
+# Tool scratch
+.pi/
+
+# Scratch captures and debug dumps that the emulator and capture helpers
+# drop beside the sources. Anchored at the root: committed images live in
+# subdirectories, which the leading / does not reach.
+/*.png
+/*.ppm
+/hatari.out.txt
+/hatari.err.txt
+
+# Finder metadata, from the macOS side of the toolchain. Unanchored: these
+# appear in whatever directory was browsed, not just the root.
+.DS_Store

@@ -1,0 +1,10 @@
+# Evidence-carrying disassembly seeds for DATA/ENG/LANDS.EXE.
+#
+# The MZ entry is the only initial linear seed justified by the container
+# audit: file 0x2800 / CS:IP 0000:0000. Add indirect targets only with a
+# measured caller, relocation, runtime EIP, or other evidence, and cite it.
+
+# Direct startup edge measured in DATA/ENG/LANDS.EXE:
+# file 0xE0AB contains 9A 06 00 37 08, a far call to 0837:0006 / file 0xAB76
+# (_Main_Program). Its first resource calls are documented in
+# analysis/resource-loading.md.

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ultima Underworld II</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    body {
+      display: grid;
+      place-items: center;
+    }
+    #game-canvas {
+      display: block;
+      width: min(100vw, 160vh);
+      height: min(62.5vw, 100vh);
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      background: #000;
+      outline: none;
+      cursor: none;
+      touch-action: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game-canvas" width="320" height="200" tabindex="0" autofocus aria-label="Ultima Underworld II game screen"></canvas>
+  <script src="uw2-fs.js?v=20260825-canvas3"></script>
+  <script src="uw2-cutscene.js?v=20260825-canvas3"></script>
+  <script src="uw2-reference.js?v=20260825-canvas3"></script>
+  <script src="uw2-input.js?v=20260825-canvas3"></script>
+  <script src="uw2-game.js?v=20260825-canvas3"></script>
+</body>
+</html>
