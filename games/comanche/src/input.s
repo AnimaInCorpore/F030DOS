@@ -180,7 +180,8 @@ ikbd_handler
         rte
 
 ; Decode one raw IKBD scan code in d0 into the key array and the edge events.
-; DOS: 00001900-00001921 array maintenance; 00019988/00019BEF collective keys.
+; DOS: 00001900-00001921 array maintenance; 00001BA6-00001BE6 collective
+; steps; 00019988/00019BEF collective keys.
 ; DOS symbol: inside sub_000018E9
 ; Record: analysis/functions/falcon-attract.md#frame-driver
 ; Port: maintains the recovered key array and the two collective notch keys.
@@ -241,8 +242,26 @@ process_scan
         move.l  (sp)+,d2
         bset    #15,input_pending               ; DOS attract exits on any key
 
-        ; The collective is a two-position notch on the keyboard device, set
-        ; by these two keys and read back through (notch & $F0) + 5.
+        ; 00001BA6-00001BE6, in the key interrupt itself: six makes step the
+        ; collective notch by 0x10. D, keypad + and = take it down while it is
+        ; at least 0x10; E, keypad - and - take it up while it is below 0xE6.
+        ; The DOS tests PC scancodes 0x20/0x4E/0x0D and 0x12/0x4A/0x0C, and
+        ; the ST's codes for those six keys are the same numbers.
+        cmpi.w  #$20,d1                         ; 00001BA6 D
+        beq     .notch_down
+        cmpi.w  #$4e,d1                         ; 00001BAB keypad +
+        beq     .notch_down
+        cmpi.w  #$0d,d1                         ; 00001BB0 =
+        beq     .notch_down
+        cmpi.w  #$12,d1                         ; 00001BC7 E
+        beq     .notch_up
+        cmpi.w  #$4a,d1                         ; 00001BCC keypad -
+        beq     .notch_up
+        cmpi.w  #$0c,d1                         ; 00001BD1 -
+        beq     .notch_up
+
+        ; The collective is a notch on the keyboard device, read back through
+        ; (notch & $F0) + 5; these two command keys set it outright.
         cmpi.w  #KEY_KPSTAR,d1
         beq     .notch_high
         cmpi.w  #KEY_A,d1
@@ -267,23 +286,38 @@ process_scan
         beq     .dir_down
         bra     .done
 
+        ; BSET on memory is a byte operation numbered within the byte at the
+        ; address, and a word's first byte is its HIGH one: bits 13-15 above
+        ; land where they are meant to by that rule, bits 0-3 need the low
+        ; byte. Written to input_pending itself they became bits 8-11, which
+        ; nothing reads, and the options bar could not be stepped at all.
 .dir_left
-        bset    #0,input_pending
+        bset    #0,input_pending+1
         bra     .done
 .dir_right
-        bset    #1,input_pending
+        bset    #1,input_pending+1
         bra     .done
 .dir_up
-        bset    #2,input_pending
+        bset    #2,input_pending+1
         bra     .done
 .dir_down
-        bset    #3,input_pending
+        bset    #3,input_pending+1
         bra     .done
 
 .release
         st      0(a0,d1.w)                      ; $FF, as the DOS ISR writes
         bra     .done
 
+.notch_down
+        cmpi.b  #$10,input_notch                ; 00001BB5
+        bcs     .done                           ; 00001BBC jb
+        subi.b  #$10,input_notch                ; 00001BBE
+        bra     .done
+.notch_up
+        cmpi.b  #$e6,input_notch                ; 00001BD6
+        bcc     .done                           ; 00001BDD jae
+        addi.b  #$10,input_notch                ; 00001BDF
+        bra     .done
 .notch_high
         move.b  #$20,input_notch                ; DOS 0001998C
         bra     .done

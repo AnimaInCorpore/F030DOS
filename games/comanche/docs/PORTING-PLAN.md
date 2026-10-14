@@ -36,6 +36,35 @@ Falcon CPU paths exercise that route; DSP acceleration is a later
 optimization workstream governed by `../PORTING.md`; it must not get ahead of
 recovering and validating the game itself.
 
+## Three live-play faults a playing bot found (2026-10-14)
+
+A rule-based pilot (state read through Hatari's debugger, real IKBD key
+events on the control FIFO) flew mission 1 and found three faults the
+attract replay can never reach, all fixed:
+
+* **No live mission could take off.** `game_init` cleared the altitude.
+  `0000694D-00006971` sets it to byte(2h + 6), held at 0xFF, over the start
+  cell after the objects are placed - five above the terrain follow's
+  reference byte(2h + 1). At zero the follow only popped the altitude up to
+  that reference and the frame's averaging (`000194E0`) took it back, so the
+  collective could never lift the helicopter. The original, run in QEMU
+  (`work/trace_mission_idle.py`), starts mission 1 at altitude 6; the fixed
+  port does too.
+* **The keyboard collective had two positions.** The key interrupt's own
+  `00001BA6-00001BE6` steps the notch by 0x10 - D, keypad + and = down, E,
+  keypad - and - up, below 0xE6 - and was not ported; only the keypad-*/A
+  presets were. Without it the highest keyboard clearance was 37 and a
+  player could not fly over the hills at speed.
+* **The options bar could not be stepped.** `process_scan` set the four
+  direction edges with `BSET #n,input_pending`, a byte operation on the
+  word's high byte, so they landed in bits 8-11 where nothing reads them.
+  Esc, Return and the any-key bit (13-15) are high-byte bits and worked.
+
+The same probe answers a fidelity question the bot raised: the patrol in
+"Werewolves on Patrol" ignores a helicopter on its pad in both the original
+and the port, and destroys a hovering one - in the original at frames
+540-1220 of a 1,500-frame hover. The difficulty is the game's, not the port's.
+
 ## The 68060 image made playable (2026-10-14)
 
 The full route - menus, briefing, live flight, damage, debrief - runs on the

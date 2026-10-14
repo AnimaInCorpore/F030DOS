@@ -212,7 +212,7 @@ console_init
 console_palette_remap
         lea     console_source_palette,a0
         lea     console_palette,a1
-        bsr     resource_palette_remap
+        jsr     resource_palette_remap
         tst.w   console_cache_ready
         beq.s   .out
         bsr     console_build_cache

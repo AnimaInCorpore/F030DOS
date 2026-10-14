@@ -6,7 +6,7 @@
    "repository": "F030Comanche",
    "origin": "git@github.com:AnimaInCorpore/F030Comanche.git",
    "directory": "games/comanche",
-   "source_commit": "a3a010d7f046c912b850a34533f04251e0c0ba24"
+   "source_commit": "20a37840da2dbc934b8f8ee213fb958e3686ac90"
   },
   "f29": {
    "repository": "F030F29",
@@ -282,9 +282,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "3a40521fabf5219134743d13097fb8e0b19050fe",
-   "bytes": 186689,
-   "sha256": "a2350ebbce6d8148b515f80a1675250ba9d1c6a3563abd5d47e59167b96ff07e"
+   "git_object": "e3d0a36209a15c220c10d17280fd1ec1d2bf4de5",
+   "bytes": 188403,
+   "sha256": "742f87c1e0b30e032c019073187f20a8fabe6fe5cf0b3210c2686faf5fb4d4e5"
   },
   {
    "path": "games/comanche/docs/RE-WORKFLOW.md",
@@ -786,9 +786,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "93f0931f88048ffc10af546b9effd9d7a748bde3",
+   "git_object": "3d524e01a75fa96fe0725f6354d08ca35b71e8ed",
    "bytes": 18650,
-   "sha256": "73a43b6fe7023850977783ef76ec92c48797149947ca7489c0e29310d48b3da2"
+   "sha256": "56f70f6f4b17268da38c386cb634b05391317e153795d91d730dbc40c07a0118"
   },
   {
    "path": "games/comanche/src/cpu.s",
@@ -867,9 +867,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "d5480f55adf2372c7bd0efab154664ff2213099d",
-   "bytes": 20046,
-   "sha256": "54b8ece7653e4c994202699ee93b83018be96612d84561805eef0693c55317bf"
+   "git_object": "99ed3561f573d54053c0435cbf915a1e894f5165",
+   "bytes": 21361,
+   "sha256": "6173931e53fdb0cd2197200b2eb136ec8dd295dabefe3d84b94dc605363df9b8"
   },
   {
    "path": "games/comanche/src/hud.s",
@@ -948,9 +948,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "cba57e63c28ceee0d2745d68dc463c7db46e083c",
-   "bytes": 14774,
-   "sha256": "8f84bccd0c3a4a644eb0ceb17f7f41bb24cb7260a68245a3f04439b6f5355f90"
+   "git_object": "591f93d5d0bded4967b3283674beac82cbed85e7",
+   "bytes": 16547,
+   "sha256": "caca48eb2bd4a190e3db07053fcd896df328c305a51bdc5063eddcb20bcda003"
   },
   {
    "path": "games/comanche/src/krl.s",
@@ -5712,6 +5712,15 @@
    "git_object": "9c023f84384b93d34521d00b04bb6d943ff5ebd1",
    "bytes": 4589,
    "sha256": "2573a4c5ba31a953538c980338212b286f46bb6ddc611d50e3d87ec9dee8a8d4"
+  },
+  {
+   "path": "games/comanche/work/trace_mission_idle.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "8c3d378312908ceed56bf2a5218ba523497da917",
+   "bytes": 6353,
+   "sha256": "cfe09de80dd46daf8b2e3c823040f685b66c4e5886723a1125a5312044b41072"
   },
   {
    "path": "games/comanche/work/trace_mission_live.py",

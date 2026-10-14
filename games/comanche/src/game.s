@@ -9,7 +9,7 @@
 
         global  game_init, game_tick
         xref    object_launch_flare, object_launch_chaff, weapon_fire_rocket
-        xref    flight_menu_silence, flight_rotor
+        xref    flight_menu_silence, flight_rotor, original_height_map
         xref    mfd_zoom, menu_settings, key_state, input_notch, key_queue, menu_bar_text
         global  player_x, player_y, player_heading, player_altitude
         global  exit_requested, input_pending
@@ -19,7 +19,8 @@
 
 ; DOS: flat 000290C6-00029359 (mission scalar parser) and 000063A7-000063F6,
 ; the mission-start block that zeroes the rates and triggers, seeds the
-; console page and the speed ceiling, and calls 00015AD9.
+; console page and the speed ceiling, and calls 00015AD9; 0000694D-00006971,
+; the start altitude over the terrain.
 ; DOS symbol: loc_000290C6
 ; Record: analysis/functions/falcon-attract.md#replay-flight
 ; Port: copies the parsed mission start tuple into the Falcon flight boundary.
@@ -39,7 +40,6 @@ game_init
         move.l  mission_start_x,player_x
         move.l  mission_start_y,player_y
         move.w  mission_start_heading,player_heading
-        clr.b   player_altitude                ; DEMO playback overwrites this
         ; Seed the flight integration from the same start: 16.16 up to its
         ; 10.22, the port heading back onto the DOS 512-step angle.
         move.l  player_x,d0
@@ -48,6 +48,29 @@ game_init
         move.l  player_y,d0
         asl.l   #6,d0
         move.l  d0,flt_y
+        ; 0000694D-00006971, after the objects are placed: the altitude starts
+        ; at byte(2h + 6), held at 0xFF, over the map byte under the start
+        ; cell - five above the terrain follow's reference byte(2h + 1), so
+        ; the flight tick sees clearance and the collective can lift off. This
+        ; used to be zero, below every pad: the follow then only ever popped
+        ; the altitude up to the reference and the frame's averaging took it
+        ; back, and a live mission could not leave the ground.
+        move.l  flt_y,d0
+        moveq   #22,d1
+        lsr.l   d1,d0                           ; 00006954 shld ebx,[19CD8],10
+        lsl.l   #8,d0
+        lsl.l   #MAP_SHIFT-8,d0
+        move.l  flt_x,d2
+        lsr.l   d1,d2                           ; 0000695D shld ebx,[19CD4],10
+        add.l   d2,d0
+        lea     original_height_map,a0          ; 00006961 + [00019E6C]
+        move.b  0(a0,d0.l),d0                   ; 00006967
+        add.b   d0,d0                           ; 00006969 shl al,1
+        addq.b  #6,d0                           ; 0000696B add al,6
+        bcc.s   .start_alt                      ; 0000696D jae
+        st      d0                              ; 0000696F mov al,0xFF
+.start_alt
+        move.b  d0,player_altitude              ; 00006971 [00019DFC]
         moveq   #0,d0
         move.w  player_heading,d0
         neg.w   d0
