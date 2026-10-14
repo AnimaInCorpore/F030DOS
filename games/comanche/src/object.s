@@ -2593,7 +2593,7 @@ object_view_transform
 ; Route: analysis/functions/falcon-attract.md#object-pass.
 ; Status: ported; the same far-to-near order is reached by the traced attract pass.
 object_depth_sort
-        movem.l d0-d7/a0-a2,-(sp)
+        movem.l d0-d7/a0-a4,-(sp)
         ; 00024B77 fills the identity 1..130 - inside the transform loop, at
         ; the join point both the active and the skipped path reach - and
         ; 00024B81 sorts all 130. This used to compact the array to the active
@@ -2628,49 +2628,108 @@ object_depth_sort
         subq.w  #1,d7
         bne     .fill
 
+        ; Which position each pass picks is fixed by 00024B81's scan: the
+        ; deepest key among positions 0..d7, and on a tie the LOWEST position
+        ; (the scan runs downward and an equal key displaces the incumbent).
+        ; The pick is then exchanged with position d7. That rule is all the
+        ; order depends on, so it is found here from the maxima of eight-slot
+        ; blocks - each block keeps its deepest key and that key's lowest
+        ; position - rather than by rescanning every position on every pass.
+        ; A pass compares the block maxima and refreshes only the two blocks
+        ; its exchange touched. Same picks, same exchanges, same order.
         lea     object_order,a2
         lea     object_depth_key,a1
-        move.w  #OBJ_COUNT,d7
-        subq.w  #1,d7                           ; last index to place
+        lea     sort_block_key,a3
+        lea     sort_block_pos,a4
+        move.w  #OBJ_COUNT-1,d7                 ; last index to place
         ble     .sorted                         ; nothing, or one, to order
+        moveq   #0,d0
+.init
+        move.w  d7,d1
+        bsr     .block
+        addq.w  #1,d0
+        cmpi.w  #SORT_BLOCKS,d0
+        blo.s   .init
 .pass
-        move.w  d7,d6                           ; best position so far
-        move.w  d7,d5
-        add.w   d5,d5
-        add.w   d5,d5
-        move.l  0(a1,d5.w),d4                   ; best depth so far
+        ; The deepest block maximum among blocks 0..d7/8. Blocks are taken
+        ; in position order and only a strictly deeper one replaces the
+        ; incumbent, so a tie keeps the lower block - the lower position.
         move.w  d7,d3
-.scan
-        subq.w  #1,d3
-        bmi     .place
-        move.w  d3,d5
-        add.w   d5,d5
-        add.w   d5,d5
-        move.l  0(a1,d5.w),d0
+        lsr.w   #3,d3                           ; blocks after block 0
+        move.l  (a3),d4
+        moveq   #0,d5
+        moveq   #0,d2
+        bra.s   .bnext
+.bscan
+        addq.w  #1,d2
+        move.l  0(a3,d2.w*4),d0
         cmp.l   d4,d0
-        blt     .scan
+        ble.s   .bnext
         move.l  d0,d4
-        move.w  d3,d6
-        bra     .scan
+        move.w  d2,d5
+.bnext
+        dbra    d3,.bscan
+        move.w  0(a4,d5.w*2),d6                 ; the pick's position
 .place
-        move.w  d7,d0
-        add.w   d0,d0
-        move.w  d6,d1
-        add.w   d1,d1
-        move.w  0(a2,d0.w),d2
-        move.w  0(a2,d1.w),d5
-        move.w  d5,0(a2,d0.w)
-        move.w  d2,0(a2,d1.w)
-        add.w   d0,d0                           ; the same two positions again,
-        add.w   d1,d1                           ; as longword offsets
-        move.l  0(a1,d0.w),d2
-        move.l  0(a1,d1.w),d5
-        move.l  d5,0(a1,d0.w)
-        move.l  d2,0(a1,d1.w)
+        move.l  0(a1,d6.w*4),d0                 ; exchange it with position d7
+        move.l  0(a1,d7.w*4),0(a1,d6.w*4)
+        move.l  d0,0(a1,d7.w*4)
+        move.w  0(a2,d6.w*2),d0
+        move.w  0(a2,d7.w*2),0(a2,d6.w*2)
+        move.w  d0,0(a2,d7.w*2)
         subq.w  #1,d7
-        bne     .pass
+        beq.s   .sorted
+        ; The blocks the exchange changed, now over positions 0..d7: d7's
+        ; own (the placed slot has left it), and the pick's if that is
+        ; another block and the pick was not the placed slot itself.
+        move.w  d7,d0
+        lsr.w   #3,d0
+        move.w  d7,d1
+        bsr.s   .block
+        move.w  d6,d1
+        lsr.w   #3,d1
+        cmp.w   d0,d1
+        beq.s   .pass
+        cmp.w   d7,d6
+        bhi.s   .pass                           ; the pick was position d7 + 1
+        move.w  d1,d0
+        move.w  d7,d1
+        bsr.s   .block
+        bra.s   .pass
+
+; Block d0's deepest key over its positions up to d1, and the lowest position
+; holding it: a strictly deeper key replaces, scanning upward. Clobbers d0-d3
+; and a0; the block is never empty here.
+.block
+        movem.l d4-d5,-(sp)
+        move.w  d0,d2
+        lsl.w   #3,d2                           ; the block's first position
+        move.w  d2,d3
+        addq.w  #7,d3
+        cmp.w   d1,d3
+        ble.s   .block_end
+        move.w  d1,d3                           ; its last live position
+.block_end
+        sub.w   d2,d3                           ; positions after the first
+        lea     0(a1,d2.w*4),a0
+        move.l  (a0)+,d4
+        move.w  d2,d5
+        bra.s   .block_next
+.block_scan
+        addq.w  #1,d2
+        move.l  (a0)+,d1
+        cmp.l   d4,d1
+        ble.s   .block_next
+        move.l  d1,d4
+        move.w  d2,d5
+.block_next
+        dbra    d3,.block_scan
+        move.l  d4,0(a3,d0.w*4)
+        move.w  d5,0(a4,d0.w*2)
+        movem.l (sp)+,d4-d5
+        rts
 .sorted
-        movem.l (sp)+,d0-d7/a0-a2
+        movem.l (sp)+,d0-d7/a0-a4
         rts
 
 
@@ -5186,6 +5245,14 @@ object_order
 ; that routine reads it.
 object_depth_key
         ds.l    OBJ_COUNT
+        even
+; object_depth_sort's eight-slot blocks: each one's deepest key and the
+; lowest position holding it.
+SORT_BLOCKS     = (OBJ_COUNT+7)/8
+sort_block_key
+        ds.l    SORT_BLOCKS
+sort_block_pos
+        ds.w    SORT_BLOCKS
         even
 player_hit_flag
         ds.w    1

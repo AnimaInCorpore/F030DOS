@@ -37,11 +37,16 @@ def main():
                 'b pc = demo_start :trace :once :file timing-seed.ini\n'
                 'b pc = flight_tick :trace :once :file timing-axis.ini\n'
                 'b pc = render_clear :trace :once :file timing-render.ini\n'
-                'b pc = exc_report :once :file timing-failed.ini\n'
-                f'b VBL = {vbl_limit-1} :once :file timing-failed.ini\n')
+                'b pc = exc_report :trace :once :file timing-failed.ini\n'
+                f'b VBL = {vbl_limit-1} :trace :once :file timing-failed.ini\n')
     if args.even_pass:
         commands += 'w attract_pass 0 1\n'
-    support.entry_breakpoint(out, 'comanche_d.tos', commands)
+    # GEMDOS resolves the long name comanche_d.tos to the stripped
+    # COMANCHE.TOS, which has no symbols to break on: run the symbol build
+    # under an 8.3 name of its own.
+    program = 'CMN_D.TOS'
+    shutil.copy(out / 'comanche_d.tos', out / program)
+    support.entry_breakpoint(out, program, commands)
     (out / 'timing-sample.ini').write_text('m b attract_active 10\n')
     (out / 'timing-seed.ini').write_text(
         'b pc = flight_reset :trace :once :file timing-header.ini\n')
@@ -51,7 +56,7 @@ def main():
         'savebin timing-altitude.bin player_altitude $1\n')
     (out / 'timing-axis.ini').write_text('savebin timing-axis.bin flt_axis1 $4\n')
     (out / 'timing-render.ini').write_text(
-        'b pc = publish_screen :once :file timing-done.ini\n')
+        'b pc = publish_screen :trace :once :file timing-done.ini\n')
     (out / 'timing-failed.ini').write_text('r\nd pc 8\nm exc_pc 4\nquit\n')
     (out / 'timing-done.ini').write_text(
         'savebin timing-final.bin attract_active $a\n'
@@ -66,7 +71,7 @@ def main():
         (out / name).unlink(missing_ok=True)
         if artifact != out:
             (artifact / name).unlink(missing_ok=True)
-    command = support.emulator_command(out, args.cpu, 'comanche_d.tos', 'boot.ini')
+    command = support.emulator_command(out, args.cpu, program, 'boot.ini')
     command[command.index('--run-vbls') + 1] = str(vbl_limit)
     (out / 'timing-command.json').write_text(json.dumps(command, indent=2) + '\n')
     support.run(command, out, out / 'timing.log', timeout=480)

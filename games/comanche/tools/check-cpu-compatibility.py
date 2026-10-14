@@ -42,10 +42,14 @@ def emulator_command(out, cpu, program, script):
 
 
 def entry_breakpoint(out, program, commands):
+    # Symbols are taken by Hatari's exec-time autoload: the F030Arcade Hatari
+    # rejects an explicit `symbols <file>` at the TEXT breakpoint ("program
+    # TEXT address invalid"), which left the test unarmed and no dump written.
     (out / 'boot.ini').write_text(
+        'symbols autoload exec\n'
         'b GemdosOpcode = $4b && OsCallParam = 0 :trace :once :file program.ini\n')
     (out / 'program.ini').write_text('b pc = TEXT :trace :once :file arm.ini\n')
-    (out / 'arm.ini').write_text(f'symbols {program}\n' + commands)
+    (out / 'arm.ini').write_text(commands)
 
 
 def main():
@@ -143,7 +147,7 @@ products
         run([vlink, str(out / 'test.o'), str(out / 'cpu.o'), '-q', '-Rstd',
              '-b', 'ataritos', '-e', '_main', '-o', str(out / 'check.tos')],
             ROOT, out / 'link.log')
-        entry_breakpoint(out, 'check.tos', 'b pc = test_done :once :file done.ini\n')
+        entry_breakpoint(out, 'check.tos', 'b pc = test_done :trace :once :file done.ini\n')
         (out / 'done.ini').write_text(
             f'savebin products.bin products ${len(expected):x}\n'
             'savebin status.bin test_status $2\nquit\n')

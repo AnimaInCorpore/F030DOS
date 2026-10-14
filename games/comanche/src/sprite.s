@@ -470,7 +470,7 @@ sprite_bank_load_raw
 ; there, wrapping at the bank's end. 512 strips is one revolution. Keeping
 ; 320 of them is what made the sky a painted backdrop that stayed put while
 ; the helicopter turned.
-        global  sky_init, sky_select_family, sky_status, sky_bank, sky_palette, sky_image
+        global  sky_init, sky_select_family, sky_status, sky_bank, sky_palette, sky_image, sky_rgb
 ; DOS: flat 00016EC0-00017579, backdrop resource initialization boundary.
 ; DOS symbol: inside sub_00016E41
 ; Record: analysis/functions/falcon-attract.md#resources
@@ -521,9 +521,43 @@ sky_select_family
         bsr     sky_palette_build
         tst.l   d0
         bne     .none
+        bsr     sky_rgb_build
         clr.w   sky_status
 .none
         movem.l (sp)+,d0-d2/a0-a2
+        rts
+
+; The backdrop as render_clear draws it: every strip pixel already through
+; sky_palette and doubled into the RGB565 longword of its two Falcon pixels,
+; one strip after another (column-major), so the fill reads a column with
+; (a1)+. Built once here, where the image and its palette are both final;
+; nothing changes either until the next family is selected.
+; DOS: N/A - platform replacement; a lookup the backdrop fill (00017230)
+;   performs per pixel, done once per load.
+; Record: analysis/functions/falcon-attract.md#terrain-renderer
+; Kind: replaced.
+; Status: ported; render_clear's output is unchanged.
+sky_rgb_build
+        movem.l d0-d3/a0-a3,-(sp)
+        lea     sky_image,a0
+        lea     sky_palette,a2
+        lea     sky_rgb,a1
+        move.w  #SKY_STRIPS-1,d1
+.strip
+        move.l  a0,a3
+        move.w  #SKY_IMAGE_ROWS-1,d2
+.row
+        moveq   #0,d0
+        move.b  (a3),d0
+        move.w  0(a2,d0.w*2),d3
+        swap    d3
+        move.w  0(a2,d0.w*2),d3
+        move.l  d3,(a1)+
+        lea     SKY_STRIPS(a3),a3
+        dbra    d2,.row
+        addq.l  #1,a0
+        dbra    d1,.strip
+        movem.l (sp)+,d0-d3/a0-a3
         rts
 
 ; SKY*.RLE carries its own source palette, but it is not the framebuffer's
@@ -2241,6 +2275,11 @@ sky_image
 ; SKY2.RLE's own palette as RGB565 - see sky_palette_build.
 sky_palette
         ds.w    256
+; sky_image through sky_palette, a doubled pixel a longword, strip-major -
+; see sky_rgb_build.
+        even
+sky_rgb
+        ds.l    SKY_STRIPS*SKY_IMAGE_ROWS
 
 sprite_bank
         ds.b    BANK_BYTES

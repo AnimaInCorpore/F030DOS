@@ -27,7 +27,7 @@
         xref    flt_collective, flt_torque, flt_fuel, flt_pitch
         xref    mfd_draw_target_view
         xref    backdrop_dy
-        xref    ring_mul_q31_raw
+        xref    ring_mul_q31_raw, ring_maprow, MAP_COLOUR_DELTA
         xref    weapon_ammo, mission_chaff, mission_flare
         global  mfd_draw_labels
         global  mfd_page_left, mfd_page_right
@@ -575,7 +575,7 @@ mfd_draw_map
         move.w  mfd_body_offset,d0              ; 0001585B + [0x19CA8]
         add.w   d0,d0
         adda.w  d0,a0
-        lea     original_colour_map,a3
+        lea     ring_maprow,a3                  ; each map row's address
         lea     flight_palette,a4
         move.w  #MFD_H-1,d7
 .row
@@ -584,22 +584,16 @@ mfd_draw_map
         move.l  d5,a2                           ; and Y
         move.w  #MFD_W-1,d6
 .pixel
+        ; 0001592A's shld pair: Y's top ten bits pick the row, X's the byte
+        ; in it - the marcher's TERRAIN_SAMPLE read, of the colour map.
         move.l  a2,d0
-        moveq   #22,d1
-        lsr.l   d1,d0
-        andi.l  #MAP_MASK,d0
-        lsl.l   #8,d0
-        lsl.l   #MAP_SHIFT-8,d0
+        bfextu  d0{0:10},d0                     ; Y cell
+        movea.l (a3,d0.w*4),a6                  ; its row (height map)
         move.l  a1,d1
-        lsr.l   #8,d1
-        lsr.l   #8,d1
-        lsr.l   #6,d1
-        andi.l  #MAP_MASK,d1
-        add.l   d1,d0                           ; 0001592A shld pair
-        moveq   #0,d1
-        move.b  0(a3,d0.l),d1                   ; the colour-map byte
-        add.w   d1,d1
-        move.w  0(a4,d1.w),(a5)+
+        bfextu  d1{0:10},d1                     ; X cell
+        moveq   #0,d0
+        move.b  (MAP_COLOUR_DELTA.l,a6,d1.w),d0 ; the colour-map byte
+        move.w  0(a4,d0.w*2),(a5)+
         add.l   d2,a1                           ; per pixel
         add.l   d3,a2
         dbra    d6,.pixel

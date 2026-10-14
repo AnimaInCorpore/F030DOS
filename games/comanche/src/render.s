@@ -42,7 +42,7 @@ SKY_STRIP_STEP = 65536                         ; one 16.16 strip per column
 
         global  render_ring_occlusion
         global  render_scene, render_background, render_reset_surface
-        xref    flt_crash_drop, console_draw_rows
+        xref    flt_crash_drop, console_draw_rows, sky_rgb
         global  render_copy_surface, render_restore_history
         global  render_store_history, render_history_console, terrain_history
         global  sin_table
@@ -51,7 +51,7 @@ SKY_STRIP_STEP = 65536                         ; one 16.16 strip per column
         global  original_height_map
         global  original_colour_map
         global  backdrop_build
-        global  ring_z_table, ring_page_table, ring_b_table
+        global  ring_z_table, ring_page_table, ring_b_table, ring_page2_table
         global  ring_a_table, ring_invz_table, ring_horizon_table
         global  horizon_table
         global  ring_silhouette, render_page_anchor
@@ -62,6 +62,7 @@ SKY_STRIP_STEP = 65536                         ; one 16.16 strip per column
         global  mfd_view_sin, mfd_view_cos
         global  ring_mul_q31_raw, sine_q31
         global  terrain_lowres, sky_enabled
+        global  ring_maprow, MAP_COLOUR_DELTA
 
 ; The surface is 192 source columns wide and the window shows 160 of them
 ; (16..175), but 00007AA0's row shear reads real columns on either side of it.
@@ -485,11 +486,14 @@ render_clear
         beq     .sky_h_ok
         move.w  -4(a3),d4
 .sky_h_ok
-        lea     sky_image,a1
+        ; sky_rgb holds each strip's 150 pixels in a run, already through
+        ; sky_palette and doubled into the column's two Falcon pixels.
+        lea     sky_rgb,a1
         move.l  sky_strip_cursor,d0
         swap    d0
         andi.w  #SKY_STRIPS-1,d0                ; the bank wraps at 512
-        adda.w  d0,a1                           ; this column's strip, row 0
+        mulu    #SKY_IMAGE_ROWS*4,d0
+        adda.l  d0,a1                           ; this column's strip, row 0
 
         ; The DOS viewport fill runs before the sourced strip.  It is not only
         ; the ground below the sky: it also owns rows above a positively
@@ -539,7 +543,7 @@ render_clear
         cmp.w   d7,d0
         bge     .rows_done
         sub.w   d0,d7
-        mulu    #SKY_STRIPS,d0
+        mulu    #4,d0
         adda.l  d0,a1                           ; start further down the strip
 .no_skip
         move.w  d4,d0
@@ -555,10 +559,7 @@ render_clear
 .rows_ok
         subq.w  #1,d7
 .sky_rows
-        move.b  (a1),d1
-        move.w  0(a2,d1.w*2),(a0)
-        move.w  0(a2,d1.w*2),2(a0)
-        adda.w  #SKY_STRIPS,a1
+        move.l  (a1)+,(a0)                      ; the strip byte's pixel pair
         adda.w  #SCREEN_WIDTH*2,a0
         dbra    d7,.sky_rows
 .rows_done
@@ -610,20 +611,18 @@ render_clear
         move.w  d2,d3
         mulu    #SCREEN_STRIDE,d3
         adda.l  d3,a0
-        lea     sky_image,a1
+        lea     sky_rgb,a1
         move.l  sky_strip_cursor,d3
         swap    d3
         andi.w  #SKY_STRIPS-1,d3
-        adda.w  d3,a1
-        mulu    #SKY_STRIPS,d1
+        mulu    #SKY_IMAGE_ROWS*4,d3
+        adda.l  d3,a1
+        mulu    #4,d1
         adda.l  d1,a1
         move.w  d0,d7
         subq.w  #1,d7
 .wrap_rows
-        move.b  (a1),d1
-        move.w  0(a2,d1.w*2),(a0)
-        move.w  0(a2,d1.w*2),2(a0)
-        adda.w  #SKY_STRIPS,a1
+        move.l  (a1)+,(a0)
         adda.w  #SCREEN_WIDTH*2,a0
         dbra    d7,.wrap_rows
 .wrap_done
@@ -1137,32 +1136,36 @@ render_horizon_for_depth
 ; One sample of the ring walk: 0000D9E9-0000D9F9.
 ; In:  d5/d6 the 10.22 position, d4 the page index bias, a0 the
 ;      ring's page, a4 the height map.
-; Out: d0 = the map index, d2.b = the page row.
+; Out: d0 = the X cell, a5 = the height map's row for the Y cell (together
+;   the map index), d2.b = the page row.
 ;
 ; 0000D9EE/0000D9F2's `shld ebx,edx,0xa` / `shld ebx,edi,0xa` put Y's top ten
-; bits above X's top ten. BFEXTU reads those same unsigned ten-bit cells;
-; SWAP then LSR.L #6 puts Y in bits 10..19, and OR.W inserts X in 0..9.
+; bits above X's top ten. BFEXTU reads those same unsigned ten-bit cells; the
+; Y cell selects its 1024-byte row through ring_maprow and the X cell indexes
+; it, which is the same byte as Y*1024 + X without forming the 20-bit index.
 ; 0000D9F6's `add al, gs:[ebx]` is a BYTE add onto the bias, so the
 ; page index wraps exactly as the original's does - on D1, whose heights stop
-; at 187, it cannot fire - and 0000D9F9 looks the row up in the page.
+; at 187, it cannot fire - and 0000D9F9 looks the row up in the page. The add
+; is folded into the address: a0 is this ring's doubled page
+; (ring_page2_table) plus the bias, and page2[bias + h] is page[(bias + h) &
+; 255]. d1's bits 8-15 are kept zero for the index - the sweep clears d1 and
+; TERRAIN_PAINT clears it again when it is done with it.
 TERRAIN_SAMPLE  macro
         ; DOS 0000D9EE/0000D9F2: extract exactly the top ten coordinate bits.
-        bfextu  d6{0:10},d0
-        swap    d0
-        lsr.l   #6,d0                           ; Y cell << 10
-        bfextu  d5{0:10},d1                     ; X cell
-        or.w    d1,d0                           ; the 20-bit map index
-        move.w  d4,d1
-        add.b   (a4,d0.l),d1                    ; bias + height, byte wrap
-        move.b  (a0,d1.w),d2                    ; the page row
+        bfextu  d6{0:10},d0                     ; Y cell
+        movea.l (a4,d0.w*4),a5                  ; its height-map row
+        bfextu  d5{0:10},d0                     ; X cell
+        move.b  (a5,d0.w),d1                    ; the height (d1 bits 8-15 are 0)
+        move.b  (a0,d1.w),d2                    ; the page row at bias + height
         endm
 
 ; A sample that rose above its column's horizon: the emitter block the
 ; original's `ja` reaches, 0000AF50 + 0x30*column (0000F320's for low detail).
 ; \1 is the horizon entry's displacement from a3, \2 the source columns the
 ; sample owns (1, or 2 for low detail's pair).
-; In:  d0 = map index, d2.b = the new page row p, \1(a3) = the old horizon h.
-; Out: the horizon holds p; d3 = 12 and a5 = the colour map again.
+; In:  d0 = X cell, a5 = height-map row, d2.b = the new page row p,
+;      \1(a3) = the old horizon h.
+; Out: the horizon holds p; d0/d1/d3/a5 are scratch.
 ;
 ; The span is [h, p) in page rows - the block starts ch at the OLD horizon,
 ; enters its Duff's device at 256 - (p - h) and stores the new top before
@@ -1196,7 +1199,7 @@ TERRAIN_SAMPLE  macro
 ; Status: ported; certified with the marcher - see render_terrain_ring.
 TERRAIN_PAINT   macro
         moveq   #0,d3
-        move.b  (a5,d0.l),d3                    ; colour byte, same map index
+        move.b  MAP_COLOUR_DELTA(a5,d0.w),d3    ; colour byte, same map index
         move.l  (a6,d3.w*4),d0                  ; its RGB565 pair
         moveq   #0,d1
         move.b  \1(a3),d1                       ; h
@@ -1230,8 +1233,7 @@ TERRAIN_PAINT   macro
         lea     SCREEN_STRIDE(a5),a5
         dbra    d1,.\@row
 .\@done
-        lea     original_colour_map,a5
-        moveq   #12,d3
+        moveq   #0,d1                           ; TERRAIN_SAMPLE's index
         endm
 
 ; The original's marcher, in its own loop order.
@@ -1426,7 +1428,7 @@ render_terrain_ring
         ; reload costs nothing measurable.
         move.l  #ring_a_table,ring_ap
         move.l  #ring_b_table,ring_bp
-        move.l  #ring_page_table,ring_hp
+        move.l  #ring_page2_table,ring_hp
         move.l  #ring_silhouette,ring_silp
         move.w  ring_steps,ring_counter         ; [0x19EE0], whatever .DTL is loaded
         ; The camera in the original's own 10.22, not the published 16.16:
@@ -1445,12 +1447,13 @@ render_terrain_ring
         move.l  (a0)+,d0                        ; B, raw 10.22
         move.l  a0,ring_bp
         move.l  d0,ring_b
-        ; This ring's 256-byte projection page, advanced once per ring.
+        ; This ring's 256-byte projection page, advanced once per ring - in
+        ; its doubled 512-byte form (ring_page2_table, see TERRAIN_SAMPLE).
         ; It replaces the reciprocal and horizon tables together: both were
         ; the two halves of a row this page already holds, precomputed.
         move.l  ring_hp,a0
         move.l  a0,ring_page
-        adda.w  #256,a0
+        adda.w  #512,a0                         ; ring_page2_table: doubled pages
         move.l  a0,ring_hp
 
         ; The ring centre ACCUMULATES. 0000D99A adds the original .DTL A_i
@@ -1496,18 +1499,18 @@ render_terrain_ring
         move.l  d0,ring_lat_y
 
         ; The column loop's registers, for all four sweeps below:
-        ;   d0 map index, d1 page index, d2 page row  (per sample)
-        ;   d3 the constant 12 the index shift uses   (scratch while painting)
+        ;   d0 map X cell, d1 page index, d2 page row (per sample)
+        ;   d3 scratch while painting
         ;   d4 the page index bias, d5/d6 the 10.22 position, d7 the count
         ;   a0 this ring's page, a1/a2 the lateral step, a3 the horizon
-        ;   a4 the height map, a5 the colour map      (scratch while painting)
-        ;   a6 ring_pal32
+        ;   a4 ring_maprow, a5 the sample's height-map row (scratch while
+        ;   painting), a6 ring_pal32
         move.l  ring_page,a0
-        lea     original_height_map,a4
-        lea     original_colour_map,a5
+        adda.w  ring_camh,a0                    ; bias + height indexes the doubled page
+        moveq   #0,d1
+        lea     ring_maprow,a4
         lea     ring_pal32,a6
         move.w  ring_camh,d4
-        moveq   #12,d3
 
         ; Two half-sweeps outward from the centre, which is what the original
         ; does: it pushes the ring's start point at 0000D9B9/0000D9BA, walks 96
@@ -1666,6 +1669,41 @@ render_page_anchor
         dc.w    RING_PAGE_ANCHOR
         even
 
+; The address of each height-map row, for TERRAIN_SAMPLE: row y is
+; original_height_map + y*1024. Relocated by the loader like any other
+; absolute address. In DATA, not TEXT: the older modules reach each other with
+; 16-bit BSRs that 4 KB more of text pushes out of range (and not BSS, for the
+; reason render_page_anchor gives).
+        data
+        cnop    0,4
+ring_maprow
+ring_maprow_y   set     0
+        rept    1024
+        dc.l    original_height_map+ring_maprow_y*1024
+ring_maprow_y   set     ring_maprow_y+1
+        endr
+
+; mfd_march_target_view's archive record for each occlusion byte q: the screen
+; row MFD_VIEW_TOP_ROW - q (0 when that is negative), halved, offset by MFD_Y
+; and held to MFD_Y + MFD_H - the arithmetic the archive loop used to run on
+; every column of every ring. In DATA with ring_maprow.
+        cnop    0,2
+mfd_archive_row
+mfd_archive_q   set     0
+        rept    256
+mfd_archive_r   set     MFD_VIEW_TOP_ROW-mfd_archive_q
+        if      mfd_archive_r<0
+mfd_archive_r   set     0
+        endif
+mfd_archive_r   set     (mfd_archive_r>>1)+MFD_Y
+        if      mfd_archive_r>MFD_Y+MFD_H
+mfd_archive_r   set     MFD_Y+MFD_H
+        endif
+        dc.w    mfd_archive_r
+mfd_archive_q   set     mfd_archive_q+1
+        endr
+
+        text
 ; -q * SCREEN_STRIDE for page rows q = 0..255: a span's top row is page row
 ; p - 1, and its address is the column's page-row-0 address plus this. In
 ; TEXT beside render_page_anchor, for the reason it gives.
@@ -1883,12 +1921,12 @@ mfd_march_target_view
         adda.w  #768,a0
         move.l  a0,mfd_view_hp
 
-        lea     original_height_map,a4
+        lea     ring_maprow,a4
         lea     mfd_view_occl,a3
-        ; The same pair the flight marcher samples through - without these
-        ; the span writer reads whatever the caller left in a5/a6 as a
-        ; colour map and a palette.
-        lea     original_colour_map,a5
+        ; The same maps the flight marcher samples through - the span writer
+        ; reads the colour from the sample's height-map row (a5, set per
+        ; sample) - and the palette, which without this would be whatever
+        ; the caller left in a6.
         lea     flight_palette,a6
         move.w  mfd_view_camh,d4
 
@@ -1926,36 +1964,31 @@ mfd_march_target_view
         ; rings per step; fill the three corresponding Falcon records so an
         ; object using any ring in that interval sees the same recovered
         ; silhouette rather than the final horizon for the whole view.
+        ;
+        ; The records are consecutive: ring R's row ends where R+1's begins.
+        ; This used to step one more record after each row, filling R, R+2
+        ; and R+4 - leaving every 3k+1 ring a step stale and writing ring 250
+        ; past the end of the table - and it added the offset with ADDA.W,
+        ; which sign-extends: from ring 205 on (205 * 160 > 32767) the rows
+        ; went 64 KB back, into terrain_history's persistent console rows.
+        ;
+        ; Each record word is a function of its occlusion byte alone, so it is
+        ; one read of mfd_archive_row (below ring_rowneg), stored three times.
         move.w  mfd_view_ring,d0
         mulu    #MFD_VIEW_COLS*2,d0
         lea     mfd_target_silhouette,a1
-        adda.w  d0,a1
-        moveq   #2,d7
-.target_archive_ring
+        adda.l  d0,a1
         lea     mfd_view_occl,a0
+        lea     mfd_archive_row,a3
         move.w  #MFD_VIEW_COLS-1,d0
 .target_archive_col
         moveq   #0,d1
         move.b  (a0)+,d1
-        move.w  #MFD_VIEW_TOP_ROW,d2
-        sub.w   d1,d2
-        bpl     .target_archive_row
-        moveq   #0,d2
-.target_archive_row
-        lsr.w   #1,d2
-        addi.w  #MFD_Y,d2
-        cmpi.w  #MFD_Y,d2
-        bcc     .target_archive_top_ok
-        move.w  #MFD_Y,d2
-.target_archive_top_ok
-        cmpi.w  #MFD_Y+MFD_H,d2
-        bls     .target_archive_bottom_ok
-        move.w  #MFD_Y+MFD_H,d2
-.target_archive_bottom_ok
-        move.w  d2,(a1)+
+        move.w  0(a3,d1.w*2),d2
+        move.w  d2,MFD_VIEW_COLS*2(a1)          ; ring R+1
+        move.w  d2,MFD_VIEW_COLS*4(a1)          ; ring R+2
+        move.w  d2,(a1)+                        ; ring R
         dbra    d0,.target_archive_col
-        adda.w  #MFD_VIEW_COLS*2,a1
-        dbra    d7,.target_archive_ring
         addq.w  #3,mfd_view_ring
 
         subq.w  #1,mfd_view_counter
@@ -1965,44 +1998,36 @@ mfd_march_target_view
         rts
 
 .half
+        move.l  mfd_view_page,a0
+        move.w  mfd_view_colcount,d7
+        subq.w  #1,d7
 .col
-        ; 0001B338: the same shld pair - Y's ten bits above X's ten.
-        moveq   #22,d1
-        move.l  d5,d0
-        lsr.l   d1,d0
-        move.l  d6,d3
-        lsr.l   d1,d3
-        lsl.l   #8,d3
-        lsl.l   #MAP_SHIFT-8,d3
-        add.l   d3,d0
-        move.l  d0,a0
-        move.l  d0,mfd_view_index               ; kept for the colour below
+        ; 0001B338: the same shld pair - Y's ten bits above X's ten - read
+        ; as the main marcher's TERRAIN_SAMPLE reads it: the Y cell's row
+        ; out of ring_maprow, indexed by the X cell.
+        bfextu  d6{0:10},d0
+        movea.l (a4,d0.w*4),a5                  ; the Y cell's height-map row
+        bfextu  d5{0:10},d0                     ; the X cell, kept for the colour
 
         ; 0001B340/0001B343: height onto the bias in byte arithmetic, then
         ; the page yields the row.
-        moveq   #0,d1
-        move.b  0(a4,a0.l),d1
-        add.w   d4,d1
-        andi.w  #$00ff,d1
-        move.l  mfd_view_page,a0
-        moveq   #0,d0
-        move.b  0(a0,d1.w),d0
+        move.w  d4,d1
+        add.b   (a5,d0.w),d1
+        moveq   #0,d3
+        move.b  0(a0,d1.w),d3
 
         ; 0001B345: strict `ja` against this column's occlusion.
-        moveq   #0,d3
-        move.b  0(a3,d2.w),d3
-        cmp.w   d3,d0
-        bls     .hidden
+        cmp.b   0(a3,d2.w),d3
+        bls.s   .hidden
         bsr     .span
         ; 0001C1B0/0001C1B4: the pair, both entries.
-        move.b  d0,0(a3,d2.w)
-        move.b  d0,1(a3,d2.w)
+        move.b  d3,0(a3,d2.w)
+        move.b  d3,1(a3,d2.w)
 .hidden
         add.l   a1,d5
         add.l   a2,d6
         add.w   mfd_view_colstep,d2
-        subq.w  #1,mfd_view_colcount
-        bne     .col
+        dbra    d7,.col
         rts
 
 ; One column pair of terrain, from the old horizon up to the new one.
@@ -2017,16 +2042,15 @@ mfd_march_target_view
 ;   a span covers page rows [old, new) and the panel samples row 162 - 2r (the
 ;   derivation is in the shared include).
 ;
-; In: d0 = the new page row, d3 = the old one, d2 = the left column of the
-; pair. Everything is preserved.
+; In: d3 = the new page row, 0(a3,d2.w) = the old one, d2 = the left column of
+; the pair, d0 = the X cell and a5 = the height-map row of this step.
+; Everything is preserved.
 .span
-        movem.l d0-d7/a0-a2,-(sp)
+        movem.l d0-d1/d6-d7/a0,-(sp)
         ; The colour at this step, exactly as the main marcher samples it.
-        move.l  mfd_view_index,a0
         moveq   #0,d1
-        move.b  0(a5,a0.l),d1
-        add.w   d1,d1
-        move.w  0(a6,d1.w),d7
+        move.b  MAP_COLOUR_DELTA(a5,d0.w),d1
+        move.w  0(a6,d1.w*2),d7
 
         ; Top of the span, from the new page row - clamped to the top of the
         ; window, not discarded above it. The original writes the whole span
@@ -2041,7 +2065,7 @@ mfd_march_target_view
         ; camera reads page 255 on every ring below about 6, and the panel
         ; stayed black with a marcher that was working.
         move.w  #MFD_VIEW_TOP_ROW,d1
-        sub.w   d0,d1
+        sub.w   d3,d1
         bpl     .top_in_window
         moveq   #0,d1
         bra     .top_ready
@@ -2052,8 +2076,10 @@ mfd_march_target_view
 .top_ready
 
         ; Bottom, from the old page row, clamped to the panel.
+        moveq   #0,d0
+        move.b  0(a3,d2.w),d0
         move.w  #MFD_VIEW_TOP_ROW,d6
-        sub.w   d3,d6
+        sub.w   d0,d6
         bpl     .bottom_positive
         moveq   #0,d6
 .bottom_positive
@@ -2084,7 +2110,7 @@ mfd_march_target_view
         adda.w  #SCREEN_STRIDE,a0
         dbra    d6,.span_row
 .span_out
-        movem.l (sp)+,d0-d7/a0-a2
+        movem.l (sp)+,d0-d1/d6-d7/a0
         rts
 
 ; high32(d0 * d3), with d0 a DOS 10.22 .DTL increment and d3 a Q31 angle.
@@ -2510,6 +2536,8 @@ original_height_map
         even
 original_colour_map
         ds.b    1024*1024
+; TERRAIN_PAINT reads a cell's colour at this distance from its height.
+MAP_COLOUR_DELTA = original_colour_map-original_height_map
         even
 ; Logical copy of the DOS terrain surface. It is updated before object/HUD
 ; composition and restored into whichever Falcon physical buffer is next.
@@ -2582,8 +2610,6 @@ mfd_view_lat_x
         ds.l    1
 mfd_view_lat_y
         ds.l    1
-mfd_view_index
-        ds.l    1
 mfd_view_camh
         ds.w    1
 mfd_view_counter
@@ -2601,6 +2627,11 @@ mfd_view_ring
 ; 00024B17 target pass, with three records per target marcher step.
 mfd_target_silhouette
         ds.w    MFD_VIEW_COLS*RING_STEPS
+        even
+; ring_page_table with every 256-byte page stored twice, for TERRAIN_SAMPLE's
+; unwrapped bias + height index. Built with the pages by dtl_build_pages.
+ring_page2_table
+        ds.b    512*RING_STEPS
         even
 ; The strip the backdrop's left edge sits on this frame, from the heading.
 sky_origin

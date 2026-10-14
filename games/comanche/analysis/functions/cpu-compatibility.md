@@ -87,6 +87,18 @@ cost differ; numerical outputs do not. The 68030 hot path retains its native
 operations. The existing browser Q31/DOS fixtures continue to define the same
 consuming functions; CPU-to-CPU equality alone is not proof against DOS.
 
+## Program placement
+
+The 68060 image is linked with PRG flags 7 (fastload, load into TT-RAM,
+Malloc from TT-RAM); the 68030 image keeps flags 1. An accelerated Falcon's
+ST-RAM sits behind the 16 MHz bus shared with Videl, and the program's 8.3 MB
+of BSS - maps, persistent surface, sprite banks - is the working set. Every
+buffer a device reads is allocated with `Mxalloc(...,0)`: both scanout pages
+(`start.s`) and the sound DMA ring (`sound.s`). On a machine without TT-RAM
+the flags are ignored. Measured in Hatari's 060 profile this alone moved the
+cockpit benchmark from 7.9 to 13.6 fps; see
+[the 68060 performance record](../../docs/PERFORMANCE-2026-10-14-68060.md).
+
 ## Vectors and framebuffer publication
 
 `start.s` reads VBR after entering supervisor mode. Exception, VBL and IKBD

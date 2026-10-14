@@ -67,7 +67,7 @@
         ; load and every ring walk would terminate at once.
         xref    ring_steps
 
-        xref    ring_a_table, ring_b_table, ring_z_table, ring_page_table
+        xref    ring_a_table, ring_b_table, ring_z_table, ring_page_table, ring_page2_table
         xref    menu_settings
         ; The horizon tables are rebuilt in render.s: they need the
         ; generated depth schedule and RING_PAGE_ANCHOR, which live
@@ -345,6 +345,23 @@ dtl_build_pages
         addi.l  #$01000000,d4                   ; 00015B47
         dbra    d5,.row
         dbra    d7,.ring
+
+        ; The marcher's copy: each page twice in a row, 512 bytes, so that
+        ; page2[bias + height] is page[(bias + height) & 255] - the byte
+        ; wrap of 0000D9F6 - for any bias and height up to 255 each.
+        ; N/A - platform replacement: a layout of the same table.
+        lea     ring_page_table,a0
+        lea     ring_page2_table,a1
+        move.w  ring_steps,d7
+        subq.w  #1,d7
+.double
+        moveq   #256/4-1,d5
+.double_row
+        move.l  (a0),256(a1)
+        move.l  (a0)+,(a1)+
+        dbra    d5,.double_row
+        lea     256(a1),a1
+        dbra    d7,.double
 
         movem.l (sp)+,d0-d7/a0-a4
         rts

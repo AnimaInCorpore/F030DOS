@@ -36,6 +36,18 @@ Falcon CPU paths exercise that route; DSP acceleration is a later
 optimization workstream governed by `../PORTING.md`; it must not get ahead of
 recovering and validating the game itself.
 
+## The 68060 image made playable (2026-10-14)
+
+The full route - menus, briefing, live flight, damage, debrief - runs on the
+accelerator image in Hatari's 060/TT-RAM profile. The image now loads into
+TT-RAM, and the marcher, target view, map MFD, sky fill, depth sort and wide
+products do the same work in fewer instructions with byte-identical buffers:
+live cockpit flight went from about 17 to 21 fps there, the attract cockpit
+benchmark from 7.9 to 18.75. The target-view silhouette archive's stride and
+sign-extension bug (it wrote into the persistent console page) is fixed. The
+68030 image runs the same source, 1.78 -> 2.14 fps in the cockpit. Emulator
+figures only. See [PERFORMANCE-2026-10-14-68060.md](PERFORMANCE-2026-10-14-68060.md).
+
 ## Current status — reviewed 2026-10-10
 
 The CPU attract route remains the acceptance baseline, with native menu/live

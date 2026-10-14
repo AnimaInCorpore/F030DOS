@@ -308,7 +308,19 @@ done
 # The code uses absolute references into the TOS-allocated BSS and framebuffer
 # surfaces. Keep the relocation table; -tos-fastload would leave those words
 # as section offsets and makes the program write into low memory instead.
-"$VLINK" $OBJECTS -q -Rstd -b ataritos -tos-flags 1 -e _main -M"$OUTDIR/comanche.map" -o "$OUTDIR/comanche_d.tos"
-"$VLINK" $OBJECTS -q -Rstd -b ataritos -tos-flags 1 -s -e _main -o "$OUTDIR/comanche.tos"
+#
+# PRG flags: 1 = fastload. The 68060 image adds 2|4 (load into and Malloc from
+# TT-RAM): an accelerated Falcon's ST-RAM sits behind the 16 MHz bus shared
+# with Videl, and the marcher, the persistent terrain surface, the maps and
+# the sprite banks are all in BSS. Everything a Falcon device reads - both
+# scanout pages and the sound DMA ring - is Mxalloc'd from ST-RAM explicitly
+# (start.s, sound.s), so where TOS puts the program does not matter to them.
+# Without TT-RAM, TOS ignores the two bits and loads into ST-RAM as before.
+case "$TARGET_CPU" in
+    68060) TOS_FLAGS=7 ;;
+    *) TOS_FLAGS=1 ;;
+esac
+"$VLINK" $OBJECTS -q -Rstd -b ataritos -tos-flags $TOS_FLAGS -e _main -M"$OUTDIR/comanche.map" -o "$OUTDIR/comanche_d.tos"
+"$VLINK" $OBJECTS -q -Rstd -b ataritos -tos-flags $TOS_FLAGS -s -e _main -o "$OUTDIR/comanche.tos"
 
 echo "built $OUTDIR/comanche.tos ($(wc -c < "$OUTDIR/comanche.tos") bytes), $OUTDIR/comanche_d.tos"
