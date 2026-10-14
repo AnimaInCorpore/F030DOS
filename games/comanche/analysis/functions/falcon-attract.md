@@ -131,6 +131,62 @@ DOS authority: `00016381-0001687D`, the mission parser at
 names, resource selection, little-endian fields, SG bank boundaries, and
 palette/sprite data before native Falcon storage.
 
+<a id="original-data-loader"></a>
+### The original's tables at startup (2026-10-14)
+
+Until 2026-10-14 the program carried about 90 KB generated from the local
+install into `build/original_test.s`: the Q31 sine (`00032120`), the KF4b menu
+font (`00027276`), the menu, name-entry and debrief texts, the roster and
+settings defaults, the view, bearing and sprite-ramp tables, and HIGH.DTL's
+ring tables and projection pages. None of it is now part of the program:
+
+- `src/origexe.s` (`orig_exe_load`, run by `start.s` before `init`) reads the
+  player's `COMANCHE.EXE`, checks it is the 1990 file (61,154 bytes,
+  rotate-and-add checksum `$EFA67E1F`), LZEXE-unpacks the load image to flat
+  `00032B20` (flat `F` is image offset `0x1700 + F`) and copies each table
+  from the flat address `tools/prepare-original-test.py` uses, swapping the
+  little-endian longs; it repacks the font and derives `sin_table` the same
+  way. A missing or different file prints one line and exits before anything
+  is changed.
+- The ring tables come from the .DTL the detail byte selects: `dtl_cached`
+  starts at the image's own `[0x25DAB]` value `$63`, which no settings byte
+  matches, so the first `dtl_apply_settings` loads it - as `00026211` does.
+  A failed first load stops `main`.
+- `build/port_tables.s` (assembled) holds only the port's constants,
+  `invz_table` and empty storage; `build/original_test.s` stays as host
+  reference for the tools.
+- Six tables the sources carried as `dc` lines go the same way: the ZOVE
+  cycle `00028E75`, the COMA walk `000059C8`, the pan wobble `00005985`
+  (`attract.s`), the matching ramp `0002B7D0` (`attract.s` and
+  `resources.s`) and the RATE dither masks `00004998` (`sound.s`). A scan of
+  every `dc` table in `src/` for its little-endian bytes in the flat image
+  found no other of 16 bytes or more.
+
+**Check.** `tools/check-orig-exe-load.py` runs `comanche_d.tos` in Hatari,
+dumps every table at `snd_init` (the loader's, before `menu_init` writes into
+the texts) and at `attract_start` (the .DTL ones) and compares them with
+`build/original_test.s` and, for the six, the flat image: all 44 equal. `ring_invz_table` and
+`ring_horizon_table` have no reader and stay zero. Shifting one copy's flat
+address by a byte fails the check.
+
+**Found on the way: `render_rebuild_horizons` overflowed.** The startup load
+ran it for HIGH for the first time, and samples 79 and 80 (depth 512 and 528
+map units) came out on rows 153 and 78 instead of 77: `depth << 23` wraps 32
+bits from 512 on. No HIGH ring reaches that far (the last is at 492.6), so
+those samples now take the fallback row, which is the generator's result.
+A detail-level change in the menu would have hit the same bug before.
+
+**Replay frames depend on startup time.** `flt_shake_rng`, the DOS PRNG that
+places smoke and debris, advances on the Timer C stream (`flight_shake_tick`),
+not per frame, so the particles at a replay record shift with how long
+startup took. Record 20 (`tools/capture-target-frame.py --record 20`): the old
+build with an inert 794-byte code pad is pixel-identical, but the old build
+with nothing but a delay loop before `init` differs in 125 pixels, and with
+one after it in 125. Intermediate builds of this change differed from the old
+one in 61 and 58 pixels (particles over the target, then the right MFD); the
+final build is pixel-identical to it at record 20. Compare replay frames with
+this sensitivity in mind, or mask the particles.
+
 ## Object pass
 
 DOS authority: `00023297-000234A4`, `00023A8C-00024997`, and

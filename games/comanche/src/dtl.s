@@ -111,8 +111,8 @@ DTL_STATUS_ERROR = 1
 ;   0002B9CF and 00001C79 - are not this file's business and are not called
 ;   here; the detail byte does not reach them.
 ; Kind: translated.
-; Status: ported; a missing or short .DTL leaves the generated tables in place
-;   and is reported through dtl_status rather than drawing a different world.
+; Status: ported; a missing or short .DTL is reported through dtl_status, and
+;   main stops when the first load fails rather than drawing no world.
 dtl_apply_settings
         movem.l d0-d1/a0,-(sp)
 
@@ -394,20 +394,18 @@ dtl_name_low
         dc.b    'LOW.DTL',0
         even
 
-; [00025DAB], the cached detail byte 00026216 compares against. It starts as
-; the character whose tables tools/prepare-original-test.py generated, so a
-; settings block that already selects the same detail causes no reload and the
-; build's own certified tables stay in place.
+; [00025DAB], the cached detail byte 00026216 compares against, with the
+; image's own initial value: $63, 'c', which no settings byte selects, so the
+; first application always loads a .DTL - in the original and here. The ring
+; tables are storage until then (build/port_tables.s); the program carries no
+; generated copy any more.
 ;
-; '0', high: this port is built for high detail by project decision, and the
-; generator now reads HIGH.DTL's 250 rings. The shipped install selects '1',
-; so a COMANCHE.MNU that has been parsed will still reload medium over these
-; tables at startup - dtl_apply_settings does exactly what 00026211 does. That
-; is the original's behaviour and is left alone here; the install's own byte is
-; what has to say '0', on the oracle as well as on the target, or the two are
-; not comparable at all.
+; This port is built for high detail by project decision: build-run.sh stages
+; COMANCHE.MNU with '0'. The shipped install selects '1' and then loads
+; medium, exactly as 00026211 does; the install's own byte is what has to say
+; '0', on the oracle as well as on the target, or the two are not comparable.
 dtl_cached
-        dc.b    '0'
+        dc.b    $63
         even
 
         bss

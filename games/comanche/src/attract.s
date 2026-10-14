@@ -1126,32 +1126,13 @@ name_rh66
 name_zove
         dc.b    "ZOVE.RLE",0
         even
-; Extracted from the image: the ZOVE cycle at 00028E75, the COMA nine-view
-; walk at 000059C8, the 64-entry pan wobble at 00005985. Each animation
-; table is terminated by a zero the original wraps on; the counts here are
-; the entries before it.
-zove_frames
-        dc.b    3,3,2,2,1,1
-coma_frames
-        dc.b    9,9,9,9,8,8,8,8,7,7,7,7,6,6,6,6,5,5,5,5
-        dc.b    4,4,4,4,3,3,3,3,2,2,2,2,1,1,1,1
-pan_wobble
-        dc.b    0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1
-        dc.b    1,2,2,2,2,2,3,3,3,3,3,3,4,4,4,4
-        dc.b    3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2
-        dc.b    1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0
-        even
-; The ramp 0002B820 puts red and green through before it measures a colour
-; distance, verbatim from 0002B7D0. Six-bit in, 0..127 out, and slightly
-; convex - the original weights a difference between dark colours less than
-; the same difference between bright ones.
-attract_gamma
-        dc.b      0,  1,  2,  4,  5,  7,  8, 10, 12, 13, 15, 17, 19, 21, 23, 25
-        dc.b     27, 29, 31, 33, 35, 37, 40, 42, 44, 46, 49, 51, 54, 56, 58, 61
-        dc.b     63, 66, 68, 71, 73, 76, 78, 80, 83, 85, 87, 90, 92, 94, 96, 98
-        dc.b    100,102,104,106,108,110,112,114,116,118,119,121,123,124,126,127
-        even
-
+; The ZOVE cycle at 00028E75, the COMA nine-view walk at 000059C8, the
+; 64-entry pan wobble at 00005985 and the red/green matching ramp 0002B820
+; puts colours through, 0002B7D0 (six-bit in, 0..127 out, slightly convex):
+; data of the original, filled from the player's COMANCHE.EXE at startup by
+; src/origexe.s into storage at the end of this file. Each animation table is
+; terminated by a zero the original wraps on; the counts are the entries
+; before it.
 ; Attract screen states.
 AT_NONE         = 0
 AT_SIDE         = 1
@@ -1175,6 +1156,17 @@ WEIGHT_G        = WEIGHT_SPAN*4
 WEIGHT_B        = WEIGHT_SPAN*8
 
         bss
+        even
+        global  zove_frames, coma_frames, pan_wobble, attract_gamma
+zove_frames
+        ds.b    6
+coma_frames
+        ds.b    36
+pan_wobble
+        ds.b    64
+attract_gamma
+        ds.b    64
+        even
         even
 attract_active
         ds.w    1

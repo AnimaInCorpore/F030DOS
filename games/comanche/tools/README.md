@@ -164,9 +164,16 @@ TARGET_CPU=68060 bash tools/build-run.sh
   font instead.
 - `prepare-original-test.py` validates and decodes the original Comanche
   `D1.DTA`/`C1.DTA` PCX-style maps at full 1024x1024 resolution into ignored
-  build output, and generates the sine and reciprocal-depth tables the
-  renderer reads. Keeping the tables here means one generator is authoritative
-  for everything the terrain pass consumes.
+  build output. It writes `build/port_tables.s`, the only part render.s
+  assembles (the port's constants, `invz_table`, empty storage), and the host
+  reference `build/original_test.s` with the original's tables as the
+  Falcon loads them at startup (`src/origexe.s`, `src/dtl.s`).
+- `check-orig-exe-load.py` runs `comanche_d.tos` in Hatari and compares every
+  table the program loads with `build/original_test.s`.
+- `capture-target-frame.py` keeps only `comanche_d.tos` in its directory and
+  loads symbols with `symbols prg`: with `comanche.tos` beside it TOS ran
+  that one (both are COMANCHE.TOS in 8.3), and Hatari 2.6.1 refuses
+  `symbols comanche_d.tos` there ("program TEXT address invalid").
 
 Tool paths can be overridden with `VASM`, `VLINK`, `HATARI`, `TOS`, `DOSBOX`,
 and `ASM56K`. The default binaries are local copies under `tools/toolchain/`.

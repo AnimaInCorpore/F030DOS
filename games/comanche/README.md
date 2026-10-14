@@ -224,9 +224,15 @@ formats are Comanche formats without evidence.
 ## Repository notes
 
 - `build/` and `release/` contain generated files.
-- `tools/prepare-original-test.py` reads the ignored local game install during
-  the build and generates `build/original_test.s`; no original game data is
-  committed.
+- No byte of the original is committed or built into the program:
+  `src/origexe.s` reads the original's tables from the player's
+  `COMANCHE.EXE` at startup and `src/dtl.s` the ring tables from the
+  selected .DTL ([record](analysis/functions/falcon-attract.md#original-data-loader)).
+  `tools/build-run.sh` stages `COMANCHE.EXE` with the other runtime files.
+  `tools/prepare-original-test.py` writes the assembled `build/port_tables.s`
+  (constants and storage only) and, from the local install, the host
+  reference `build/original_test.s`; `tools/check-orig-exe-load.py` checks
+  the loaded tables against it in Hatari.
 - `src/README.md` documents the active Falcon source tree.
 - `tools/README.md` documents the helper scripts.
 - [docs/PORTING-PLAN.md](docs/PORTING-PLAN.md) is the priority project roadmap.

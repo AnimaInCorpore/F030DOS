@@ -1248,12 +1248,8 @@ snd_silence
 ; 00004A02: bias[shift].
 snd_bias_tab
         dc.b    $00,$40,$60,$70,$78,$7c,$7e,$7e
-; 00004998: the dither mask for RATE(0..17).
-snd_rate_tab
-        dc.l    $00000000,$0000000f,$0000001f,$0000003f,$0000007f
-        dc.l    $000000ff,$000001ff,$000003ff,$000007ff
-        dc.l    $00000000,$0000000e,$0000001e,$0000003e,$0000007e
-        dc.l    $000000fe,$000001fe,$000003fe,$000007fe
+; 00004998: the dither mask for RATE(0..17), filled from the player's
+; COMANCHE.EXE at startup (src/origexe.s); storage in this file's BSS.
 snd_cfg_name
         dc.b    "COMANCHE.CFG",0
 snd_name_fx
@@ -1265,6 +1261,10 @@ snd_name_speak1
         even
 
         bss
+        even
+        global  snd_rate_tab
+snd_rate_tab
+        ds.l    18
         even
 snd_slots
         ds.b    3*SL_SIZE

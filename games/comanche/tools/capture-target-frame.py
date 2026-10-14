@@ -66,6 +66,10 @@ def main() -> int:
                            env=dict(os.environ, OUTDIR=str(out), TARGET_CPU="68030"))
         if r.returncode != 0:
             sys.exit(f"build failed:\n{r.stdout[-3000:]}\n{r.stderr[-3000:]}")
+    # TOS truncates comanche_d.tos to the 8.3 name COMANCHE.TOS, so with the
+    # stripped program beside it `--auto C:\comanche_d.tos` runs that one and
+    # the debug symbols do not match it. Keep only the debug build here.
+    (out / "comanche.tos").unlink(missing_ok=True)
     cursor = args.record * 8 + 13
     probe = ["r", f"savebin frame.bin d0 ${FRAME_BYTES:x}"]
     probe += [f"savebin {name} {symbol} ${size:x}" for name, symbol, size in SCALARS]
@@ -79,7 +83,7 @@ def main() -> int:
         "b GemdosOpcode = $4b && OsCallParam = 0 :trace :once :file program.ini\n")
     (out / "program.ini").write_text("b pc = TEXT :trace :once :file arm.ini\n")
     (out / "arm.ini").write_text(
-        "symbols comanche_d.tos\n"
+        "symbols prg\n"
         f"b pc = publish_screen && (demo_cursor).l = {cursor} "
         f"&& (demo_active).w = 1 && (attract_demo_pass).w = {args.demo_pass} "
         f"&& (view_variant).b = {args.variant} :once :file dump.ini\n")

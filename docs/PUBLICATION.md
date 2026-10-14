@@ -46,14 +46,17 @@ License: undecided.
    the originals by design (every routine cites the DOS routine it came
    from). Whether that is acceptable, and where the limit lies, is an owner
    decision; the mechanical screen only removes the bulk forms.
-2. **Embedded game content in Comanche.** `comanche.tos` carries about 3.5 KB
-   of `COMANCHE.EXE`'s data tables, generated into `build/original_test.s` by
-   `tools/prepare-original-test.py` from the player's copy at build time
-   (`tools/release.py` finds them; 32 more bytes match `COMANCHE.NAM`). A
-   public binary needs those tables loaded from the player's `COMANCHE.EXE` at
-   run time, a change in F030Comanche. F29 and POR carry none that the check
-   can see (POR checked against its expanded DOS data; F29's data is not on
-   the preparing machine, so F29 is unchecked).
+2. **Comanche: resolved for the release check.** The first version of this
+   entry said `comanche.tos` carried about 3.5 KB of `COMANCHE.EXE`; that was
+   only what the 32-byte block check could see. Measured on the generated
+   source it was about 90 KB: 13 KB copied verbatim from the executable
+   (sine, menu font, menu and debrief text, roster defaults, bearing tables),
+   9 KB of sprite ramps, and 69 KB computed from `HIGH.DTL`. Since F030Comanche
+   d9047fd/16cae99 (2026-10-14) all of it, and six small tables the sources
+   carried, is read from the player's `COMANCHE.EXE` (LZEXE-unpacked on the
+   Falcon) and `.DTL` at startup; the program shrank from 142,892 to 52,833
+   bytes, and a Hatari dump shows all 44 loaded tables byte-identical to the
+   former ones. The JS reference's two extracted tables (blocker 4) remain.
 3. **WC1: resolved for the release check.** Since F030WC1 98493d2
    (2026-10-14) the title text, `get_right_shape()`'s frame/flip rows and the
    explosion debris sets are read from the player's `WC.EXE`; `wc1.tos`

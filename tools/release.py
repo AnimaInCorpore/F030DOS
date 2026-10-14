@@ -28,8 +28,9 @@ BLOCK = 32
 GAMES = [
     ("comanche", "Comanche: Maximum Overkill (1992)",
      ["release/comanche.tos"], ["assets/extracted/comanche_hdd", "re/unpacked"],
-     "Copy the files of your installed DOS game (the COMANCHE directory) next to COMANCHE.TOS. The program reads the "
-     "terrain, palettes, sprites, skies, demo flights, sound banks and missions from there. COMANCHE.MNU selects the "
+     "Copy the files of your installed DOS game (the COMANCHE directory) next to COMANCHE.TOS. The program reads its "
+     "tables from COMANCHE.EXE (the 1990 version, 61,154 bytes) and the terrain, palettes, sprites, skies, demo "
+     "flights, sound banks and missions from the other files. COMANCHE.MNU selects the "
      "detail level as in DOS: the shipped file says MEDIUM; the development builds stage a copy set to HIGH.",
      "the attract cycle on the CPU renderer with live-flight, menu, mission-end and combat extensions; not certified "
      "against the DOS original, the DSP renderer is dormant, real-hardware speed not measured"),

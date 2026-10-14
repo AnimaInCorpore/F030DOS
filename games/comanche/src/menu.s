@@ -777,8 +777,8 @@ menu_init
         ; 00026211's reload, on the settings the file just supplied. The
         ; detail byte selects one of three depth schedules and nothing else in
         ; the port reads it, so without this the Detail menu writes a byte
-        ; that changes nothing. A load failure leaves the generated MEDIUM
-        ; tables in place and reports through dtl_status.
+        ; that changes nothing. A load failure reports through dtl_status;
+        ; the first one stops main, since there are no other ring tables.
         bsr     dtl_apply_settings
 
         ; One text pass so the first frame's highlight has hotspots, exactly

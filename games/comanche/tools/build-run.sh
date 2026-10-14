@@ -93,6 +93,13 @@ for f in HIGH.DTL MEDIUM.DTL LOW.DTL; do
 done
 echo "staged runtime depth tables: HIGH.DTL/MEDIUM.DTL/LOW.DTL"
 
+# The original's own tables - sine, menu font and texts, roster and settings
+# defaults, view, bearing and sprite-ramp tables - are read from the player's
+# COMANCHE.EXE at startup (src/origexe.s), not built into the program.
+[ -f "$ASSET_ROOT/COMANCHE.EXE" ] || { echo "error: missing original COMANCHE.EXE" >&2; exit 1; }
+cp "$ASSET_ROOT/COMANCHE.EXE" "$OUTDIR"/
+echo "staged runtime tables: COMANCHE.EXE"
+
 # Stage the default and mission-selected SG banks. The DOS mission resource
 # list supplies ten inline names and the factory indexes them through f2/f3;
 # staging only TANK would silently turn every attract object into a tank.

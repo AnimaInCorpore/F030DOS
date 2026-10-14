@@ -974,15 +974,9 @@ resource_named_triples
         dc.b    $3f,$10,$10                     ; 0002ABBF -> 0x2A379, the T gauge
         even
 
-; DOS 0002B7D0's initialized 64-entry red/green matching ramp.  This must live
-; in DATA rather than BSS: the Falcon loader zero-fills BSS and does not copy
-; dc.b initializers from that section into RAM.
-resource_gamma
-        dc.b      0,  1,  2,  4,  5,  7,  8, 10, 12, 13, 15, 17, 19, 21, 23, 25
-        dc.b     27, 29, 31, 33, 35, 37, 40, 42, 44, 46, 49, 51, 54, 56, 58, 61
-        dc.b     63, 66, 68, 71, 73, 76, 78, 80, 83, 85, 87, 90, 92, 94, 96, 98
-        dc.b    100,102,104,106,108,110,112,114,116,118,119,121,123,124,126,127
-        even
+; DOS 0002B7D0's initialized 64-entry red/green matching ramp is filled
+; from the player's COMANCHE.EXE at startup (src/origexe.s); its storage is in
+; this file's BSS.
 resource_night_map
         dc.b    0,21,29,18,16,15,12,16,23,16,12,15,21,34,33,31
         dc.b    27,19,35,32,32,27,34,29,18,16,21,23,16,15,15,12
@@ -1024,6 +1018,11 @@ resource_colour_4
         dc.b    "C4.DTA",0
 
         bss
+        even
+        global  resource_gamma
+resource_gamma
+        ds.b    64
+        even
         even
 resource_map_status
         ds.w    1

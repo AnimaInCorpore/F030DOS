@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 """Prepare the selected terrain maps for the Falcon build.
 
+Two outputs. build/port_tables.s is what render.s assembles: the port's own
+constants and invz_table, and empty storage for every table that comes from
+the original. src/origexe.s fills that storage from the player's COMANCHE.EXE
+at startup and src/dtl.s from the selected .DTL, so no byte of the original
+enters the program. build/original_test.s is the same tables generated here
+from the local install, for the host tools that read them and as the
+reference the runtime loader is checked against; it is not assembled.
+
 The authoritative pair is the original Comanche D1/C1 Kyle DTA family, because
 that is what src/resources.s opens at runtime. Everything this script emits -
 the colour palette above all - is interpreted against the map the Falcon
@@ -956,19 +964,10 @@ def write_maps(
     colour_path.write_bytes(colour)
     write_palette(palette_path, palette, source_label)
 
-    lines = [
-        f"; Generated from {source_label}.",
-        "; Do not edit: tools/prepare-original-test.py regenerates this file.",
-        "ORIGINAL_ASSET_READY = 1",
-        "; 1 = original D1/C1",
-        f"ORIGINAL_ASSET_SOURCE = {source_id}",
-        "ORIGINAL_MAP_SIZE = 1024",
-        "ORIGINAL_MAP_MASK = $03ff",
-        "ORIGINAL_MAP_SHIFT = 10",
-        f"DEPTH_SAMPLES = {DEPTH_SAMPLES}",
-        f"DEPTH_NEAR_SAMPLES = {DEPTH_NEAR_SAMPLES}",
-        f"DEPTH_NEAR_STEP = {DEPTH_NEAR_STEP}",
-        f"DEPTH_FAR_STEP = {DEPTH_FAR_STEP}",
+    assert source_id == SOURCE_ORIGINAL
+    lines = header_lines(source_label) + [
+        "; Host reference, NOT assembled: render.s includes build/port_tables.s,",
+        "; and the Falcon loads these tables from the player's files at startup.",
         "",
         "; The map buffers live in Falcon BSS and are filled by resources.s.",
         "; map_height.bin and map_colour.bin remain ignored build outputs for",
@@ -978,6 +977,138 @@ def write_maps(
     emit_menu_font(lines)
     emit_menu_strings(lines)
     emit_tables(lines)
+    output.write_text(chr(10).join(lines) + chr(10), encoding="ascii")
+
+
+# Storage the Falcon fills at startup, in bytes, with the section it lives in.
+# The sizes are the 1990 COMANCHE.EXE's (the hashed build every flat address
+# here belongs to) and HIGH.DTL's 250 rings; src/origexe.s copies exactly these
+# lengths and checks each text's 0xFF terminator at its last byte, which is
+# what emit_menu_strings measures with raw.index(b"\xff", ...) + 1.
+LOADED_STORAGE = (
+    ("sine_q31", 640 * 4),
+    ("menu_font_ok", 2),
+    ("menu_font_width", 128),
+    ("menu_font_start", 128 * 4),
+    ("menu_font_glyphs", 619 * 4),     # 619 columns over the font's 77 glyphs
+    ("menu_text_ok", 2),
+    ("menu_bar_text", 55),
+    ("menu_group_text", MENU_GROUPS_TO - MENU_GROUPS_FROM),
+    ("menu_screen_text", MENU_SCREENS_LEN),
+    ("menu_lock_text", 40),
+    ("menu_about_text", 160),
+    ("menu_saved_text", 25),
+    ("menu_repaired_text", 37),
+    ("menu_reloaded_text", 37),
+    ("menu_stats_text", 130),
+    ("name_head_text", 9),
+    ("name_tail_text", 12),
+    ("name_plain_keys", 128),
+    ("name_shift_keys", 128),
+    ("name_prompt_text", 54),
+    ("roster_defaults", 1450),
+    ("menu_file_defaults", 35),
+    ("debrief_text", 584),
+    ("menu_pilot_header", MENU_PILOT_HEADER_LEN),
+    ("sin_table", (SIN_ENTRIES + SIN_EXTRA) * 2),
+    ("view_angle_offsets", VIEW_VARIANT_COUNT * 4),
+    ("object_octant_table", 8 * 4),
+    ("object_bearing_correction", 2048),
+    ("sprite_ramp_offsets", 128 * 4),
+    ("sprite_ramp_pool", SPRITE_RAMP_POOL_BYTES),
+    ("ring_a_table", DTL_MAX_STEPS * 4),
+    ("ring_b_table", DTL_MAX_STEPS * 4),
+    ("ring_z_table", DTL_MAX_STEPS * 4),
+    ("ring_invz_table", DTL_MAX_STEPS * 2),
+    ("ring_horizon_table", DTL_MAX_STEPS * 2),
+    ("ring_page_table", DTL_MAX_STEPS * 256),
+)
+GLOBAL_STORAGE = {
+    "sine_q31", "menu_font_ok", "menu_font_width", "menu_font_start",
+    "menu_font_glyphs", "menu_text_ok", "menu_bar_text", "menu_group_text",
+    "menu_screen_text", "menu_lock_text", "menu_about_text", "menu_saved_text",
+    "menu_repaired_text", "menu_reloaded_text", "menu_stats_text",
+    "name_head_text", "name_tail_text", "name_plain_keys", "name_shift_keys",
+    "name_prompt_text", "roster_defaults", "menu_file_defaults",
+    "debrief_text", "menu_pilot_header", "view_angle_offsets",
+    "sprite_ramp_offsets", "sprite_ramp_pool",
+}
+
+
+def header_lines(source_label: str) -> list[str]:
+    return [
+        f"; Generated from {source_label}.",
+        "; Do not edit: tools/prepare-original-test.py regenerates this file.",
+        "ORIGINAL_ASSET_READY = 1",
+        "; 1 = original D1/C1",
+        f"ORIGINAL_ASSET_SOURCE = {SOURCE_ORIGINAL}",
+        "ORIGINAL_MAP_SIZE = 1024",
+        "ORIGINAL_MAP_MASK = $03ff",
+        "ORIGINAL_MAP_SHIFT = 10",
+        f"DEPTH_SAMPLES = {DEPTH_SAMPLES}",
+        f"DEPTH_NEAR_SAMPLES = {DEPTH_NEAR_SAMPLES}",
+        f"DEPTH_NEAR_STEP = {DEPTH_NEAR_STEP}",
+        f"DEPTH_FAR_STEP = {DEPTH_FAR_STEP}",
+    ]
+
+
+def invz_lines() -> list[str]:
+    """This port's column-march reciprocal depth: PROJ_SCALE and the depth
+    schedule are the port's own constants, so the table is too."""
+    lines = ["        even", "invz_table"]
+    inv = []
+    z = 0
+    for i in range(DEPTH_SAMPLES):
+        z += depth_step(i)
+        inv.append(min(32767, (PROJ_SCALE * 256) // z))
+    for pos in range(0, len(inv), 4):
+        if pos == DEPTH_NEAR_SAMPLES:
+            lines.append("invz_far_start")
+        if pos == DEPTH_NEAR_SAMPLES + DEPTH_FAR_SAMPLES:
+            lines.append("invz_far2_start")
+        lines.append("        dc.w    " + ",".join(str(v) for v in inv[pos:pos + 4]))
+    lines.append("invz_end")
+    return lines
+
+
+def write_port_tables(output: Path) -> None:
+    """build/port_tables.s: assembled into the program; reads no game file."""
+    lines = header_lines("the port's own constants; storage for the original's tables")
+    lines += [
+        "",
+        "; Nothing below holds a byte of the original. src/origexe.s fills the",
+        "; storage from the player's COMANCHE.EXE at startup, src/dtl.s the ring",
+        "; tables from the .DTL the detail byte selects, and render.s's",
+        "; render_rebuild_horizons horizon_table. build/original_test.s holds",
+        "; the same tables generated from the local install as host reference.",
+        "",
+    ]
+    lines += invz_lines()
+    lines += [
+        "; Filled by render_rebuild_horizons after the .DTL load; kept beside",
+        "; invz_table because render.s walks the two in lockstep.",
+        "        even",
+        "horizon_table",
+        "        dcb.w   DEPTH_SAMPLES,0",
+        "HORIZON_DELTA = horizon_table-invz_table",
+        f"RING_STEPS = {DTL_MAX_STEPS}",
+        "; The live ring count, written by src/dtl.s when the .DTL loads; zero",
+        "; until then. In DATA beside the tables it counts, as before.",
+        "        even",
+        "        global  ring_steps",
+        "ring_steps",
+        "        dc.w    0",
+        f"RING_PAGE_ANCHOR = {DTL_ANCHOR}",
+        "",
+        "        bss",
+    ]
+    for label, size in LOADED_STORAGE:
+        lines.append("        even")
+        if label in GLOBAL_STORAGE:
+            lines.append(f"        global  {label}")
+        lines.append(label)
+        lines.append(f"        ds.b    {size}")
+    lines += ["        even", "", "        data", "        even"]
     output.write_text(chr(10).join(lines) + chr(10), encoding="ascii")
 
 
@@ -1031,6 +1162,7 @@ def main() -> int:
     output = Path(args[0])
     root = Path(__file__).resolve().parent.parent
     output.parent.mkdir(parents=True, exist_ok=True)
+    write_port_tables(output.parent / "port_tables.s")
     try:
         description = make_output(output, root, source)
     except (OSError, ValueError, RuntimeError) as exc:

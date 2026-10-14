@@ -19,6 +19,8 @@ SCREEN_HEIGHT = 240
 SCREEN_BYTES  = SCREEN_WIDTH*SCREEN_HEIGHT*2*2
 SCREEN_ALLOC_BYTES = SCREEN_BYTES+$ff
 
+        xref    orig_exe_load, orig_exe_status
+
         text
 
 ; DOS: N/A - TOS process entry replacing the DOS bootstrap handoff.
@@ -35,6 +37,14 @@ _main
         add.l   20(a0),d0
         add.l   28(a0),d0
         Mshrink a0,d0
+        ; The original's own tables from the player's COMANCHE.EXE, before
+        ; init: nothing has been changed yet if the file is missing, and the
+        ; Timer C hook that drives the DOS PRNG (flight_shake_tick) is not yet
+        ; counting, so the load's duration does not shift the PRNG's phase.
+        ; Record: analysis/functions/falcon-attract.md#original-data-loader
+        jsr     orig_exe_load
+        tst.w   orig_exe_status
+        bne     .no_original
         bsr     init
         tst.w   init_failed
         bne     .init_failed
@@ -42,6 +52,17 @@ _main
         bsr     deinit
         Pterm0
 .init_failed
+        Pterm0
+.no_original
+        ; Target artefact: the one message the port prints. The game needs
+        ; the player's own copy, so say which file is missing or wrong.
+        pea     no_original_text
+        move.w  #9,-(sp)                        ; Cconws
+        trap    #1
+        addq.l  #6,sp
+        move.w  #1,-(sp)                        ; Cconin: wait for a key
+        trap    #1
+        addq.l  #2,sp
         Pterm0
 
 ; DOS: N/A - platform replacement; the original bootstrap `seg:off` startup
@@ -443,5 +464,12 @@ display_screen
         ds.l    1
 
         ds.b    4096
+
+        data
+no_original_text
+        dc.b    13,10,"Comanche needs COMANCHE.EXE of the 1990 DOS game",13,10
+        dc.b    "(61,154 bytes) in this folder, with the game's other files.",13,10
+        dc.b    "Press a key.",13,10,0
+        even
 
         end

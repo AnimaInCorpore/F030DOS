@@ -8,6 +8,7 @@
         include "inc/comanche.s"
 
         xref    snd_init, snd_apply_settings, flight_announcer
+        xref    dtl_status
 
         global  main
         global  work_screen, display_screen, frame_count
@@ -26,6 +27,9 @@
 ; Kind: translated.
 ; Status: ported; emulator startup/capture validation remains pending.
 main
+        ; The original's own tables are already loaded: start.s runs
+        ; orig_exe_load before init, ahead of everything here.
+
         ; 0000554F-000055AF: COMANCHE.CFG, the sound card probe, MODE($FF) and
         ; RATE(2) come before the campaign catalog and the menu file.
         jsr     snd_init
@@ -40,6 +44,11 @@ main
         ; two file-backed tables remain in this same order.
         bsr     screen_roster_load
         bsr     menu_init
+        ; menu_init applied the detail byte, and the first application always
+        ; loads a .DTL (src/dtl.s, dtl_cached). Without it there are no ring
+        ; tables to draw, so a missing file stops as a resource failure.
+        tst.w   dtl_status
+        bne     .done
 
         ; 00005690 loads each attract resource at the state that consumes it.
         ; The Falcon decodes the reusable SG banks once before that state

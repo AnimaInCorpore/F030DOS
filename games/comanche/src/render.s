@@ -47,7 +47,6 @@ SKY_STRIP_STEP = 65536                         ; one 16.16 strip per column
         global  render_store_history, render_history_console, terrain_history
         global  sin_table
         global  object_octant_table, object_bearing_correction
-        global  colour_palette
         global  flight_palette
         global  original_height_map
         global  original_colour_map
@@ -1061,6 +1060,15 @@ render_rebuild_horizons
 .far2
         addi.l  #1<<TILE_FAR2_SHIFT,d6
 .stepped
+        ; From 512 map units on, d6 << 23 no longer fits 32 bits - it wrapped
+        ; to the nearest rings and put samples 79 and 80 on row 153 and 78
+        ; (found 2026-10-14, when the startup .DTL load first ran this for
+        ; HIGH). No ring reaches that far (HIGH.DTL's last is at 492.6 units),
+        ; so such a sample takes the fallback, which is what the generator's
+        ; unbounded first-ring-at-or-past search gives.
+        move.w  d4,d1
+        cmpi.l  #512,d6
+        bhs     .found
         ; Into table 4's units. The product passes 2^31 well before the last
         ; sample, so every compare below is unsigned.
         move.l  d6,d0
@@ -2477,11 +2485,12 @@ par_span
         data
         even
 
-; The selected indexed PNG provides the full 256-entry RGB565 palette. The
-; generated include is shared with the DSP host so map indices stay exact.
-        include "build/colour_palette.s"
-
-        include "build/original_test.s"
+; The port's own tables and the storage for the original's: src/origexe.s
+; fills that from the player's COMANCHE.EXE and src/dtl.s from the .DTL at
+; startup. build/original_test.s, the same tables generated from the local
+; install, is host reference only. (build/colour_palette.s, a C1.DTA palette
+; nothing read, is no longer assembled.)
+        include "build/port_tables.s"
     ifne MARCHER_ORACLE
         include "build/marcher_oracle.s"
     endc
