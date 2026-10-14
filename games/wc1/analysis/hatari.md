@@ -95,6 +95,23 @@ Verified reference: `bash tools/grab-frame.sh 2800 build/align-check-vbl2800.png
 If a capture cannot distinguish the change you made from its absence, it has
 not verified anything — pick a VBL where the affected pass is on screen.
 
+**A VBL selects a phase only approximately, and any layout change moves it.**
+The title advances one logical step per published page (`front_catch_up` is a
+no-op on purpose, mirroring DOS's once-per-`Draw_3Space_Frame()` step), so
+the page on screen at a VBL depends on render speed, and render speed in
+Hatari depends on code and data placement. Measured 2026-10-14 (patched
+Hatari 2.6.1-devel of F030Arcade, TOS 4.04, 14 MB): the same binary gives
+pixel-identical captures run after run (compare pixels, not PNG files: the
+files differ in metadata), but the HEAD build with 794 bytes of inert padding
+in `resources.o`'s `.text` already shows a different VBL-2800 page (309
+pixels), and the WC.EXE string loader moved the title about 4 VBLs ahead at
+the subtitle and about 150 at the logo zoom. That is expected, not a cadence
+regression: the logical frame counts are unchanged. Compare such changes by
+the page they affect (sweep VBLs until it is on screen), not by a fixed-VBL
+picture. Where that build showed what: 1,100 opening subtitle; 1,300-2,000
+the action-sphere explosion; 2,400 star field; 2,800 logo zoom; 3,200 the
+finished logo; 3,600 the first credit; 4,000-4,400 the second credit.
+
 ## 5. Flight capture and VBR ownership
 
 `grab-frame.sh` can now replay deliberate input with `HATARI_INPUT_EVENTS`

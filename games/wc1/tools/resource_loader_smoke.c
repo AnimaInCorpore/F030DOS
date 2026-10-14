@@ -11,6 +11,8 @@
 
 extern void resource_init(void);
 extern int resource_load_title(void);
+extern const char *resource_intro_opening_text;
+extern const char *resource_intro_credit_text[11];
 extern void resource_reset_intro_scene(void);
 extern void resource_draw_intro_frame(uint8_t *target, uint16_t stage,
                                       uint16_t index);
@@ -346,6 +348,48 @@ int main(void)
         fprintf(stderr, "title packet load failed: status=%04x\n",
                 resource_status);
         return 1;
+    }
+    /* nav.c:Title_Sequence() text comes from WC.EXE's DS:264E / DS:2767
+     * pointers (resources.c load_intro_strings).  The expected FNV-1a over
+     * the twelve NUL-terminated strings and their line counts were taken
+     * from the 1990 WC.EXE at those pointers; the text itself stays out of
+     * the repository. */
+    {
+        static const unsigned expected_lines[12] = {
+            2U, 3U, 7U, 6U, 7U, 3U, 6U, 5U, 2U, 1U, 2U, 2U
+        };
+        uint32_t hash = 0x811C9DC5UL;
+        unsigned string_index;
+
+        for (string_index = 0; string_index < 12U; string_index++) {
+            const char *text = string_index == 0U ?
+                resource_intro_opening_text :
+                resource_intro_credit_text[string_index - 1U];
+            unsigned lines = 1U;
+            size_t offset;
+
+            if (text == NULL) {
+                fprintf(stderr, "title string %u not loaded\n", string_index);
+                return 1;
+            }
+            for (offset = 0;; offset++) {
+                hash = (hash ^ (uint8_t)text[offset]) * 0x01000193UL;
+                if (text[offset] == '\0')
+                    break;
+                if (text[offset] == '\n')
+                    lines++;
+            }
+            if (lines != expected_lines[string_index]) {
+                fprintf(stderr, "title string %u: %u lines, expected %u\n",
+                        string_index, lines, expected_lines[string_index]);
+                return 1;
+            }
+        }
+        if (hash != 0x20116327UL) {
+            fprintf(stderr, "title strings hash %08lx, expected 20116327\n",
+                    (unsigned long)hash);
+            return 1;
+        }
     }
     if (resource_packet_size != 60913U ||
         !resource_draw_object(120, 120, 10U, 0U) ||

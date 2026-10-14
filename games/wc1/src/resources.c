@@ -438,6 +438,7 @@ void resource_flight_weapons_reset(void);
 void resource_flight_combat_reset(void);
 static void intro_spawn_explosion_debris(const IntroTitleShip *ship);
 static void begin_intro_credit_scene(void);
+static int load_intro_strings(void);
 static void update_intro_credit_scene(void);
 static void draw_intro_credit_asteroids(void);
 static const uint16_t intro_explosion1_animation[];
@@ -980,7 +981,8 @@ int resource_load_title(void)
     resource_title_laser_size = 0;
     resource_title_rock_size = 0;
     resource_title_asteroid_size = 0;
-    if (!resource_load_packet("TITLE.VGA", 0U) ||
+    if (!load_intro_strings() ||
+        !resource_load_packet("TITLE.VGA", 0U) ||
         !retain_loaded_packet(resource_title_logo_data,
                               WC1_TITLE_LOGO_BUFFER_MAX,
                               &resource_title_logo_size) ||
@@ -2104,31 +2106,118 @@ int resource_draw_object_transformed(int32_t anchor_x, int32_t anchor_y,
 #define RESOURCE_INTRO_STAGE_LOGO 2U
 #define RESOURCE_INTRO_STAGE_CREDIT 3U
 
-static const char intro_opening_text[] =
-    "In the distant future,\n"
-    "mankind is locked in a deadly war...";
+/* DOS: nav.c:Title_Sequence() opening subtitle and credits; record:
+ * analysis/wcexe.md#title-sequence-strings.  The 1990 WC.EXE keeps them in its
+ * data segment and the title overlay reaches them through near pointers:
+ *   DGROUP   C0 entry at CS:0000 (file 0x1200) is `mov dx,11CCh` /
+ *            `mov cs:[023Eh],dx`, so DS:0000 is file 0x12EC0 (DS:0004 is the
+ *            Borland copyright, analysis/wcexe.md §4).
+ *   DS:264E  near pointer to the opening subtitle, pushed at file 0x3C608
+ *            (`push word [264E]`).
+ *   DS:2767  eleven near pointers to the credits, read at file 0x3C72E
+ *            (`shl bx,1` / `push word [bx+2767]`).
+ * The port reads the same bytes from the player's WC.EXE when the title
+ * resources load instead of carrying a copy of the text.  They also differ
+ * from wc1-re's 1996 reconstruction, which the earlier transcription followed.
+ */
+#define WC_EXE_SIZE 302384L
+#define WC_EXE_OPENING_POINTER 0x264EU
+#define WC_EXE_CREDIT_TABLE 0x2767U
+#define INTRO_CREDIT_COUNT 11U
+#define INTRO_TEXT_POOL_MAX 1024U
 
-/* The initial DOS version has eleven credits.  Keep the text and ordering
- * from g_apszIntroCredits_00468a38; the later Windows-only entries do not
- * participate in the original Title_Sequence() run. */
-static const char *const intro_credits[11] = {
-    "Design\nby\nChris Roberts",
-    "Software Engineers\nChris Roberts\nKen Demarest III\nPaul C. Isaac\n"
-        "Steve Muchow\nHerman Miller\nSteve Beeman\n",
-    "Dogfight Intelligence\nKen Demarest III\n\nDogfight Choreography\n"
-        "Steve Beeman\nErin Roberts",
-    "3Space System\nby\nChris Roberts\n\nOriginFX Graphic System\n"
-        "by\nChris Roberts\nJohn Miles",
-    "OriginFX Sound System\nby\nHerman Miller",
-    "Artwork\nDenis Loubet\nGlen Johnson\nDaniel Bourbonnais\n"
-        "Keith Berdak\nJohn Watson",
-    "Screenplay by Jeff George\n\nAdditional Writing\nSteve Cantrell\n"
-        "Philip Brogden",
-    "Soundtrack by\nGeorge A. Sanger and Dave Govett",
-    "Sound Effects by Marc Schaefgen",
-    "Produced by\nChris Roberts and Warren Spector",
-    "Directed by\nChris Roberts"
-};
+static char resource_intro_text_pool[INTRO_TEXT_POOL_MAX];
+const char *resource_intro_opening_text;
+const char *resource_intro_credit_text[INTRO_CREDIT_COUNT];
+
+static int read_exe_at(int32_t handle, uint32_t offset, uint32_t count,
+                       uint8_t *destination)
+{
+    return wc_fseek((int32_t)offset, handle, 0) == (int32_t)offset &&
+           read_exact(handle, count, destination);
+}
+
+/* N/A - platform replacement: the DOS program has the strings in its own
+ * image; this reads them out of the player's copy of that image.  Only the
+ * 1990 WC.EXE (302,384 bytes, analysis/wcexe.md) has these addresses. */
+static int load_intro_strings(void)
+{
+    int32_t handle;
+    uint8_t header[0x18];
+    uint8_t entry[3];
+    uint8_t pointers[INTRO_CREDIT_COUNT * 2U];
+    uint16_t offsets[INTRO_CREDIT_COUNT + 1U];
+    const char **targets[INTRO_CREDIT_COUNT + 1U];
+    uint32_t load_module;
+    uint32_t data_segment;
+    uint32_t used;
+    uint32_t index;
+    int ok;
+
+    resource_intro_opening_text = 0;
+    for (index = 0; index < INTRO_CREDIT_COUNT; index++)
+        resource_intro_credit_text[index] = 0;
+    if (!open_data_file("WC.EXE", &handle))
+        return 0;
+    ok = wc_fseek(0, handle, 2) == WC_EXE_SIZE &&
+         read_exe_at(handle, 0, sizeof(header), header) &&
+         header[0] == 'M' && header[1] == 'Z';
+    if (ok) {
+        /* MZ e_cparhdr (+08), e_ip (+14), e_cs (+16): the entry is C0's
+         * `mov dx,DGROUP` (BA imm16), the segment DOS's loader relocates. */
+        load_module = (uint32_t)read_le16(header + 0x08) * 16U;
+        ok = read_exe_at(handle, load_module +
+                         (uint32_t)read_le16(header + 0x16) * 16U +
+                         read_le16(header + 0x14), sizeof(entry), entry) &&
+             entry[0] == 0xBAU;
+    }
+    if (ok) {
+        data_segment = load_module + (uint32_t)read_le16(entry + 1) * 16U;
+        ok = read_exe_at(handle, data_segment + WC_EXE_OPENING_POINTER, 2U,
+                         pointers);
+        if (ok)
+            offsets[0] = read_le16(pointers);
+        ok = ok && read_exe_at(handle, data_segment + WC_EXE_CREDIT_TABLE,
+                               sizeof(pointers), pointers);
+    }
+    if (ok) {
+        targets[0] = &resource_intro_opening_text;
+        for (index = 0; index < INTRO_CREDIT_COUNT; index++) {
+            offsets[index + 1U] = read_le16(pointers + index * 2U);
+            targets[index + 1U] = &resource_intro_credit_text[index];
+        }
+        used = 0;
+        for (index = 0; ok && index <= INTRO_CREDIT_COUNT; index++) {
+            uint32_t length;
+            int32_t got;
+
+            if (wc_fseek((int32_t)(data_segment + offsets[index]), handle,
+                         0) < 0) {
+                ok = 0;
+                break;
+            }
+            got = wc_fread(handle, INTRO_TEXT_POOL_MAX - used,
+                           resource_intro_text_pool + used);
+            for (length = 0; got > 0 && length < (uint32_t)got &&
+                 resource_intro_text_pool[used + length] != '\0'; length++)
+                ;
+            if (got <= 0 || length >= (uint32_t)got) {
+                ok = 0;
+                break;
+            }
+            *targets[index] = resource_intro_text_pool + used;
+            used += length + 1U;
+        }
+    }
+    if (wc_fclose(handle) < 0)
+        ok = 0;
+    if (!ok) {
+        resource_intro_opening_text = 0;
+        for (index = 0; index < INTRO_CREDIT_COUNT; index++)
+            resource_intro_credit_text[index] = 0;
+    }
+    return ok;
+}
 
 static void clear_intro_target(uint8_t *target)
 {
@@ -7235,9 +7324,9 @@ void resource_draw_intro_frame(uint8_t *target, uint16_t stage,
     if (resource_intro_credit_scene_active != 0U) {
         draw_intro_credit_asteroids();
         if (stage == RESOURCE_INTRO_STAGE_CREDIT && index < 11U)
-            draw_intro_text(intro_credits[index]);
+            draw_intro_text(resource_intro_credit_text[index]);
     } else if (stage == RESOURCE_INTRO_STAGE_OPENING) {
-        draw_intro_text(intro_opening_text);
+        draw_intro_text(resource_intro_opening_text);
         draw_intro_fighters(1);
         draw_intro_explosions(1);
         draw_intro_lasers(1);

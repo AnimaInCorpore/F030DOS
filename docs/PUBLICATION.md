@@ -54,11 +54,14 @@ License: undecided.
    run time, a change in F030Comanche. F29 and POR carry none that the check
    can see (POR checked against its expanded DOS data; F29's data is not on
    the preparing machine, so F29 is unchecked).
-3. **Game text in WC1's sources.** `games/wc1/src/resources.c` transcribes the
-   opening subtitles and the credits from the game, and `wc1.tos` carries them
-   with a few small tables: about 0.9 KB of `WC.EXE` in exact runs (the
-   release check, counting whole aligned 32-byte blocks, reports 640 bytes). The content screen cannot recognise prose. Loading the
-   strings from the player's `WC.EXE` is a change in F030WC1.
+3. **Data tables in WC1's program.** The opening subtitle and the credits are
+   read from the player's `WC.EXE` since F030WC1 d8e8e0d (DS:264E and the
+   DS:2767 pointer table; before that `src/resources.c` transcribed them).
+   Three small tables are still copied into `src/resources.c`:
+   `intro_explosion_debris_sets` (57 bytes of DS:0D03) and the direction and
+   capital-ship shape-flip tables (about 220 bytes of DS:40C5..41BF), so
+   `tools/release.py` still finds 64 bytes of `WC.EXE` (whole aligned blocks)
+   in `wc1.tos`.
 4. **Regeneration gaps.** Comanche's JS reference uses two tables extracted
    from the DOS image (`jsComanche/object-bearing.js`, `sine-q31.js`), which
    are excluded; the reference needs a generator that reads the player's copy.

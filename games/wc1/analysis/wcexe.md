@@ -97,6 +97,31 @@ extension:
 `gamedat` and the `FMem`/`NMem` diagnostics confirm a far/near heap split and
 a data directory concept, both consistent with the reconstruction.
 
+<a id="title-sequence-strings"></a>
+### Title_Sequence() strings (verified 2026-10-14)
+
+`Title_Sequence()`'s opening subtitle and its eleven credits are data in
+DGROUP, reached through near pointers:
+
+| what | where | evidence |
+|---|---|---|
+| DGROUP | segment `0x11CC`, DS:0000 = file `0x12EC0` | C0 entry at CS:0000 (file `0x1200`): `BA CC 11` `mov dx,11CCh`, then `2E 89 16 3E 02` `mov cs:[023Eh],dx`; DS:0004 is the Borland copyright at file `0x12EC4` |
+| opening subtitle pointer | DS:264E (file `0x1550E`) = `0x27BB` | the overlay pushes it at file `0x3C608`: `FF 36 4E 26` `push word [264E]` |
+| credit pointer table | DS:2767 (file `0x15627`), 11 words, `0x27F7`..`0x2A5D` | the overlay reads it at file `0x3C72E`: `D1 E3` `shl bx,1`, then at `0x3C730` `FF B7 67 27` `push word [bx+2767]` |
+| the twelve strings | DS:27BB..DS:2A76, 700 bytes with their NULs | contiguous, in pointer order |
+
+Both reads sit in the VROOM overlay payload (§3), in one routine. Line counts
+per string (opening, then credits 1..11): 2, 3, 7, 6, 7, 3, 6, 5, 2, 1, 2, 2.
+
+The 1990 strings are **not** wc1-re's 1996 ones: the software-engineers
+credit has no trailing newline, and the OriginFX Graphic System credit has no
+"by" line. The Falcon port transcribed the 1996 text until 2026-10-14; it now
+reads these bytes from the player's `WC.EXE` at title load
+(`src/resources.c` `load_intro_strings`), so the repository carries no copy.
+`tools/resource_loader_smoke.c` checks the twelve loaded strings against an
+FNV-1a over the DOS bytes (`0x20116327`) and the line counts above; pointing
+the table one word off fails it.
+
 ## 5. Open questions
 
 1. **Overlay table layout** — where the root module records overlay segment,

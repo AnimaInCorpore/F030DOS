@@ -42,8 +42,10 @@ The Falcon slice now ports a deliberately narrow part of that boundary:
 skip. Its hidden-page conversion leaves the VBL serviceable and advances one
 logical title update per completed page, preventing a slow transfer from
 replaying the source sequence in bursts. `src/resources.c` retains the original
-`TITLE.VGA` subtitle font,
-opening text, eleven original credits, three-frame fixed-point logo zoom, and
+`TITLE.VGA` subtitle font, reads the opening text and the eleven credits from
+the player's `WC.EXE` through the DOS pointers at DS:264E and DS:2767
+([record](../analysis/wcexe.md#title-sequence-strings)), and keeps the
+three-frame fixed-point logo zoom and
 the seven `PLANETS.VGA` frames selected by DOS `generate_stars()`, projected
 through the title script's 24.8 pitch path. It also retains the original
 Dralthi/Hornet shape packets for action sphere 16 and renders the four canned
