@@ -54,14 +54,13 @@ License: undecided.
    run time, a change in F030Comanche. F29 and POR carry none that the check
    can see (POR checked against its expanded DOS data; F29's data is not on
    the preparing machine, so F29 is unchecked).
-3. **Data tables in WC1's program.** The opening subtitle and the credits are
-   read from the player's `WC.EXE` since F030WC1 d8e8e0d (DS:264E and the
-   DS:2767 pointer table; before that `src/resources.c` transcribed them).
-   Three small tables are still copied into `src/resources.c`:
-   `intro_explosion_debris_sets` (57 bytes of DS:0D03) and the direction and
-   capital-ship shape-flip tables (about 220 bytes of DS:40C5..41BF), so
-   `tools/release.py` still finds 64 bytes of `WC.EXE` (whole aligned blocks)
-   in `wc1.tos`.
+3. **WC1: resolved for the release check.** Since F030WC1 98493d2
+   (2026-10-14) the title text, `get_right_shape()`'s frame/flip rows and the
+   explosion debris sets are read from the player's `WC.EXE`; `wc1.tos`
+   contains no 32-byte block of it. Smaller transcribed DGROUP tables remain
+   in `src/resources.c` (cockpit lights, canned title sequences, the
+   EXPLOSION1 animation, Hornet hardpoints; listed in
+   `games/wc1/analysis/wcexe.md`) and are part of the rights review.
 4. **Regeneration gaps.** Comanche's JS reference uses two tables extracted
    from the DOS image (`jsComanche/object-bearing.js`, `sine-q31.js`), which
    are excluded; the reference needs a generator that reads the player's copy.

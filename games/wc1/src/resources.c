@@ -438,7 +438,7 @@ void resource_flight_weapons_reset(void);
 void resource_flight_combat_reset(void);
 static void intro_spawn_explosion_debris(const IntroTitleShip *ship);
 static void begin_intro_credit_scene(void);
-static int load_intro_strings(void);
+static int load_wc_exe_data(void);
 static void update_intro_credit_scene(void);
 static void draw_intro_credit_asteroids(void);
 static const uint16_t intro_explosion1_animation[];
@@ -981,7 +981,7 @@ int resource_load_title(void)
     resource_title_laser_size = 0;
     resource_title_rock_size = 0;
     resource_title_asteroid_size = 0;
-    if (!load_intro_strings() ||
+    if (!load_wc_exe_data() ||
         !resource_load_packet("TITLE.VGA", 0U) ||
         !retain_loaded_packet(resource_title_logo_data,
                               WC1_TITLE_LOGO_BUFFER_MAX,
@@ -2119,16 +2119,40 @@ int resource_draw_object_transformed(int32_t anchor_x, int32_t anchor_y,
  * The port reads the same bytes from the player's WC.EXE when the title
  * resources load instead of carrying a copy of the text.  They also differ
  * from wc1-re's 1996 reconstruction, which the earlier transcription followed.
+ * load_wc_exe_data() below also takes the shape-selection and debris tables
+ * from the same data segment.
  */
 #define WC_EXE_SIZE 302384L
 #define WC_EXE_OPENING_POINTER 0x264EU
 #define WC_EXE_CREDIT_TABLE 0x2767U
 #define INTRO_CREDIT_COUNT 11U
 #define INTRO_TEXT_POOL_MAX 1024U
+/* get_right_shape() (overlay, file 0x28D0B..0x28D91): three 62-byte rows,
+ * frame `[si+40C6]` (0x28D39, 0x28D91), flip `mov al,[si+4180]` (0x28D55);
+ * `add si,3Eh` (0x28D2B) selects row 1, `add si,7Ch` (0x28D36) row 2. */
+#define WC_EXE_SHAPE_FRAME_ROWS 0x40C6U
+#define WC_EXE_SHAPE_FLIP_ROWS 0x4180U
+#define WC_EXE_SHAPE_ROW_BYTES 0x3EU
+#define WC_EXE_CAPITAL_SHAPE_ROW 2U
+/* Create_explosion_debris(): `push word [bx+0D04]`, bx = set*14 +
+ * fragment*2 (overlay, file 0x2DA33): four sets of seven shape words. */
+#define WC_EXE_DEBRIS_SETS 0x0D04U
 
 static char resource_intro_text_pool[INTRO_TEXT_POOL_MAX];
 const char *resource_intro_opening_text;
 const char *resource_intro_credit_text[INTRO_CREDIT_COUNT];
+
+/* get_right_shape()'s row 0 (fighters) and row 2 (capital ships), filled
+ * from WC.EXE by load_shape_tables() (global so the resource smoke can check
+ * them); record:
+ * analysis/wcexe.md#shape-and-debris-tables.  The earlier transcription of
+ * the capital flip row had index 19 set; DOS row 2 has it clear. */
+int8_t intro_direction_shape_frame[62];
+uint8_t intro_direction_shape_flip[62];
+int8_t intro_capital_shape_frame[62];
+uint8_t intro_capital_shape_flip[62];
+/* Create_explosion_debris()'s four source sets (DS:0D04). */
+uint16_t intro_explosion_debris_sets[4][WC1_INTRO_DEBRIS_COUNT];
 
 static int read_exe_at(int32_t handle, uint32_t offset, uint32_t count,
                        uint8_t *destination)
@@ -2137,20 +2161,92 @@ static int read_exe_at(int32_t handle, uint32_t offset, uint32_t count,
            read_exact(handle, count, destination);
 }
 
-/* N/A - platform replacement: the DOS program has the strings in its own
- * image; this reads them out of the player's copy of that image.  Only the
- * 1990 WC.EXE (302,384 bytes, analysis/wcexe.md) has these addresses. */
-static int load_intro_strings(void)
+/* Read the NUL-terminated DGROUP string at each near pointer into the pool.
+ * N/A - platform replacement: DOS has the strings in its own image. */
+static int load_intro_strings(int32_t handle, uint32_t data_segment)
+{
+    uint8_t pointers[INTRO_CREDIT_COUNT * 2U];
+    uint16_t offsets[INTRO_CREDIT_COUNT + 1U];
+    const char **targets[INTRO_CREDIT_COUNT + 1U];
+    uint32_t used;
+    uint32_t index;
+
+    if (!read_exe_at(handle, data_segment + WC_EXE_OPENING_POINTER, 2U,
+                     pointers))
+        return 0;
+    offsets[0] = read_le16(pointers);
+    if (!read_exe_at(handle, data_segment + WC_EXE_CREDIT_TABLE,
+                     sizeof(pointers), pointers))
+        return 0;
+    targets[0] = &resource_intro_opening_text;
+    for (index = 0; index < INTRO_CREDIT_COUNT; index++) {
+        offsets[index + 1U] = read_le16(pointers + index * 2U);
+        targets[index + 1U] = &resource_intro_credit_text[index];
+    }
+    used = 0;
+    for (index = 0; index <= INTRO_CREDIT_COUNT; index++) {
+        uint32_t length;
+        int32_t got;
+
+        if (wc_fseek((int32_t)(data_segment + offsets[index]), handle, 0) < 0)
+            return 0;
+        got = wc_fread(handle, INTRO_TEXT_POOL_MAX - used,
+                       resource_intro_text_pool + used);
+        for (length = 0; got > 0 && length < (uint32_t)got &&
+             resource_intro_text_pool[used + length] != '\0'; length++)
+            ;
+        if (got <= 0 || length >= (uint32_t)got)
+            return 0;
+        *targets[index] = resource_intro_text_pool + used;
+        used += length + 1U;
+    }
+    return 1;
+}
+
+/* get_right_shape()'s frame and flip rows and Create_explosion_debris()'s
+ * source sets; record: analysis/wcexe.md#shape-and-debris-tables.
+ * N/A - platform replacement for the tables DOS has in its own image. */
+static int load_shape_tables(int32_t handle, uint32_t data_segment)
+{
+    uint8_t words[sizeof(intro_explosion_debris_sets)];
+    uint32_t set;
+    uint32_t index;
+
+    if (!read_exe_at(handle, data_segment + WC_EXE_SHAPE_FRAME_ROWS,
+                     sizeof(intro_direction_shape_frame),
+                     (uint8_t *)intro_direction_shape_frame) ||
+        !read_exe_at(handle, data_segment + WC_EXE_SHAPE_FLIP_ROWS,
+                     sizeof(intro_direction_shape_flip),
+                     intro_direction_shape_flip) ||
+        !read_exe_at(handle, data_segment + WC_EXE_SHAPE_FRAME_ROWS +
+                     WC_EXE_CAPITAL_SHAPE_ROW * WC_EXE_SHAPE_ROW_BYTES,
+                     sizeof(intro_capital_shape_frame),
+                     (uint8_t *)intro_capital_shape_frame) ||
+        !read_exe_at(handle, data_segment + WC_EXE_SHAPE_FLIP_ROWS +
+                     WC_EXE_CAPITAL_SHAPE_ROW * WC_EXE_SHAPE_ROW_BYTES,
+                     sizeof(intro_capital_shape_flip),
+                     intro_capital_shape_flip) ||
+        !read_exe_at(handle, data_segment + WC_EXE_DEBRIS_SETS,
+                     sizeof(words), words))
+        return 0;
+    for (set = 0; set < 4U; set++) {
+        for (index = 0; index < WC1_INTRO_DEBRIS_COUNT; index++)
+            intro_explosion_debris_sets[set][index] = read_le16(
+                words + (set * WC1_INTRO_DEBRIS_COUNT + index) * 2U);
+    }
+    return 1;
+}
+
+/* N/A - platform replacement: open the player's WC.EXE once and take the
+ * title strings and tables out of its data segment.  Only the 1990 WC.EXE
+ * (302,384 bytes, analysis/wcexe.md) has these addresses. */
+static int load_wc_exe_data(void)
 {
     int32_t handle;
     uint8_t header[0x18];
     uint8_t entry[3];
-    uint8_t pointers[INTRO_CREDIT_COUNT * 2U];
-    uint16_t offsets[INTRO_CREDIT_COUNT + 1U];
-    const char **targets[INTRO_CREDIT_COUNT + 1U];
     uint32_t load_module;
     uint32_t data_segment;
-    uint32_t used;
     uint32_t index;
     int ok;
 
@@ -2162,6 +2258,7 @@ static int load_intro_strings(void)
     ok = wc_fseek(0, handle, 2) == WC_EXE_SIZE &&
          read_exe_at(handle, 0, sizeof(header), header) &&
          header[0] == 'M' && header[1] == 'Z';
+    load_module = 0;
     if (ok) {
         /* MZ e_cparhdr (+08), e_ip (+14), e_cs (+16): the entry is C0's
          * `mov dx,DGROUP` (BA imm16), the segment DOS's loader relocates. */
@@ -2173,41 +2270,8 @@ static int load_intro_strings(void)
     }
     if (ok) {
         data_segment = load_module + (uint32_t)read_le16(entry + 1) * 16U;
-        ok = read_exe_at(handle, data_segment + WC_EXE_OPENING_POINTER, 2U,
-                         pointers);
-        if (ok)
-            offsets[0] = read_le16(pointers);
-        ok = ok && read_exe_at(handle, data_segment + WC_EXE_CREDIT_TABLE,
-                               sizeof(pointers), pointers);
-    }
-    if (ok) {
-        targets[0] = &resource_intro_opening_text;
-        for (index = 0; index < INTRO_CREDIT_COUNT; index++) {
-            offsets[index + 1U] = read_le16(pointers + index * 2U);
-            targets[index + 1U] = &resource_intro_credit_text[index];
-        }
-        used = 0;
-        for (index = 0; ok && index <= INTRO_CREDIT_COUNT; index++) {
-            uint32_t length;
-            int32_t got;
-
-            if (wc_fseek((int32_t)(data_segment + offsets[index]), handle,
-                         0) < 0) {
-                ok = 0;
-                break;
-            }
-            got = wc_fread(handle, INTRO_TEXT_POOL_MAX - used,
-                           resource_intro_text_pool + used);
-            for (length = 0; got > 0 && length < (uint32_t)got &&
-                 resource_intro_text_pool[used + length] != '\0'; length++)
-                ;
-            if (got <= 0 || length >= (uint32_t)got) {
-                ok = 0;
-                break;
-            }
-            *targets[index] = resource_intro_text_pool + used;
-            used += length + 1U;
-        }
+        ok = load_intro_strings(handle, data_segment) &&
+             load_shape_tables(handle, data_segment);
     }
     if (wc_fclose(handle) < 0)
         ok = 0;
@@ -2751,40 +2815,6 @@ static void intro_direction_view_frame(uint16_t index, IntroFixedVector *right,
     intro_rotate_about_j(yaw, right, forward);
     intro_rotate_about_i(pitch, up, forward);
 }
-
-static const int8_t intro_direction_shape_frame[62] = {
-    0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2,
-    14, 13, 12, 11, 10, 9, 8, 9, 10, 11, 12, 13,
-    15, 16, 17, 18, 19, 20, 21, 20, 19, 18, 17, 16,
-    28, 27, 26, 25, 24, 23, 22, 23, 24, 25, 26, 27,
-    29, 30, 31, 32, 33, 34, 35, 34, 33, 32, 31, 30,
-    36
-};
-
-static const uint8_t intro_direction_shape_flip[62] = {
-    0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
-    0
-};
-static const int8_t intro_capital_shape_frame[62] = {
-    0U, 1U, 2U, 3U, 1U, 3U, 2U, 1U, 2U, 3U, 1U, 3U, 2U,
-    4U, 5U, 6U, 4U, 6U, 5U, 4U, 5U, 6U, 4U, 6U, 5U,
-    7U, 8U, 9U, 7U, 9U, 8U, 7U, 8U, 9U, 7U, 9U, 8U,
-    10U, 11U, 12U, 10U, 12U, 11U, 10U, 11U, 12U, 10U, 12U, 11U,
-    13U, 14U, 15U, 13U, 15U, 14U, 13U, 14U, 15U, 13U, 15U, 14U,
-    16U
-};
-static const uint8_t intro_capital_shape_flip[62] = {
-    0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U, 1U, 1U, 1U, 1U,
-    0U, 0U, 0U, 0U, 0U, 0U, 1U, 1U, 1U, 1U, 1U, 1U,
-    0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U, 1U, 1U, 1U, 1U,
-    0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U, 1U, 1U, 1U, 1U,
-    0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U, 1U, 1U, 1U, 1U,
-    0U
-};
 
 /* This is get_right_shape() for the standard fighter table. It is shared by
  * the title's canned ships and the active mission renderer. Missile/base
@@ -5870,14 +5900,9 @@ static void update_intro_lasers(void)
 }
 
 /* Create_explosion_debris() takes one of these source sets after a ship's
- * eight-tick explosion countdown. The shapes are split between common packet
+ * eight-tick explosion countdown (DS:0D04, loaded from WC.EXE). The shapes are split between common packet
  * four and mission packet five exactly as init_3Space_objects() aliases them. */
-static const uint16_t intro_explosion_debris_sets[4][WC1_INTRO_DEBRIS_COUNT] = {
-    { 47U, 46U, 41U, 42U, 43U, 44U, 45U },
-    { 46U, 46U, 41U, 42U, 43U, 41U, 45U },
-    { 47U, 46U, 43U, 42U, 43U, 44U, 42U },
-    { 45U, 42U, 43U, 44U, 47U, 46U, 45U }
-};
+/* intro_explosion_debris_sets is declared with the WC.EXE loader. */
 static const uint16_t intro_debris_glass_frames[16] = {
     12U, 13U, 14U, 15U, 16U, 17U, 18U, 19U, 20U, 18U, 17U, 16U,
     15U, 14U, 13U, 12U

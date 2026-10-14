@@ -44,7 +44,10 @@ logical title update per completed page, preventing a slow transfer from
 replaying the source sequence in bursts. `src/resources.c` retains the original
 `TITLE.VGA` subtitle font, reads the opening text and the eleven credits from
 the player's `WC.EXE` through the DOS pointers at DS:264E and DS:2767
-([record](../analysis/wcexe.md#title-sequence-strings)), and keeps the
+([record](../analysis/wcexe.md#title-sequence-strings)), takes the
+`get_right_shape()` frame/flip rows and the explosion debris sets from the
+same data segment ([record](../analysis/wcexe.md#shape-and-debris-tables)),
+and keeps the
 three-frame fixed-point logo zoom and
 the seven `PLANETS.VGA` frames selected by DOS `generate_stars()`, projected
 through the title script's 24.8 pitch path. It also retains the original

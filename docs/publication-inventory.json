@@ -84,7 +84,7 @@
    "repository": "F030WC1",
    "origin": "",
    "directory": "games/wc1",
-   "source_commit": "d8e8e0d577681660e88741465f4e31974aeb492e"
+   "source_commit": "98493d2bc8592448ca66a75595ce008353edc06f"
   }
  },
  "files": [
@@ -27876,9 +27876,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "ced0be46694c2f19cb1b554f5b0ef6ef42bd4ac1",
-   "bytes": 7456,
-   "sha256": "e889344157e1b822bc058aad82604b889e2c4c3ff90a7b3b9abde0e5c45e3e20"
+   "git_object": "5e3d0ee02383940bbcb4d18463306f1b07aa006b",
+   "bytes": 9003,
+   "sha256": "72232c83ba712f3af18d50d7fd1644d122f77b3f1c101b68fb5c83c04a1f0a32"
   },
   {
    "path": "games/wc1/docs/CROSS-PROJECT.md",
@@ -27894,9 +27894,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "ab2d12a22ca823aeb6696c73badf347034fac124",
-   "bytes": 10767,
-   "sha256": "8f851a266fc32265be667172d7184a06104debe8d8bcb8a85b283afed5f38e1d"
+   "git_object": "caa0762ca2f035812c530f444e9e7b5aef703f59",
+   "bytes": 10928,
+   "sha256": "e1f2028b2962b147b8cec914bf6eaaf6e37d293ff4ec086523ece1903e0e2001"
   },
   {
    "path": "games/wc1/include/wc1_c2p.h",
@@ -28101,9 +28101,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "e637fe3ad16ad7bae61053f1fbec123cdf4626ce",
-   "bytes": 290919,
-   "sha256": "d857392f5c80d493a1936a7e5267cfd8d9be63d305f6b6f8f5bae070081d1375"
+   "git_object": "4053b6ab3423b34de00c23b048cbfbb68aee19cb",
+   "bytes": 292546,
+   "sha256": "59bb3ed1c2c92195bb1c1c8c6c06b632e3891f3a4b638d6b5452a4a31c7fe3bf"
   },
   {
    "path": "games/wc1/src/start.s",
@@ -28146,9 +28146,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "ac3eb6df25b01bd3f0ae66329e95fe6f70d80f26",
-   "bytes": 17007,
-   "sha256": "d54ef58d793fdd002bae79fc1b758331d1a05eccaff231af950aed0065727522"
+   "git_object": "4db16b887450fc1e56862d5fb21717f4ce04d89d",
+   "bytes": 17266,
+   "sha256": "5515916fdeb86d489d180d67be3905f4eec3ee33e6d3c94755d1f26a216e5924"
   },
   {
    "path": "games/wc1/tools/check_falcon_cache.py",
@@ -28209,9 +28209,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "4922720417e34c1ed1e770b914458d4cdf97fc52",
-   "bytes": 36159,
-   "sha256": "a4ca0e088245a4e97932dd5b1088d14f4dfcd0c79a00f67e6177593260bc7bce"
+   "git_object": "2c667ad6b283b444ba302d97346b40069addef93",
+   "bytes": 37666,
+   "sha256": "a25c0915c7177b47ebc25a954030cbd498150a426848767c9a1c52da9dd62435"
   },
   {
    "path": "games/wc1/tools/rgb565_to_ppm.py",

@@ -122,6 +122,30 @@ reads these bytes from the player's `WC.EXE` at title load
 FNV-1a over the DOS bytes (`0x20116327`) and the line counts above; pointing
 the table one word off fails it.
 
+<a id="shape-and-debris-tables"></a>
+### get_right_shape() and Create_explosion_debris() tables (verified 2026-10-14)
+
+| table | where | evidence (overlay code) |
+|---|---|---|
+| shape frame rows | DS:40C6, 3 rows of 62 bytes | `cmp byte [si+40C6],0` / `,24h` at file `0x28D39`/`0x28D44`, `mov al,[si+40C6]` at `0x28D91` |
+| shape flip rows | DS:4180, same 3 x 62 layout | `mov al,[si+4180]` at `0x28D55`, then `shl ax,4` |
+| row choice | row 0 by default; `add si,3Eh` (row 1) at `0x28D2B` when the type word is `0Bh` or `1Bh`; `add si,7Ch` (row 2) at `0x28D36` when it is `15h` | `0x28D0B`..`0x28D36` |
+| debris sets | DS:0D04, 4 sets x 7 words | `push word [bx+0D04]` at `0x2DA33`, `bx = set*0Eh + fragment*2` |
+
+The port uses row 0 for fighters and row 2 for capital ships, and loads both
+rows, their flip rows and the debris sets from the player's `WC.EXE`
+(`load_shape_tables`). The earlier hand transcription of the row-2 flips had
+index 19 set; DOS has it clear (row 2's flips equal row 0's). Row 1, the
+`0Bh`/`1Bh` variant, is not used by the port yet. The resource smoke checks
+the loaded bytes against FNV-1a `0x1682d5be`; loading row 1 for the capital
+tables fails it.
+
+Other transcribed tables in `src/resources.c` that equal DGROUP bytes and are
+not yet loaded this way: the cockpit light positions and states (DS:42BC,
+DS:4302, DS:4348, DS:436B), the canned title sequences 32-35 (DS:65C4..),
+`intro_explosion1_animation` (DS:4750) and the Hornet laser hardpoints
+(DS:6254). Each needs its reading code identified before it moves.
+
 ## 5. Open questions
 
 1. **Overlay table layout** — where the root module records overlay segment,

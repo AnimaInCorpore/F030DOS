@@ -13,6 +13,11 @@ extern void resource_init(void);
 extern int resource_load_title(void);
 extern const char *resource_intro_opening_text;
 extern const char *resource_intro_credit_text[11];
+extern int8_t intro_direction_shape_frame[62];
+extern uint8_t intro_direction_shape_flip[62];
+extern int8_t intro_capital_shape_frame[62];
+extern uint8_t intro_capital_shape_flip[62];
+extern uint16_t intro_explosion_debris_sets[4][7];
 extern void resource_reset_intro_scene(void);
 extern void resource_draw_intro_frame(uint8_t *target, uint16_t stage,
                                       uint16_t index);
@@ -387,6 +392,38 @@ int main(void)
         }
         if (hash != 0x20116327UL) {
             fprintf(stderr, "title strings hash %08lx, expected 20116327\n",
+                    (unsigned long)hash);
+            return 1;
+        }
+    }
+    /* get_right_shape() rows 0 and 2 (DS:40C6/DS:4180 and +0x7C) and
+     * Create_explosion_debris()'s sets (DS:0D04), loaded from WC.EXE: FNV-1a
+     * over their DOS bytes (debris words little-endian), taken from the 1990
+     * WC.EXE. */
+    {
+        const uint8_t *rows[4];
+        uint32_t hash = 0x811C9DC5UL;
+        unsigned row;
+        unsigned index;
+
+        rows[0] = (const uint8_t *)intro_direction_shape_frame;
+        rows[1] = intro_direction_shape_flip;
+        rows[2] = (const uint8_t *)intro_capital_shape_frame;
+        rows[3] = intro_capital_shape_flip;
+        for (row = 0; row < 4U; row++) {
+            for (index = 0; index < 62U; index++)
+                hash = (hash ^ rows[row][index]) * 0x01000193UL;
+        }
+        for (row = 0; row < 4U; row++) {
+            for (index = 0; index < 7U; index++) {
+                uint16_t value = intro_explosion_debris_sets[row][index];
+
+                hash = (hash ^ (uint8_t)value) * 0x01000193UL;
+                hash = (hash ^ (uint8_t)(value >> 8)) * 0x01000193UL;
+            }
+        }
+        if (hash != 0x1682d5beUL) {
+            fprintf(stderr, "shape/debris tables hash %08lx, expected 1682d5be\n",
                     (unsigned long)hash);
             return 1;
         }
