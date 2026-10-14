@@ -98,7 +98,8 @@ make release VERSION=0.1  # release/F030DOS-0.1/ and release/F030DOS-0.1.zip
 
 `tools/release.py` builds the ports that have a Falcon program, checks each is
 a TOS executable, compares it with the game files present locally (any
-32-byte block of the game inside a program stops the release) and writes a
+32-byte block of the game inside a program stops the release; blocks with
+fewer than 8 distinct byte values and counting sequences are ignored) and writes a
 `README.TXT` with what each player has to supply, each game's state and the
 SHA-256 of every file. No game data is packed.
 

@@ -74,6 +74,12 @@ Files (SHA-256)
 {sums}"""
 
 
+def ramp(b):
+    """A counting sequence (00 01 02 .., an identity table) is in many programs and says nothing (F030SNES: a byte
+    ramp in Super Mario Kart's runtime matched the ROM)."""
+    return len({(b[i + 1] - b[i]) & 0xFF for i in range(len(b) - 1)}) == 1
+
+
 def embedded(programs, dirs):
     """Bytes of game content found in the programs, or None when no game file is present here."""
     windows = set()
@@ -90,7 +96,7 @@ def embedded(programs, dirs):
             continue
         seen.add(digest)
         hits = [i for i in range(0, len(data) - BLOCK + 1, BLOCK)
-                if len(set(data[i:i + BLOCK])) >= 8 and data[i:i + BLOCK] in windows]
+                if len(set(data[i:i + BLOCK])) >= 8 and not ramp(data[i:i + BLOCK]) and data[i:i + BLOCK] in windows]
         if hits:
             found[f.name] = len(hits) * BLOCK
     return found
