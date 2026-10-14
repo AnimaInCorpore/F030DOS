@@ -3,7 +3,7 @@
 # so the imported files stay identical to their development repositories.
 #
 #   make list               the ports, their programs and what they need
-#   make <game>             build games/<game> (comanche, f29, por, uw2)
+#   make <game>             build games/<game> (comanche, f29, por, wc1, uw2)
 #   make run-<game>         run it in the patched Hatari
 #   make release VERSION=v  release/F030DOS-<v>.zip (tools/release.py)
 #   make check              the publication checks (tools/publication.py)
@@ -25,13 +25,14 @@ TOS404 ?= $(ARCADE)/third_party/tos/tos404.img
 PYBIN := $(CURDIR)/build/pybin
 export PATH := $(PYBIN):$(PATH)
 
-.PHONY: list pybin check status release comanche f29 por uw2 \
-	run-comanche run-f29 run-por run-uw2
+.PHONY: list pybin check status release comanche f29 por wc1 uw2 \
+	run-comanche run-f29 run-por run-wc1 run-uw2
 
 list:
 	@echo "comanche  make comanche   -> games/comanche/release/comanche.tos  (needs your install in games/comanche/assets/)"
 	@echo "f29       make f29        -> games/f29/release/f29.tos + 3d.lod"
 	@echo "por       make por        -> games/por/release/por.tos            (PORCACHE: make -C games/por data falcon-data)"
+	@echo "wc1       make wc1        -> games/wc1/release/wc1.tos            (WC1DATA: make -C games/wc1 data)"
 	@echo "uw2       make uw2        -> games/uw2/build/falcon/uw2-falcon-smoke.tos (presenter smoke harness)"
 	@echo "pg uw tie falcon3 links386 lol magiccarpet icr: analysis and tools; no Falcon program yet"
 
@@ -55,6 +56,11 @@ por: pybin
 	$(MAKE) -C games/por build VASM=$(VASM) VLINK=$(VLINK)
 run-por: pybin
 	$(MAKE) -C games/por run VASM=$(VASM) VLINK=$(VLINK) HATARI=$(HATARI) TOS=$(TOS404)
+
+wc1: pybin
+	$(MAKE) -C games/wc1 build VASM=$(VASM) VLINK=$(VLINK)
+run-wc1: pybin
+	$(MAKE) -C games/wc1 run VASM=$(VASM) VLINK=$(VLINK) HATARI=$(HATARI) TOS=$(TOS404)
 
 uw2: pybin
 	$(MAKE) -C games/uw2 check VASM=$(VASM) VLINK=$(VLINK) TOS=$(TOS404)

@@ -78,7 +78,13 @@
    "repository": "F030Method",
    "origin": "git@github.com:AnimaInCorpore/F030Method.git",
    "directory": "method",
-   "source_commit": "e34fc95056537b684fe7f61a4316da7aad2fea8c"
+   "source_commit": "4a345e908bd810549f4609780fb0354f6221c40f"
+  },
+  "wc1": {
+   "repository": "F030WC1",
+   "origin": "",
+   "directory": "games/wc1",
+   "source_commit": "49e2eb00b483ecb4d7cd5428af5fb7f3ca3a4bee"
   }
  },
  "files": [
@@ -27749,6 +27755,474 @@
    "sha256": "50dfcb04e42b3f83ded10262759abe15a98203a5c89e094d8b08e6c683c47ce6"
   },
   {
+   "path": "games/wc1/.gitignore",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "5f38c041398cc75bf5c93caafa98e606225b2dd3",
+   "bytes": 123,
+   "sha256": "0c5ac3053235a68495bc14c4192a799b4f3166437906c9616035283fc236013a"
+  },
+  {
+   "path": "games/wc1/AGENTS.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "72655584f5f15f3b1f2c0b0e81e01745aae3558a",
+   "bytes": 18708,
+   "sha256": "45a14c96bdc1d21530f8d16b756509225d9c17fedcfdf6855277847420a178d6"
+  },
+  {
+   "path": "games/wc1/Makefile",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "afe3aa626ab4396fabcdf92d07461a769ef85d53",
+   "bytes": 5682,
+   "sha256": "1991079eed4362e625e15cad679130681041815627505e8bed0a71d1566553bc"
+  },
+  {
+   "path": "games/wc1/PORTING.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "d396d8372901fe516b3bf110b3ad2243ea763a13",
+   "bytes": 12703,
+   "sha256": "33f27894d5c895ce915849ea78dcf4042c25610c896c8995c2750d4d1d2b6bf5"
+  },
+  {
+   "path": "games/wc1/README.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "8037a2b93b854d2a8c70cbe7b1403a9a0cdc77ae",
+   "bytes": 12149,
+   "sha256": "4e8c0f11e71a17efe9d5df44cd1f4fffc98ba78aab7e27ee054103801f43fa57"
+  },
+  {
+   "path": "games/wc1/analysis/data-formats.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "8853bb45d13900d4b085d6f7bb9c43cdaf2ef6b0",
+   "bytes": 12881,
+   "sha256": "d44ba6ac5ae7970ef9e273b93423cff98fac7bcbb7d1ab454df7023ca68d6ffe"
+  },
+  {
+   "path": "games/wc1/analysis/functions/FalconVblPresentation.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "a0ccfdcb4d74b62eec49c6d8fd98dbb00da02133",
+   "bytes": 2300,
+   "sha256": "323e82699e9185d5726dede600489b8d128ba6ffb9b98dc7932f52c9933d3f1e"
+  },
+  {
+   "path": "games/wc1/analysis/functions/FlightSceneDepthMerge.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "f513076774329ff9664d6152f2da83a6bf371805",
+   "bytes": 5365,
+   "sha256": "da9975999c091e7b8b7e10a89606b899a5ea662d18f85c1d016f0712ebd71074"
+  },
+  {
+   "path": "games/wc1/analysis/functions/PacketLoad.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "025db37e70ecdd0863b9e131cec5a89bac4eb310",
+   "bytes": 3955,
+   "sha256": "2444b6f3c6697fcbdc44f2fb866f22681bdd8f08eba71df46458c4592c8212db"
+  },
+  {
+   "path": "games/wc1/analysis/functions/ShapeTransformAxis.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "e7593c5212be19bcc3befa4321ecbb1e753e857e",
+   "bytes": 3480,
+   "sha256": "e41dbd5e5313c794b722b3eefa1b102a918fec9d8fdefb28a7295cb2e92e5ba8"
+  },
+  {
+   "path": "games/wc1/analysis/functions/c2p-present.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "c07154f18a0610a8d36cd84e8289b3f28d997743",
+   "bytes": 3097,
+   "sha256": "41a2d50b9663e7e6d06db4294f7717163d4b89da4ab9e2dd542060f9d6903c8a"
+  },
+  {
+   "path": "games/wc1/analysis/hatari.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "658006751228bd9bb881d371a38c5d2e2d65aa79",
+   "bytes": 7517,
+   "sha256": "f6538a8adfd9ecd5df5d07bf5fa5a8a008e7693b3cb510e94c1e9a2580befc48"
+  },
+  {
+   "path": "games/wc1/analysis/render-performance.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "aaec8df85a972f922ecbb355b877f2dc02f4debf",
+   "bytes": 4406,
+   "sha256": "1d628bfb859a39e4ad8b1bdbc933160d6a0da4d95199d1833526d69c14c81bfe"
+  },
+  {
+   "path": "games/wc1/analysis/wcexe.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "296c32684a731a556a3eed63116d1e868709e7a1",
+   "bytes": 5846,
+   "sha256": "c6fe2e0ecaff232f723217ea602dee33dd51d582acdd2abe2586156fe72092aa"
+  },
+  {
+   "path": "games/wc1/docs/CROSS-PROJECT.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "8d97d800f8447f93169d4477be1ef69222f7f5c3",
+   "bytes": 162541,
+   "sha256": "39093eb9eb901e12eed9020c264caec7cc8e8ae4ed61f2012367521ba4791ed3"
+  },
+  {
+   "path": "games/wc1/docs/DOS-SOURCE-MAP.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "647cde35af0abc2d5830d97d3c74ebe292b2947b",
+   "bytes": 10615,
+   "sha256": "9453f0539ebb8d72392da604f71e0c0a5946e3aaa3ae78a10ea9a931b871f8f7"
+  },
+  {
+   "path": "games/wc1/include/wc1_c2p.h",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "784f96e877e91bfbcf0e05057db135378ae355d2",
+   "bytes": 552,
+   "sha256": "30d76d21762fc00a66fe266cccab4155fa1c7abe6305224696135f7e5a8a2d8c"
+  },
+  {
+   "path": "games/wc1/include/wc1_data.h",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "637a67bc8b1f1474fdfc59fbad72d846d0e5827f",
+   "bytes": 2225,
+   "sha256": "1a848f6c4aba656a92303bad1b1498c2b08f90bcc7485d04f2e1369966e1a3b2"
+  },
+  {
+   "path": "games/wc1/src/c2p.c",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "578649b9c7ab7f487b6002fd3570fc858252d464",
+   "bytes": 1420,
+   "sha256": "ed001e0cd390f4d6dedd1a8553ad31950dad230d04bd2f61e1a48923c5470193"
+  },
+  {
+   "path": "games/wc1/src/c2p_fast.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "933434a968a70f00b17c42390a6c364bc04eb799",
+   "bytes": 2158,
+   "sha256": "39d4c779408d8b2d995a7a84a06b1f4f1d15d7ae0ef705e3d641518d6fbd4f5c"
+  },
+  {
+   "path": "games/wc1/src/dsp/c2p_test_vector.inc",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "c6d8f82b57b97e72150f8323e0cebc423315ec21",
+   "bytes": 2411,
+   "sha256": "6bef6e51b212cfa8c5810f675451dd45bf16c04ed42d33a67a826292a60576c6"
+  },
+  {
+   "path": "games/wc1/src/dsp/c2pproto.inc",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "9b550711241db16dd786ca4df9dcacf6400a230d",
+   "bytes": 967,
+   "sha256": "d85e88f424f6d4955b79d7c806c9f319b258bbfe70aff520c8078ef2213c6403"
+  },
+  {
+   "path": "games/wc1/src/dsp/ioequ.inc",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "74f63df34b7d46da3bd4c6e57a90f741e934a0de",
+   "bytes": 587,
+   "sha256": "00711a9267d400b3ed2dbec40e92245827b27b5e0a5156a3f23ccfdf60d9cf37"
+  },
+  {
+   "path": "games/wc1/src/dsp/wc1c2p.asm",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "529ee9743cd80cd6506cb54509ae7030cf0eeafe",
+   "bytes": 6090,
+   "sha256": "9587116ac4f74fd799852428974f0b2ed7665f0584c3d7f1fab6d30be656a97a"
+  },
+  {
+   "path": "games/wc1/src/dsp_c2p_host.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "3d4f8a7d8dbe1d0f3228180ab8b3510e75d7416b",
+   "bytes": 14965,
+   "sha256": "b6fa98f584ada5be786546368f52ef1c63e7dc478094406f182eccafbd927662"
+  },
+  {
+   "path": "games/wc1/src/front.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "da12b3842a20bee0f1d2302d6b5d89a605f74881",
+   "bytes": 9306,
+   "sha256": "cb4e7b087f29c363f6ca50922e5b135b9e58dc1d109c5ac5404767a3c8802d7e"
+  },
+  {
+   "path": "games/wc1/src/game.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "b2c4685c4273ea3160bf0438e2e1f35b034c522a",
+   "bytes": 17522,
+   "sha256": "fdc5c580a17d12cfde66457916651695f63778af7cdb21d56ea3466e8d139712"
+  },
+  {
+   "path": "games/wc1/src/hud.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "3a2930e0dfc971bff4ee4bc1bd36515407bd90bb",
+   "bytes": 6894,
+   "sha256": "87aa1b56d3c2fef40ccac8928edd87cd2b9dbdcb3e53466c2e2ec2a6d8098cf9"
+  },
+  {
+   "path": "games/wc1/src/inc/bios.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "a1c6879348754d9c34798e59b310db84b1b57673",
+   "bytes": 292,
+   "sha256": "ae5dbbd0a3c690e7e74281b4bcb93eb327bc68b4431bb1f487aefba979f33159"
+  },
+  {
+   "path": "games/wc1/src/inc/gemdos.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "b16305d1fbda8ad0926095264e9bcbe8bb12d766",
+   "bytes": 1990,
+   "sha256": "5fbaaded5198d525f59b8040ab545e0643b11301d10076d457822302a00bdf76"
+  },
+  {
+   "path": "games/wc1/src/inc/wc1.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "c8a1f3c0f76e550617e2a77aca475f937a79efce",
+   "bytes": 3988,
+   "sha256": "29af4b983dcfca4c7186529e1c0bed0f748b07e3a0a271541745d66bd6feb55e"
+  },
+  {
+   "path": "games/wc1/src/inc/xbios.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "2c748a5db7872c43fc574fa5ba76d6f7292a93a1",
+   "bytes": 1253,
+   "sha256": "16bae54fad8eba22ead367c4dd8ee9fed1843ed94c50a300e0b4b0643096e363"
+  },
+  {
+   "path": "games/wc1/src/input.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "963c2242b08505a3b32cba599dce7cb099772589",
+   "bytes": 6943,
+   "sha256": "010582ae1f0eb1f45e7ca63b5729e21e1c6e52543711ae091da91625218fb687"
+  },
+  {
+   "path": "games/wc1/src/main.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "ced7a98f094efc63ddf32d8fd0857830b47ed887",
+   "bytes": 5295,
+   "sha256": "7c15c61fb7c4e10b0a82df597126548ec3615f0c7872c8ce2cf984aa7c76fb73"
+  },
+  {
+   "path": "games/wc1/src/mission.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "80eee8b93da6c48614d3f0af0f31363431104527",
+   "bytes": 42334,
+   "sha256": "17941334b9def8d25e1aef7fd70ba985c5166f37a3b19e4bcb95f0e4ea7133bc"
+  },
+  {
+   "path": "games/wc1/src/object.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "348980b18c0a5560bdb81cfd46b6889525f05398",
+   "bytes": 11040,
+   "sha256": "17ce8833c38556e0574f36d0afa1b4fd5c3a36cc6ae695e7f89d7cb2c290e17b"
+  },
+  {
+   "path": "games/wc1/src/render.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "c43542eae609ac58ced0203b020ba3dc375d9461",
+   "bytes": 4203,
+   "sha256": "0b3a0598935859b8fbe3c884a5e8a0e864cbbf5791fa9c3828a600eb81b763a5"
+  },
+  {
+   "path": "games/wc1/src/resource_io.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "7d40ffdedfac0400170d444b0a6286046eda7d7b",
+   "bytes": 1506,
+   "sha256": "b8957a06fe8eaad4eb1e5c320abfbcdc1506bdc8c2cb1cfa6dfd76cd27b75685"
+  },
+  {
+   "path": "games/wc1/src/resources.c",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "3b0e3af41ee4d3c8efeb25f3b50f5ab0be9da1aa",
+   "bytes": 287402,
+   "sha256": "5592c21213ceda05dbe5ad4f839e67b890df5aa9aeccb74e5d262a0db0922725"
+  },
+  {
+   "path": "games/wc1/src/start.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "a33a690e3f7af78f878e78068488d223aed98efe",
+   "bytes": 6267,
+   "sha256": "b0490b180352f0a4c97d50bcbff211a3ac95110c7ba190336123ea588efe0582"
+  },
+  {
+   "path": "games/wc1/src/vbl.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "333645500ef77d4f482a914fdf6f32bc220a12cd",
+   "bytes": 3116,
+   "sha256": "ec3cd0573fc43e86b290d7a9d55a703c975725e73a694382d71f45a48b9bc1c2"
+  },
+  {
+   "path": "games/wc1/tools/build-dsp-c2p.sh",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "d84dbb632dad31bcc4aee0723e6eafd5f69dd57a",
+   "bytes": 1631,
+   "sha256": "7c5b637b8ac91dd6f3590188b8e351d82d5ac07dddbf40a4ce9f7bc3213eaa05"
+  },
+  {
+   "path": "games/wc1/tools/c2p_smoke.c",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "0c4a339cbacf23ee914a8ca2fd1dd8e197070c36",
+   "bytes": 1315,
+   "sha256": "d7cfed28cf13973eeb035351f982bf6baa1e7d02eaad5971602da88cb46ef05e"
+  },
+  {
+   "path": "games/wc1/tools/check_contracts.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "210f7ce552041f546ded7430524058e62b0b5c2b",
+   "bytes": 16874,
+   "sha256": "01fb256a59f216b55b7c6bbd8fde241b5a2a7f2c552592faeb8a4f6d9df584c8"
+  },
+  {
+   "path": "games/wc1/tools/check_falcon_cache.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "84ff933e00d1463638d82d5e946e59a519be803a",
+   "bytes": 2199,
+   "sha256": "8a01adf9b47635b08e9dff4ff0324a06b4dff420bc0bfe8c200ebd41ecd4e740"
+  },
+  {
+   "path": "games/wc1/tools/convert_data.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "b0053bcb2082f85c1ba0faa65ff36a5191b40981",
+   "bytes": 9784,
+   "sha256": "ba59e1e48384bd28dc7dd0f15c3f229e6f2b398284a3616b672241ab5b495172"
+  },
+  {
+   "path": "games/wc1/tools/dsp_wire_smoke.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "ae829779528683e0304a19203972fc22949d554a",
+   "bytes": 3426,
+   "sha256": "3f5d0c7fb15be0982f300df34f8e3bc4e3118a587919d18a57f8cf1c5701cd11"
+  },
+  {
+   "path": "games/wc1/tools/grab-frame.sh",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100755",
+   "git_object": "73307ca8c3c10f3f82c5be51b3c0468647c08a19",
+   "bytes": 7483,
+   "sha256": "1d88186b2547a86cde8e3eca53091f7671d4642c3f302c7a7786c088e1d63831"
+  },
+  {
+   "path": "games/wc1/tools/make_mission_fixture.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "b33d0b76a0bfe903af301e1dbadbab9bfbc29159",
+   "bytes": 4303,
+   "sha256": "10516d5fadea358e86c068a767fbc5198378d40a877335ce145845bbe3b1274c"
+  },
+  {
+   "path": "games/wc1/tools/planar_to_ppm.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "46c5a3785bde34d15783bc9c03cb50bf5ce0f788",
+   "bytes": 2525,
+   "sha256": "e51ba701f1d32b32b18168a3af47bdf66c4ab5aacc6fc318a5c33f54f561906e"
+  },
+  {
+   "path": "games/wc1/tools/resource_loader_smoke.c",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "cd050b7b62848ab9c2de98d05f09d24fcca37e11",
+   "bytes": 34376,
+   "sha256": "8709b27e8e166c09dd29626d1fb5c6d0c3dd9af2239110d1be7b26b0d5a06c67"
+  },
+  {
+   "path": "games/wc1/tools/rgb565_to_ppm.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "09f750aec97386868108d976a2e3a05dcea7b6df",
+   "bytes": 1192,
+   "sha256": "fbbf75b105f0003c6557d43e5558161608c46c867c3a25c93ce61158e3fb6dc0"
+  },
+  {
    "path": "method/.gitattributes",
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
@@ -27816,9 +28290,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "801e23b1c463e02883b452445166ec26c7e0b529",
-   "bytes": 17314,
-   "sha256": "66327541822d5300a074f465e0b1a57397104a3edb48fa58c30e772bc7540b90"
+   "git_object": "0884f6d511a97f70adbf2423470d0f21a9310d3c",
+   "bytes": 17541,
+   "sha256": "68a9a26ee3f333e0393092505b6d7392bd6ce258b0bd7fe244f758a4120518cf"
   },
   {
    "path": "method/analysis/f030ct-translator-review.md",

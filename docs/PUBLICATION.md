@@ -1,10 +1,11 @@
 # Publication status
 
-Prepared 2026-10-14 from the committed HEADs of the twelve F030 DOS port
+Prepared 2026-10-14 from the committed HEADs of the thirteen F030 DOS port
 repositories and F030Method; `sources` in
 [publication-inventory.json](publication-inventory.json) names the imported
-commit of each. F030WC1 is not included: it is not a Git repository, and its
-publication is skipped at the owner's request (F030Method README).
+commit of each. F030WC1 was added the same day at the owner's request, after
+its working tree got a first commit (disks and build trees ignored); this
+reverses the earlier "publication skipped" decision recorded in F030Method.
 
 Status: **private review candidate; not approved for public distribution.**
 License: undecided.
@@ -18,7 +19,8 @@ License: undecided.
   pending edits in F030PanzerGeneral) is not part of the copy.
 - The first import screened 3,105 committed paths: 842 candidates, 1,793
   local-only and 470 excluded, recorded per path with the reason. The
-  decisions are screening results, not legal findings.
+  decisions are screening results, not legal findings. WC1 added 52
+  candidates; none of its committed files failed the screen.
   - Local-only by location: `game/`, `assets/`, `img/`, captures and recorded
     fixtures, Ghidra projects and exports, reassembly output, extracted or
     unpacked data, listings, vendor toolchains (DOSBox, Hatari and vasm
@@ -33,8 +35,9 @@ License: undecided.
 - One content screen was overridden after review: `games/f29/src/sincos.s`, a
   computed table (all 4,500 longs equal `round(sin(2*pi*i/3600)*2^31)` within
   257, float32 rounding; F29's own table is 1,024 words).
-- Comanche, F29 and POR build from this copy. Comanche's `comanche.tos` built
-  here is byte-identical to the one built in F030Comanche (2026-10-14).
+- Comanche, F29, POR and WC1 build from this copy. Comanche's, F29's and
+  WC1's programs built here are byte-identical to the ones built in their
+  development repositories (2026-10-14).
 
 ## Remaining blockers
 
@@ -51,14 +54,19 @@ License: undecided.
    run time, a change in F030Comanche. F29 and POR carry none that the check
    can see (POR checked against its expanded DOS data; F29's data is not on
    the preparing machine, so F29 is unchecked).
-3. **Regeneration gaps.** Comanche's JS reference uses two tables extracted
+3. **Game text in WC1's sources.** `games/wc1/src/resources.c` transcribes the
+   opening subtitles and the credits from the game, and `wc1.tos` carries them
+   with a few small tables: about 0.9 KB of `WC.EXE` in exact runs (the
+   release check, counting whole aligned 32-byte blocks, reports 640 bytes). The content screen cannot recognise prose. Loading the
+   strings from the player's `WC.EXE` is a change in F030WC1.
+4. **Regeneration gaps.** Comanche's JS reference uses two tables extracted
    from the DOS image (`jsComanche/object-bearing.js`, `sine-q31.js`), which
    are excluded; the reference needs a generator that reads the player's copy.
    PanzerGeneral's contract tests need their DOS-recorded fixtures.
-4. **Dependencies.** Builds need F030Arcade's `third_party/` (vasm, vlink,
+5. **Dependencies.** Builds need F030Arcade's `third_party/` (vasm, vlink,
    ASM56000, TOS images, patched Hatari); F030Arcade's own publication is in
    review. Comanche's build needs Python `capstone`.
-5. **Documentation links** still use the development layout (`../F030Method`,
+6. **Documentation links** still use the development layout (`../F030Method`,
    `../F030Arcade`, sibling ports).
 
 ## Checks

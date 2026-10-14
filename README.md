@@ -21,6 +21,7 @@ every port follows.
 | Comanche: Maximum Overkill (1992) | [games/comanche](games/comanche/README.md) | CPU attract plus live-flight, menu, mission-end and combat extensions; JS reference; not certified, DSP renderer dormant |
 | F29 Retaliator (1990) | [games/f29](games/f29/README.md) | DSP/blitter scene renderer, flight-state core, custom menu and HUD; original presentation and missions not reproduced |
 | Pool of Radiance (1988) | [games/por](games/por/README.md) | title image matches the host expansion at 4 MB and 14 MB; layout, text, dungeon view and scripts open |
+| Wing Commander (1990) | [games/wc1](games/wc1/README.md) | title, opening, mission loading, cockpit, fighters, cannon combat and damage; campaign, navigation and missiles unfinished, depth merge unproven |
 | Ultima Underworld II (1993) | [games/uw2](games/uw2/README.md) | browser intro/display slice; Falcon RGB565 presenter checked in a smoke harness |
 | Panzer General (1994) | [games/pg](games/pg/README.md) | DOS/JS/native loader, geometry, RNG and drawing contracts; static Poland screen; no playable route |
 | Ultima Underworld (1992) | [games/uw](games/uw/README.md) | byte-exact executable rebuild, asset recovery, DOS gameplay route; no port slice yet |
@@ -38,7 +39,7 @@ Falcon. None of the games is complete.
 ## Where development happens
 
 This repository is a screened copy. Each port is developed in its own
-repository (F030Comanche, F030F29, F030POR, ... next to this checkout) and the
+repository (F030Comanche, F030F29, F030POR, F030WC1, ... next to this checkout) and the
 shared method in F030Method; `tools/publication.py` imports their committed
 sources and keeps out everything that is the game or derived from it:
 
@@ -86,6 +87,7 @@ make f29                  # games/f29/release/f29.tos and 3d.lod
 make run-f29              # run it in the patched Hatari
 make comanche             # needs games/comanche/assets/extracted/comanche_hdd and re/unpacked (see its README)
 make por                  # por.tos; make -C games/por data falcon-data converts your copy into PORCACHE
+make wc1                  # wc1.tos; make -C games/wc1 data unpacks your disks into WC1DATA
 ```
 
 ## Release

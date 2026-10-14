@@ -43,6 +43,13 @@ GAMES = [
      "POR.TOS reads the folder PORCACHE next to it, converted from your own copy of the game on a PC: put the "
      "archive named in games/por/README.md into games/por/assets/ and run `make -C games/por data falcon-data`.",
      "the title image, which matches the host expansion of the DOS data at 4 MB and 14 MB; no gameplay yet"),
+    ("wc1", "Wing Commander (1990)",
+     ["release/wc1.tos"], ["release/WC1DATA"],
+     "WC1.TOS reads the folder WC1DATA next to it: the files of your three DOS disks (`make -C games/wc1 data` "
+     "unpacks WC_Disk1..3.zip into it). The optional WC1CACHE folder (`make -C games/wc1 falcon-data`) speeds up "
+     "mission loading.",
+     "title, opening and credits, mission loading, cockpit, mobile fighters, cannon combat and damage; campaign, "
+     "navigation and missiles unfinished, the flight depth merge unproven"),
 ]
 
 README = """F030DOS {version}

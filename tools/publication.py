@@ -45,6 +45,7 @@ SOURCES = {
     "lol": ("F030LOL", "games/lol"),
     "magiccarpet": ("F030MagicCarpet", "games/magiccarpet"),
     "icr": ("F030ICR", "games/icr"),
+    "wc1": ("F030WC1", "games/wc1"),
     "method": ("F030Method", "method"),
 }
 

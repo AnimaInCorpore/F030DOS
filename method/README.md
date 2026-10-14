@@ -19,7 +19,7 @@ replacement for the DOS oracle.
 | `../F030Links386` | Links 386 CD (1995) | `git@github.com:AnimaInCorpore/F030Links386.git` |
 | `../F030LOL` | Lands of Lore: The Throne of Chaos (1994) | `git@github.com:AnimaInCorpore/F030LOL.git` |
 | `../F030MagicCarpet` | Magic Carpet (1994/1995) | `git@github.com:AnimaInCorpore/F030MagicCarpet.git` |
-| `../F030WC1` | Wing Commander (1990) | *no remote yet — not a git repository* |
+| `../F030WC1` | Wing Commander (1990) | *local Git repository since 2026-10-14, no remote* |
 | `../F030ICR` | IndyCar Racing v1.05 (1994) | `git@github.com:AnimaInCorpore/F030ICR.git` |
 | `../F030PanzerGeneral` | Panzer General (1994) | `git@github.com:AnimaInCorpore/F030PanzerGeneral.git` |
 
@@ -45,8 +45,11 @@ function record alongside that DOS evidence. **Correction, 2026-10-10:** the
 contains native title/flight/combat sources, resource tools and function records;
 see [its current plan](../F030WC1/PORTING.md). The flight depth merge remains
 Unproven, and a complete DOS-validated browser/game route is not established.
-The checkout still has no Git repository or remote; its publication is skipped
-at the owner's request. Source availability does not establish fidelity.
+Source availability does not establish fidelity. **Correction, 2026-10-14:**
+"no Git repository, publication skipped at the owner's request" is historical;
+the checkout is a local Git repository (no remote) and, at the owner's request,
+is part of the F030DOS publication copy. The same note in
+`gen_cross_project.py` (§0 and the WC1 tail) still needs this correction.
 
 ## Porting status — reviewed 2026-10-10
 

@@ -1,0 +1,11 @@
+build/
+obj/
+release/
+*.o
+*.lst
+*.tos
+*.map
+.DS_Store
+
+# The supplied game disks: never commit (AGENTS.md, Workspace)
+*.zip
