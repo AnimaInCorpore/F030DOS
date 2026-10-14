@@ -116,6 +116,7 @@ def inventory():
 
 def write_inventory(manifest):
     manifest["files"].sort(key=lambda r: r["path"])
+    INVENTORY.parent.mkdir(parents=True, exist_ok=True)
     INVENTORY.write_text(json.dumps(manifest, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
 
 
