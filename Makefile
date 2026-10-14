@@ -22,7 +22,9 @@ TOS404 ?= $(ARCADE)/third_party/tos/tos404.img
 
 # The ports' scripts call `python`; a pyenv shim that points nowhere makes
 # Comanche's build fail without relinking.  build/pybin puts PYTHON first.
+# PYTHON is looked up in the PATH before that, or pybin would link to itself.
 PYBIN := $(CURDIR)/build/pybin
+OUTER_PATH := $(PATH)
 export PATH := $(PYBIN):$(PATH)
 
 .PHONY: list pybin check status release comanche f29 por wc1 uw2 \
@@ -38,7 +40,7 @@ list:
 
 pybin:
 	@mkdir -p $(PYBIN)
-	@p=$$(command -v $(PYTHON)) || { echo "$(PYTHON) not found" >&2; exit 1; }; \
+	@p=$$(PATH='$(OUTER_PATH)'; command -v $(PYTHON)) || { echo "$(PYTHON) not found" >&2; exit 1; }; \
 		ln -sfn "$$p" $(PYBIN)/python; ln -sfn "$$p" $(PYBIN)/python3
 
 comanche: pybin
