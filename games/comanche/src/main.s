@@ -7,7 +7,7 @@
 
         include "inc/comanche.s"
 
-        xref    snd_init, snd_apply_settings, flight_announcer
+        xref    snd_init, snd_apply_settings, flight_announcer, music_startup
         xref    dtl_status
 
         global  main
@@ -33,6 +33,9 @@ main
         ; 0000554F-000055AF: COMANCHE.CFG, the sound card probe, MODE($FF) and
         ; RATE(2) come before the campaign catalog and the menu file.
         jsr     snd_init
+        ; 000055B4-000055D8: [00019DF0] = 0x5000, the music device detected
+        ; and selected (src/music.s).
+        jsr     music_startup
 
         ; 0000561F builds the campaign catalog before anything else reads a
         ; mission: it is what turns a roster's campaign byte into a filename.
@@ -55,7 +58,7 @@ main
         ; machine starts, because GEMDOS file I/O cannot be hidden inside the
         ; VBL-paced compositor. This is a storage/scheduling exception only;
         ; no mission, map, sky or flight state is selected here.
-        bsr     sprite_init
+        jsr     sprite_init
         tst.w   sprite_bank_status
         bne     .done
         tst.l   sprite_model

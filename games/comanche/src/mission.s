@@ -39,7 +39,7 @@
         global  mission_map_family, mission_sky_number
         global  mission_palette_name
         global  mission_probe_campaign, mission_load_campaign
-        global  mission_sprite_names
+        global  mission_sprite_names, mission_music_names
 ; The decoded stream itself, for the mission screen's name fill. 0002A1AD
 ; reads the same buffer the parser does rather than re-reading the file.
         global  mission_buffer
@@ -307,6 +307,11 @@ mission_parse
 .clear_sprite_names
         move.l  d1,(a1)+
         dbra    d0,.clear_sprite_names
+        lea     mission_music_names,a1
+        moveq   #(3*MISSION_RESOURCE_NAME_BYTES)/4-1,d0
+.clear_music_names
+        move.l  d1,(a1)+
+        dbra    d0,.clear_music_names
 
         ; Later records are selected by walking three delimiters per prior
         ; record: resource-list open, resource-list close, and the following
@@ -698,6 +703,24 @@ mission_resource_scan
         ; Lines 11..20 are the ten sprite slots. Copy the authored filename,
         ; including its case and extension, with the same bounded storage
         ; contract as the DOS inline placeholders.
+        ; Lines 6, 8 and 10 are the mission's music: the theme, the win and
+        ; the lose song. 0002913C copies them into the inline placeholders
+        ; 0x67F3 (00006806, [00019E8C]), 0x28A0C and 0x288D5 that the loader
+        ; 00015E6E reads (sound-driver.md section 5.9); keep them the same way.
+        cmpi.w  #6,d6
+        beq.s   .music_name
+        cmpi.w  #8,d6
+        beq.s   .music_name
+        cmpi.w  #10,d6
+        bne.s   .not_music
+.music_name
+        move.w  d6,d1
+        subq.w  #6,d1
+        lsl.w   #3,d1                           ; (line - 6) / 2 * 16
+        lea     mission_music_names,a1
+        adda.w  d1,a1
+        bra     .copy_name_bounded
+.not_music
         cmpi.w  #MISSION_FIXED_RESOURCES,d6
         blo     .skip_line_copy
         cmpi.w  #MISSION_RESOURCE_COUNT,d6
@@ -707,6 +730,7 @@ mission_resource_scan
         lsl.w   #4,d1
         lea     mission_sprite_names,a1
         adda.w  d1,a1
+.copy_name_bounded
         moveq   #MISSION_RESOURCE_NAME_BYTES-1,d3
 .copy_name
         cmpa.l  d7,a0
@@ -1080,6 +1104,10 @@ mission_obj_f10
 ; DOS's inline writable placeholders.
 mission_sprite_names
         ds.b    10*MISSION_RESOURCE_NAME_BYTES
+        even
+; Resource lines 6, 8 and 10: the theme, the win song and the lose song.
+mission_music_names
+        ds.b    3*MISSION_RESOURCE_NAME_BYTES
         even
 mission_catalog_title
         ds.b    MISSION_TITLE_BYTES

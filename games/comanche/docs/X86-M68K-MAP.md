@@ -2532,21 +2532,27 @@ contains addresses and conclusions only.
 
 ## Sound driver (2026-10-07)
 
-The music and FM driver is recovered and proven in JavaScript only (`jsComanche/dos-sound.js`, checked against the original by
-`tools/check-js-sound.js`); no Falcon source yet - the 68030 interface is specified in `analysis/functions/sound-driver.md`, section 10.
+The music and FM driver is recovered and proven in JavaScript (`jsComanche/dos-sound.js`, checked against the original by
+`tools/check-js-sound.js`) and, since 2026-10-15, ported: `src/music.s`, write for write equal to the original's 23 OPL2 captures on
+both CPUs (`tools/check-falcon-music.py`: 46,759 ops, 46,499 writes); its output is one OPL2 register sink, `music_opl_write`, where a
+synthesiser attaches. The interface is `analysis/functions/sound-driver.md` section 10.
 The **digital effect layer** is on the Falcon since the same day: `src/sound.s`, its call sites and its verification are in
 `analysis/functions/sound-falcon.md`. Records of the JavaScript routines: `analysis/functions/browser-attract.md#sound-driver-core`
 and its siblings.
 
 | DOS range | what | JavaScript | Falcon | status |
 |---|---|---|---|---|
-| `0002B9CF-0002B9F2`, `0002BB01-0002BBF1` | command entry and the commands (effect, select, pause, resume, query, volume, detect) | `command`, `cmd*` | `snd_fm_command` (empty interface) | proven; Falcon pending |
-| `0002BBF2-0002BC7B`, `0002BC8B-0002BCE9`, `0002BF12-0002BF87` | the 65 Hz tick, key on/off, silence, patch load | `musicTick`, `keyChannel`, `silence`, `loadPatch` | none | proven |
-| `0002BD00-0002BEEF`, `00015E6E` | song start/stop, event reader and sequencer, KRL0/KRL1 loader | `startMusic`, `readEvent`, `sequencer`, `decodeMusicFile` | loader: `snd_bank_load` (banks only) | proven |
-| `0002BB09-0002BBBA`, `0002D408` | FM effects | `cmdEffect`, `effectHalf` | none | proven |
-| `0002C1B8-0002C431` | OPL2 device | `oplInit`, `oplPatch`, `oplNote`, `oplPitch`, `oplDetect` | none | proven |
-| `0002BF88-0002C1B7` | MPU-401 device | `mpu*` | none | proven (bytes) |
-| `0002C432-0002C481` | PC speaker device | `speaker*` | none | proven (port values) |
+| `0002B9CF-0002B9F2`, `0002BB01-0002BBF1` | command entry and the commands (effect, select, pause, resume, query, volume, detect) | `command`, `cmd*` | `music_command` (`snd_fm_command` jumps to it), `cmd_*` | ported, write-exact |
+| `0002BBF2-0002BC7B`, `0002BC8B-0002BCE9`, `0002BF12-0002BF87` | the 65 Hz tick, key on/off, silence, patch load | `musicTick`, `keyChannel`, `silence`, `loadPatch` | `music_tick` (from `flight_shake_clock`), `mus_tick`, `mus_key`, `mus_silence`, `mus_load_patch` | ported, write-exact |
+| `0002BD00-0002BEEF`, `00015E6E` | song start/stop, event reader and sequencer, KRL0/KRL1 loader | `startMusic`, `readEvent`, `sequencer`, `decodeMusicFile` | `music_start`, `music_stop`, `mus_read_event`, `mus_sequencer`; loader `snd_bank_load` | ported, write-exact |
+| `0002BB09-0002BBBA`, `0002D408` | FM effects | `cmdEffect`, `effectHalf` | `cmd_effect`, `fx_half` | ported, write-exact |
+| `0002C1B8-0002C431` | OPL2 device | `oplInit`, `oplPatch`, `oplNote`, `oplPitch`, `oplDetect` | `opl_init`, `opl_patch`, `opl_note`, `opl_pitch`, `opl_detect`; the port write is `music_opl_write` | ported, write-exact |
+| `0002BF88-0002C1B7` | MPU-401 device | `mpu*` | none: no MPU-401 on a Falcon (detect 0) | proven (bytes); platform |
+| `0002C432-0002C481` | PC speaker device | `speaker*` | none: no PC speaker on a Falcon (detect 0) | proven (port values); platform |
+| `000055B4-000055D8`, `00006B2F-00006B38` | music device start-up and exit | - | `music_startup`, `music_shutdown` | ported |
+| `000056C4-000056D8`, `000056F9`/`00005771`, `000057EE`/`00005851`, `00005896-0000596F`, `0000587D`/`00005ACC` | the attract's songs and the two loops the song ends | - | `music_attract_pass`, `music_side_start`, `music_fanfare_start`, `music_title_start`; `attract.s` `.song_ends_it` | ported |
+| `000067EE-00006806`, `000069EF-00006A00`, `000288C3`/`000289FA`/`00028A23`, `00005AE3` + `00028CA2-00028CE3` | mission theme, debrief song, menu songs | - | `music_theme_load`, `music_theme_start`, `music_debrief_start`, `music_menu_enter` | ported |
+| `00025E02`, `0002627D`, `0002873D` | the options bar's pause and resume, mission end | - | `music_bar_open`, `music_resend` | ported |
 | `00004EA2-00004F6D` | start a sample on a slot | `stageSample` | `snd_start` | ported, byte-exact |
 | `00004F6E-00004FBA` | stage a sample as the slot's next (the rotor loop) | `stageVoice` | `snd_voice` | ported, byte-exact |
 | `00004E26-00004E86` | speech cues (SPEAK0, SPEAK1) | `speech` | `snd_speech_a`, `snd_speech_b` | ported, byte-exact |
@@ -2557,5 +2563,5 @@ and its siblings.
 | `00004FE4-000050AF` | mixer mode (start/stop) | - | `snd_mode` | ported; the SB start/stop is the DMA path (platform) |
 | `00004FBB-00004FCF`, `00005528-000055AF`, `00006B28-00006B2A` | DET, start-up (CFG, MODE, RATE), exit | - | `snd_det`, `snd_init`, `snd_shutdown` | ported; DET is the Falcon's sound lock |
 | `00004142-000041B7`, `00004A0A`, `00004C0A` | the mixer's initial state and curves | image bytes | `snd_mixer_init` | equal to the image |
-| `000267F3-0002687C`, `00026CE3-00026D2B` | apply settings (sound half), the live radios | - | `snd_apply_sound`, `snd_apply_settings`, `menu.s` `.radio` | ported; music half pending |
+| `000267F3-0002687C`, `00026CE3-00026D2B`, `00026D30-00026D85` | apply settings (music half, then sound half), the live radios | - | `music_apply_settings`, `snd_apply_sound`, `snd_apply_settings`, `music_radio`, `menu.s` `.radio` | ported |
 | `00001F49`, `00002050`, `00001FBC` | the Sound Blaster's DSP, IRQ and time constant | - | `snd_dma_open/start/stop`, `snd_vbl`, `snd_resample` | N/A - platform replacement |

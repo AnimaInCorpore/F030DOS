@@ -7,7 +7,7 @@
 ; own terrain and sky. The traced route executes the mission object factory
 ; before DEMO<pass> and reaches the active object/callback/effect graph in the
 ; flight frame. The digital effect layer (src/sound.s) is wired at the points the
-; original calls it; the music driver is not, and the platform's 50 Hz VBL differs from
+; original calls it, and so is the music driver (src/music.s); the platform's 50 Hz VBL differs from
 ; the original's ~70 Hz retrace. The state machine still consumes exactly
 ; one recorded DOS tick per completed frame; only wall-clock presentation
 ; rate differs.
@@ -37,6 +37,8 @@
         include "inc/comanche.s"
 
         xref    snd_mode, snd_reset, snd_apply_settings, snd_title_bank_load
+        xref    music_attract_pass, music_side_start, music_fanfare_start
+        xref    music_title_start, music_menu_enter, music_resend, music_playing
         xref    snd_bank_fx, snd_sample_ptr, snd_voice
         xref    flight_mission_sound_load, flight_mission_sound_start
 
@@ -117,6 +119,7 @@ attract_stop
         ; the music loads, the pilot roster - is not ported. The menu is entered
         ; over whatever the attract left on screen instead of over its own
         ; background, which is the visible gap and is recorded as such.
+        jsr     music_menu_enter                ; 00005AE3 and 00028CA2-00028CE3
         moveq   #0,d0                           ; [00027DAC] = 0, main operations
         jsr     screen_enter
         rts
@@ -135,6 +138,7 @@ attract_next_pass
         ; 00005692: the mixer is off at the start of every pass.
         moveq   #0,d0
         jsr     snd_mode
+        jsr     music_attract_pass              ; 000056C4-000056D8
         move.w  attract_pass,d0
         addq.w  #1,d0
         andi.w  #3,d0
@@ -152,12 +156,14 @@ attract_next_pass
         move.w  #480,attract_timer
         lea     name_back,a0
         bsr     attract_show_image
+        jsr     music_fanfare_start             ; 000057EE, 00005851: FANFARE.RLE once
         jsr     snd_apply_settings              ; 00005856: the mixer on for the fanfare screen
         move.w  #1,attract_bank_bad             ; FANFARE.RLE is the tune,
         bra     .entered                        ; not a bank: image alone
 .side
         move.w  #300,attract_timer
         bsr     attract_side_enter
+        jsr     music_side_start                ; 000056F9, 00005771: MENUMUS2 looped
         jsr     snd_apply_settings              ; 00005765: the mixer on for the side view
 .entered
         clr.w   attract_anim
@@ -278,6 +284,19 @@ attract_frame
         ; overview at 00028E7C has no count at all.
         tst.w   attract_untimed
         bne     .owned
+        ; 0000587D (fanfare) and 00005ACC (title): the screen also ends when
+        ; its song does - command 6 answering 0. Without a music device the
+        ; song never advances and both run their full count, as there.
+        move.w  attract_screen,d0
+        cmpi.w  #AT_FANFARE,d0
+        beq.s   .song_ends_it
+        cmpi.w  #AT_TITLE,d0
+        bne.s   .count
+.song_ends_it
+        jsr     music_playing
+        tst.b   d0
+        beq     .expired
+.count
         tst.w   attract_timer
         ble     .expired
         bra     .owned
@@ -297,6 +316,7 @@ attract_frame
         move.w  #TITLE_HELI_TOP,attract_heli
         moveq   #0,d0
         jsr     snd_mode                        ; 00005891: the mixer off after the fanfare
+        jsr     music_title_start               ; 00005896-000058B4, 0000596F: OPENMUS once
         jsr     snd_title_bank_load             ; 000058D4: snd1.rle for the title
         lea     name_tpic,a0
         bsr     attract_show_image
@@ -1026,8 +1046,10 @@ attract_pan_blit
 ;   names on every capture so this stays checked rather than remembered.
 attract_start_demo
         movem.l d0-d7,-(sp)
-        ; 00005AE3-00005B35 on the way to a demo: MODE(0), RESET, then (the menu
-        ; being skipped in the attract) MODE(0) again.
+        ; 00005AE3-00005B35 on the way to a demo: [00019DF0] to the music
+        ; driver, MODE(0), RESET, then (the menu being skipped in the attract)
+        ; MODE(0) again.
+        jsr     music_resend                    ; 00005AE3-00005AE9
         moveq   #0,d0
         jsr     snd_mode                        ; 00005AF0
         jsr     snd_reset                       ; 00005B24
@@ -1055,7 +1077,7 @@ attract_start_demo
         btst    #2,d0
         beq     .asset_bad
         move.w  mission_map_family,d0
-        bsr     resources_select_family
+        jsr     resources_select_family
         tst.w   resource_map_status
         bne     .asset_bad
         move.w  mission_sky_number,d0

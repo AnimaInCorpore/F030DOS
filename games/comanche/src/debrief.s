@@ -22,6 +22,7 @@
         xref    mission_wounded, mission_wounded_max, mission_target_count
         xref    ally_wrecked, debrief_text
         xref    key_state, flt_mission_end, exit_requested
+        xref    music_resend, music_menu_enter
         xref    object_clear_active, attract_active, attract_next_pass
         xref    hud_variant_x, hud_variant_y
         xref    flt_shake_phase, flt_shake_timer, flt_crash_drop
@@ -398,6 +399,7 @@ input_session_keys
 ;   original, the pilot branch below against its captured records.
 mission_end
         clr.w   flt_mission_end
+        jsr     music_resend                    ; 0002873D-00028743: [00019DF0]
         moveq   #0,d0
         jsr     snd_mode                        ; 0002876B-0002876D: the mixer off
         ; 0002874D-00028761: the shake's phase and countdown and the wreck's
@@ -418,8 +420,9 @@ mission_end
 .not_attract
         tst.b   mission_flown                   ; 000287B8 cmp [00019D91],0
         bne.s   .flown
+        jsr     music_menu_enter                ; 00005AE3 and the menu chain's music
         moveq   #0,d0                           ; 000287BF je 00005AE3: the menu
-        bra     screen_enter
+        jmp     screen_enter
 .flown
         clr.b   mission_flown                   ; 000287C5
 
@@ -579,7 +582,7 @@ pilot_record_done
         bsr     roster_save                     ; 00015D40 over 00029582
 .show
         moveq   #SCR_ID_DEBRIEF,d0              ; 00028A1F
-        bra     screen_enter
+        jmp     screen_enter
 
 ; The mission just chosen from the list, 00028FE6-00029010: it becomes the
 ; pilot's progress byte for the campaign they are on ([0002970A + 10 * pilot +

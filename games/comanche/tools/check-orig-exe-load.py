@@ -39,6 +39,10 @@ FROM_FLAT = (('zove_frames', 0x28E75, 6, 1), ('coma_frames', 0x59C8, 36, 1),
              ('pan_wobble', 0x5985, 64, 1), ('attract_gamma', 0x2B7D0, 64, 1),
              ('resource_gamma', 0x2B7D0, 64, 1), ('snd_rate_tab', 0x4998, 18, 4))
 EXTRA = (('horizon_table', prepare.DEPTH_SAMPLES * 2), ('ring_steps', 2))
+# The music driver's block mirrors flat 0002C48C-0002DA00 (src/music.s); its
+# table ranges must hold the flat image's bytes at their own offsets.
+MUSIC_BASE, MUSIC_END = 0x2C48C, 0x2DA00
+MUSIC_TABLES = ((0x2C619, 0x30), (0x2C70D, 0x2DA00 - 0x2C70D))
 
 
 def reference_tables(path):
@@ -113,7 +117,8 @@ def main():
         return '\n'.join(lines) + '\n'
     support.entry_breakpoint(out, program, '')
     (out / 'arm.ini').write_text('symbols prg\nb pc = snd_init :once :file early.ini\n')
-    (out / 'early.ini').write_text(saves(loader) + 'b pc = attract_start :once :file done.ini\n')
+    (out / 'early.ini').write_text(saves(loader) + f'savebin music_mem.bin music_mem ${MUSIC_END - MUSIC_BASE:x}\n'
+                                   + 'b pc = attract_start :once :file done.ini\n')
     (out / 'done.ini').write_text(saves(dtl) + 'quit\n')
     command = support.emulator_command(out, 68030, program, 'boot.ini')
     command[command.index('--run-vbls') + 1] = '3000'
@@ -141,9 +146,19 @@ def main():
             failures += 1
         else:
             print(f'ok   {label} ({size} bytes{", zero: no reader" if label in UNFILLED else ""})')
+    dump = out / 'music_mem.bin'
+    block = dump.read_bytes() if dump.is_file() else b''
+    for addr, size in MUSIC_TABLES:
+        actual = block[addr - MUSIC_BASE:addr - MUSIC_BASE + size]
+        if actual != flat[addr:addr + size]:
+            print(f'FAIL music tables at {addr:08X}: not the image\'s {size} bytes')
+            failures += 1
+        else:
+            print(f'ok   music tables at {addr:08X} ({size} bytes)')
     if failures:
         sys.exit(f'{failures} table(s) differ')
-    print(f'PASS: all {len(labels)} tables equal build/original_test.s')
+    print(f'PASS: all {len(labels)} tables equal build/original_test.s, '
+          f'the music tables the flat image')
 
 
 if __name__ == '__main__':

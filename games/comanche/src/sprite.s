@@ -757,7 +757,7 @@ sprite_bank_load
         subq.l  #8,d2                   ; input bytes available
         move.l  a6,a1
         move.l  d1,d0                   ; output bytes wanted
-        bsr     krl_decode
+        jsr     krl_decode
         tst.l   d0
         bne     .bad_bank
 

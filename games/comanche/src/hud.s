@@ -112,19 +112,19 @@ instruments_draw
         move.w  #$10,d1
         move.w  #$ea,d2
         move.l  work_screen,a0
-        bsr     sprite_draw_page_opaque
+        jsr     sprite_draw_page_opaque
 
         lea     instrument_bank,a1
         moveq   #$25,d0
         move.w  #$0c,d1
         move.w  #$c9,d2
-        bsr     sprite_draw_page_opaque
+        jsr     sprite_draw_page_opaque
         move.l  work_screen,a0
         lea     instrument_bank,a1
         moveq   #$39,d0
         move.w  #$110,d1
         move.w  #$cb,d2
-        bsr     sprite_draw_page_opaque
+        jsr     sprite_draw_page_opaque
         move.l  (sp)+,sprite_palette
         bsr     hud_threat_sound                ; 000077BD-00007857, the part after the element
 
@@ -369,7 +369,7 @@ mfd_opaque_panel
         move.w  #$ae,d2
         move.l  work_screen,a0
         lea     instrument_bank,a1
-        bsr     sprite_draw_page_opaque         ; 00025880
+        jsr     sprite_draw_page_opaque         ; 00025880
         move.l  (sp)+,sprite_palette
         movem.l (sp)+,d0-d3/a0-a1
         rts
@@ -470,7 +470,7 @@ mfd_body_07530
         move.w  #$ae,d2
         move.l  work_screen,a0
         lea     instrument_bank,a1
-        bsr     sprite_draw_page_masked_quantised ; 00007571 -> 0002599E
+        jsr     sprite_draw_page_masked_quantised ; 00007571 -> 0002599E
 .system_next
         dbra    d7,.system                      ; 00007579
         move.l  (sp)+,sprite_palette
@@ -617,7 +617,7 @@ mfd_draw_map
         move.w  #$ce,d2                         ; 0000759A
         move.l  work_screen,a0
         lea     instrument_bank,a1
-        bsr     sprite_draw_page_masked_quantised
+        jsr     sprite_draw_page_masked_quantised
         move.l  (sp)+,sprite_palette
 
         movem.l (sp)+,d0-d7/a0-a6
@@ -665,7 +665,7 @@ hud_draw_dynamic
         moveq   #$21,d0
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
         move.l  (sp)+,sprite_palette
 
         ; The line is the last operation in the DOS sight path, after the
@@ -724,7 +724,7 @@ hud_draw_variant_tail
         move.w  #$5a,d2
         move.l  work_screen,a0
         lea     instrument_bank,a1
-        bsr     sprite_draw_page_masked_quantised
+        jsr     sprite_draw_page_masked_quantised
 
         ; 0000D8AE-0000D8F4: the target designator. Its one gate is the
         ; console variant; its position comes from the two tables
@@ -749,7 +749,7 @@ hud_draw_variant_tail
         moveq   #4,d0
         move.l  work_screen,a0
         lea     instrument_bank,a1
-        bsr     sprite_draw_page_masked_quantised
+        jsr     sprite_draw_page_masked_quantised
 .restore
         move.l  (sp)+,sprite_palette
 .done
@@ -779,7 +779,7 @@ hud_draw_authored
         move.w  #5,d2
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
         bsr     hud_draw_compass_window
 
 .indicators
@@ -797,7 +797,7 @@ hud_draw_authored
         move.w  #$88,d2
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
 
         ; 0000D7D4: abs(max(forward,lateral)) >> 17, rendered by D8F5.
         move.l  flt_fwd,d0
@@ -826,7 +826,7 @@ hud_draw_authored
         move.w  #$78,d2
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
         moveq   #0,d3
         move.b  hud_clearance,d3
         lsr.w   #2,d3
@@ -979,7 +979,7 @@ hud_draw_value
         addi.w  #$16,d0                         ; 0000D905 add dl, 0x16
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
 
         subq.w  #4,d1                           ; 0000D927 sub [0x2587C], 4
         bsr     hud_divmod10
@@ -987,7 +987,7 @@ hud_draw_value
         addi.w  #$16,d0
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
 
         ; 0000D935 is `cmp al, 9`, and 0000D939/0000D93B are `add al, 0x16`
         ; and a BYTE store to [0x22364]. Both are the low byte of the
@@ -1003,7 +1003,7 @@ hud_draw_value
         addi.w  #$16,d0
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
 .out
         movem.l (sp)+,d0-d5/a0-a2
         rts
@@ -1037,7 +1037,7 @@ hud_draw_fixed_digits
         addi.w  #$0a,d0                 ; 0000749D add dl, 0xA
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
         subq.w  #5,d1                   ; 000074AD sub [0x2587C], 5
         dbra    d7,.digit
 .digits_out
@@ -1708,7 +1708,7 @@ mfd_draw_labels
         move.l  d3,d2
         move.l  work_screen,a0
         lea     instrument_bank,a1
-        bsr     sprite_draw_page_opaque
+        jsr     sprite_draw_page_opaque
         rts
 
 mfd_label_y

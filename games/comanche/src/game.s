@@ -10,6 +10,7 @@
         global  game_init, game_tick
         xref    object_launch_flare, object_launch_chaff, weapon_fire_rocket
         xref    flight_menu_silence, flight_rotor, original_height_map
+        xref    music_bar_open, music_resend
         xref    mfd_zoom, menu_settings, key_state, input_notch, key_queue, menu_bar_text
         global  player_x, player_y, player_heading, player_altitude
         global  exit_requested, input_pending
@@ -434,8 +435,10 @@ game_tick
         tst.w   menu_open
         beq     .bar_closed
         jsr     flight_menu_silence
+        jsr     music_bar_open                  ; 00025E02: the music paused
         bra     .no_toggle
 .bar_closed
+        jsr     music_resend                    ; 0002627D: [00019DF0] again
         jsr     flight_rotor
 .no_toggle
 

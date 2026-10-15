@@ -44,6 +44,7 @@
 
         include "inc/comanche.s"
         xref    snd_apply_sound
+        xref    music_radio, music_resend
         xref    flt_mission_end, exit_requested
 
         global  menu_text_draw, menu_text_width, menu_ink, menu_default_ink
@@ -958,6 +959,12 @@ menu_confirm
         addi.w  #'0',d1
         lea     menu_settings,a1
         move.b  d1,0(a1,d2.w)
+        cmpi.w  #2,d2
+        bne.s   .not_music
+        move.b  d1,d0
+        jsr     music_radio                     ; 00026D30-00026D85
+        bra     .out
+.not_music
         cmpi.w  #1,d2
         bne     .out
         jsr     snd_apply_sound                 ; 00026CEE-00026CF3, 00026D04-00026D13, 00026D24-00026D26
@@ -1032,6 +1039,7 @@ menu_confirm
         bra     .out
 .game_return
         clr.w   menu_open                       ; 00026E1B jmp 0002615C
+        jsr     music_resend                    ; the bar's exit, 0002627D
         bra     .out
 .game_abort
         clr.w   menu_open

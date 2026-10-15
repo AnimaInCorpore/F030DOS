@@ -49,6 +49,7 @@
         global  snd_wr, snd_ring, snd_resample, snd_rs_phase, snd_rs_have
 
         xref    resource_buffer, krl_decode, menu_settings, frame_count
+        xref    music_command, music_apply_settings
 
 ; ---------------------------------------------------------------------------
 ; Constants. SL_* is the layout of one slot record (three, SL_SIZE apart); the
@@ -418,12 +419,12 @@ snd_fx_core
         move.l  d4,d0                           ; 00004E87 mov eax,ebp
         bra     snd_fm_command                  ; 00004E89 jmp 0002B9CF
 
-; The FM/music driver's command entry (DOS 0002B9CF, ax = command). Not part of
-; the digital layer; the music driver task replaces this routine.
+; The FM/music driver's command entry (DOS 0002B9CF, ax = command): the music
+; driver's own, src/music.s.
 ; DOS: flat 0002B9CF, music/FM command entry.
-; Port: N/A - interface placeholder for the music driver (an empty routine).
+; Port: music_command (d0.w = ax).
 snd_fm_command
-        rts
+        jmp     music_command
 
 ; ===========================================================================
 ; The sample of a bank.
@@ -672,16 +673,17 @@ snd_apply_sound
         movem.l (sp)+,d0-d1
         rts
 
-; 000267F3 as a whole. The music half (000267F3-00026842: [00025DD6] picks the
-; music level and sends FM command 0x5000 / 0x4000) belongs to the music driver
-; and is not ported; the sound half does not depend on it.
+; 000267F3 as a whole: the music half (000267F3-00026842, music_apply_settings
+; in src/music.s: [00025DD6] picks the music level and sends FM command
+; 0x5000 / 0x4000), then the sound half.
 ; DOS: flat 000267F3-0002687C, apply the sound settings.
 ; DOS symbol: sub_000267F3
 ; Record: analysis/functions/sound-falcon.md#snd_apply_sound
-; Port: the sound half only (snd_apply_sound).
-; Kind: translated - partial (music half pending).
-; Status: ported for the digital layer.
+; Port: music_apply_settings, then snd_apply_sound.
+; Kind: translated.
+; Status: ported.
 snd_apply_settings
+        jsr     music_apply_settings
         bra     snd_apply_sound
 
 ; ===========================================================================
@@ -864,7 +866,7 @@ snd_bank_load
         lea     8(a0),a0
         movea.l a6,a1
         move.l  d1,d0                           ; output bytes
-        bsr     krl_decode
+        jsr     krl_decode
         tst.l   d0
         bne     .fail
 .ok

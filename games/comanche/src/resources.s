@@ -97,7 +97,7 @@ resources_select_family
         ; Console source bytes were loaded before the first mission was known;
         ; now that the active P/NP palette is installed, bind its pixels to the
         ; same DOS index space before any flight frame is composed.
-        bsr     console_palette_remap
+        jsr     console_palette_remap
         bsr     sprite_bind_flight_palettes
         bsr     resource_remap_colour_map
         tst.l   d0

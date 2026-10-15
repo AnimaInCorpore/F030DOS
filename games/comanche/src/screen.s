@@ -64,6 +64,7 @@
         global  screen_roster_load, roster_buffer
         global  screen_mission_star, screen_mission_next
         xref    debrief_buf, debrief_won, roster_select_mission, pilot_locate
+        xref    music_debrief_start, music_menu_enter
         xref    menu_font_width, menu_lock_text, menu_stats_text, debrief_number
         xref    attract_overview, key_queue, key_state, key_latch
         xref    roster_sort, roster_save, debrief_pilot
@@ -324,6 +325,10 @@ screen_enter
         beq     .debrief_picked
         lea     name_win3,a0
 .debrief_picked
+        move.l  d0,-(sp)
+        move.b  debrief_won,d0
+        jsr     music_debrief_start             ; 000288C3/000289FA, 00028A23
+        move.l  (sp)+,d0
         clr.w   input_held
         clr.w   input_pending
         clr.w   input_events
@@ -1254,6 +1259,7 @@ screen_input
         bne     .not_debrief
         btst    #14,d2
         beq     .out
+        jsr     music_menu_enter                ; 00005AE3 and the menu chain's music
         moveq   #SCR_ID_MAIN,d0
         bsr     screen_enter
         bra     .out
@@ -1608,7 +1614,7 @@ screen_mission_start
         beq     .fail
 
         move.w  mission_map_family,d0
-        bsr     resources_select_family
+        jsr     resources_select_family
         tst.w   resource_map_status
         bne     .fail
         move.w  mission_sky_number,d0
@@ -1627,7 +1633,7 @@ screen_mission_start
         bsr     object_init
         bsr     object_spawn_mission
         clr.w   screen_active
-        bsr     game_init
+        jsr     game_init
         jsr     flight_mission_sound_start      ; 000069DB-00006A0E
     ifne USE_DSP
         ; 00005B33 enters the selected mission only after its D/C/SKY

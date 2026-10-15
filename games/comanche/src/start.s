@@ -9,7 +9,7 @@
         include "inc/xbios.s"
         include "inc/cpu.s"
 
-        xref    snd_shutdown
+        xref    snd_shutdown, music_shutdown
         global  _main
         global  work_screen, display_screen
         global  vector_base
@@ -215,6 +215,7 @@ init
 deinit
         move    #$2700,sr
         jsr     snd_shutdown                    ; 00006B28-00006B2A MODE(0); the sound system is released
+        jsr     music_shutdown                  ; 00006B2F-00006B38 stop, device 0
         clr.w   $ffff820e.w
         clr.b   $ffff8265.w
 

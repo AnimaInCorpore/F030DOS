@@ -52,6 +52,7 @@
         global  flt_death_timer, flt_crash_drop
         global  flight_rotor, flight_menu_silence, flight_announcer, flight_announcer_reset
         global  flight_mission_sound_load, flight_mission_sound_start
+        xref    music_theme_load, music_theme_start
         xref    mission_damage, flt_shake_rng, object_target_latch
         xref    player_death_cue, mission_wounded, view_variant, view_select
         xref    object_scan_upper, object_table, object_state_wreckage
@@ -801,18 +802,21 @@ flight_announcer_reset
 ; Kind: translated.
 flight_mission_sound_load
         bsr     flight_announcer_reset
+        jsr     music_theme_load                ; 000067EE-00006806: [00019E8C]
         jmp     snd_banks_load
 
 ; The sound half of a mission start, after the first frame is up: the settings
 ; applied (a MODE call, which resets the slots), the rotor switch, and the
-; mission-start voice. The mission music (00006A00) is the music driver's.
+; mission-start voice, with the mission music between them (00006A00).
 ; DOS: flat 000069DB-00006A0E.
 ; Record: analysis/functions/sound-falcon.md#call-sites
-; Port: snd_apply_settings (000069DB), flight_rotor (000069E0), SPEAK1 id 6 (00006A0C-00006A0E).
+; Port: snd_apply_settings (000069DB), flight_rotor (000069E0), music_theme_start
+;   (000069EF-00006A00), SPEAK1 id 6 (00006A0C-00006A0E).
 ; Kind: translated.
 flight_mission_sound_start
         jsr     snd_apply_settings              ; 000069DB
         bsr     flight_rotor                    ; 000069E0
+        jsr     music_theme_start               ; 000069EF-00006A00
         SndSpeechA 6                            ; 00006A0C-00006A0E: the mission-start voice
         rts
 

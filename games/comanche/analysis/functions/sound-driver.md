@@ -12,8 +12,11 @@ boundary of that plan stands: nothing in the game's logic depends on a sound res
 lengths (section 8). Status correction reviewed 2026-10-10: the digital half of
 section 10's interface has since been implemented and wired into the native game;
 its isolated mixer/DMA evidence and platform differences are in
-[sound-falcon.md](sound-falcon.md). Music/FM integration and hardware validation
-remain open; this does not promote the first silent playable acceptance scope.
+[sound-falcon.md](sound-falcon.md). The music and FM half followed on 2026-10-15
+(section 13): `src/music.s` replays all 23 of the original's OPL2 captures write
+for write. What it drives - a synthesiser behind its register sink - and hardware
+validation remain open; this does not promote the first silent playable
+acceptance scope.
 
 The §4.2 function records of the JavaScript routines are in `analysis/functions/browser-attract.md`,
 sections `sound-driver-module`, `-core`, `-ms3`, `-effects`, `-opl`, `-mpu`, `-speaker`, `-digital`.
@@ -920,4 +923,40 @@ repositories, which this work could not touch, so they are recorded here in the 
 * **Reading the cfg off the setup program.** The configuration digits' meaning is in the setup program's menu code
   (`4 - row`, `row + 1`, a table filled at run time), not in the game; unpack it (`unlzexe`) and read the menu handlers.
 
+## 13. The Falcon driver (2026-10-15)
+
+`src/music.s` is the 68k translation of `0002B9CF-0002C4A0`, written against the JavaScript reference and the
+listing. Its variables and tables are one block that mirrors flat `0002C48C-0002DA00`; `src/origexe.s` copies
+the tables (`0002C619`, `0002C70D-0002DA00`) out of the player's `COMANCHE.EXE`. Song and envelope cursors are kept
+in DOS address space, so the 16-bit `inc bx` (`0002BDED`) and patch 255's out-of-image envelope (section 11, item 5)
+behave as in the original. Its only output is `music_opl_write` (register, value).
+
+*Proof.* `tools/check-falcon-music.py` builds `tools/music-test.s` with `src/music.s` and replays, under the patched
+Hatari, every op of every non-MPU, non-speaker capture of section 9: each command, song start, stop, tick and song
+placement, with the card's status reads answered as the original's card answered them. Per op it compares the OPL2
+writes in order, the returned `al`, and a weighted sum over the driver's non-pointer variables reconstructed from the
+capture's deltas. Result on both CPUs (68030 TOS 4.02 and 68060 EmuTOS, Hatari 2.6.1-devel of 2026-09-22): **23
+captures, 46,759 ops, 46,499 writes, every op identical.** Not compared: the nine captures of devices 1 and 4.
+
+*Platform differences.* (1) Devices 1 and 4 detect as absent: the Falcon has no PC speaker or MPU-401 behind those
+ports. (2) The public entries mask interrupts, so a tick lands before or after a driver call, never inside it
+(section 11, item 9). (3) The status port: with no synthesiser it reads 0xFF, so the detect fails as on a PC without the
+card - the tick vector stays `ret`, no song ends and the fanfare and title screens run their full counts, which is the
+port's timing so far. A synthesiser sets `music_chip_present`; the status is then a YM3812's as the detect drives it.
+`MUSIC_CHIP=1` builds that status in without a synthesiser, and logs the register stream with markers.
+(4) The heap songs (theme, debrief) are played at 64 KB-aligned DOS addresses; the original's heap addresses vary
+by run.
+
+*The game's calls.* At every site of section 5.9 and the commands of 5.1-5.7 (`src/music.s` "The game's music
+calls", `docs/X86-M68K-MAP.md`). A `MUSIC_CHIP=1` 68060 build was run through the attract, the menu, a mission, the
+options bar and the debrief: the order of song starts (flags) and commands is the original's natural capture's, pass
+for pass; the fanfare screen ends with its song (279 ticks); mission start sends 0x5000 and the theme looped; the bar
+sends 0x4000 and 0x5000; Alt+A sends 0x5000 and the debrief song looped; Esc to the menu sends 0x5000, MENUMUS1 once
+and MENUMUS2 queued. The register streams of a natural run are not compared across the two machines: each song's first
+writes carry the B0 shadow the previous song left, and the two runs' screen lengths differ (QEMU's VGA retrace is not
+paced, so the original's frame budgets run out within a few dozen ticks there).
+
+*Open.* What the stream sounds like: no synthesiser is attached yet. The planned one is F030OPL2 (the DSP56001 OPL2
+renderer of `../F030OPL2`), for the 68060 image; it needs its register-to-event decoder on the 68k and the DAC shared
+with the digital effects.
 

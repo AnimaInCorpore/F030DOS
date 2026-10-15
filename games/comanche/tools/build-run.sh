@@ -185,6 +185,20 @@ for f in SND1.RLE SPEAK1.RLE SPEAK0.RLE COMANCHE.CFG; do
 done
 [ -n "$SOUND_STAGED" ] && echo "staged runtime sound:$SOUND_STAGED"
 
+# The music (src/music.s): the three MS3 songs the attract and the menu read
+# raw (OPENMUS 000058AA, MENUMUS1/2 00028CA2/00028CB9, 000056F9) and the KRL
+# songs read by name or through a mission's resource lines 6, 8 and 10
+# (FANFARE 000057EE; MUSDAY/MUSNIGHT/MUSVOLC, MUSWIN/WINMUS/BIGWIN, MUSLOSE).
+MUSIC_STAGED=""
+for f in OPENMUS.MS3 MENUMUS1.MS3 MENUMUS2.MS3 FANFARE.RLE MUSDAY.RLE MUSNIGHT.RLE \
+         MUSVOLC.RLE MUSWIN.RLE MUSLOSE.RLE WINMUS.RLE BIGWIN.RLE; do
+    if [ -f "$ASSET_ROOT/$f" ]; then
+        cp "$ASSET_ROOT/$f" "$OUTDIR"/
+        MUSIC_STAGED="$MUSIC_STAGED $f"
+    fi
+done
+[ -n "$MUSIC_STAGED" ] && echo "staged runtime music:$MUSIC_STAGED"
+
 # COMA.RLE is the bank the original's cockpit blitters read - the one writer of
 # their resource base at 00005920 loads it by name.
 # All five, not just the first. console_select_variant patches the digit into
@@ -265,7 +279,7 @@ fi
 # marcher's own silhouette can be diffed against the original's archive.
 # It is a diagnostic build and never a game one - it freezes the camera.
 MARCHER_ORACLE=${MARCHER_ORACLE:-0}
-VASMDEFS="-DTARGET_CPU=$TARGET_CPU -DUSE_DSP=0 -DPARITY_TILE=0 -DMARCHER_ORACLE=$MARCHER_ORACLE"
+VASMDEFS="-DTARGET_CPU=$TARGET_CPU -DUSE_DSP=0 -DPARITY_TILE=0 -DMARCHER_ORACLE=$MARCHER_ORACLE -DMUSIC_CHIP=${MUSIC_CHIP:-0}"
 
 # start.s comes first when present - vlink places the first object at the TEXT
 # base and the entry point has to sit there for the TOS startup header.

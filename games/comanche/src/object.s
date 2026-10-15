@@ -3430,7 +3430,7 @@ mfd_draw_target_view
         move.w  #$d7,d2                         ; 000079C3
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page                ; 000079D1
+        jsr     sprite_draw_page                ; 000079D1
 
         ; 000079D6/000079DB: the depth latched at 0000D43D, in whole map
         ; units. The DOS value is world<<20 and `sar eax,0x14` takes it down;
@@ -5443,7 +5443,7 @@ mfd_draw_markers
         move.w  d4,d2
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
 
         ; 0000763A: one frame in four, a second marker over a '*' target.
         move.l  frame_count,d0
@@ -5456,7 +5456,7 @@ mfd_draw_markers
         move.w  d4,d2
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page
+        jsr     sprite_draw_page
 .next
         lea     -OBJ_SIZE(a6),a6
         subq.w  #1,d6
@@ -5546,7 +5546,7 @@ mfd_body_07710
         move.w  d4,d2
         move.l  work_screen,a0
         lea     hud_bank,a1
-        bsr     sprite_draw_page                ; 0000778B -> 00025B27
+        jsr     sprite_draw_page                ; 0000778B -> 00025B27
 .upper_next
         lea     -OBJ_SIZE(a6),a6
         subq.w  #1,d6

@@ -97,7 +97,10 @@ behaviour gaps remain recorded in [docs/PORTING-PLAN.md](docs/PORTING-PLAN.md).
 The digital effect layer is wired into the native game. Isolated DOS/JS/native
 mixer and Hatari DMA checks are recorded in
 [analysis/functions/sound-falcon.md](analysis/functions/sound-falcon.md).
-Music/FM integration and physical Falcon audio remain unproven. This later-phase
+The music driver (`src/music.s`) is ported and wired in; it replays the
+original's OPL2 captures write for write (`tools/check-falcon-music.py`), but no
+synthesiser is attached yet, so the game is still silent apart from the digital
+effects. Physical Falcon audio remains unproven. This later-phase
 work does not broaden the first silent playable acceptance scope; networking
 remains deferred and DSP terrain acceleration remains dormant.
 

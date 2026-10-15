@@ -36,7 +36,7 @@
         xref    object_bearing_correction
         xref    sprite_ramp_offsets, sprite_ramp_pool
         xref    zove_frames, coma_frames, pan_wobble, attract_gamma
-        xref    resource_gamma, snd_rate_tab
+        xref    resource_gamma, snd_rate_tab, music_mem
 
 ; The packed file: the 1990 COMANCHE.EXE as installed from the three disks
 ; (docs/ASSET-INVENTORY.md), identified by its size and a rotate-and-add
@@ -415,6 +415,13 @@ orig_exe_copies
         dc.w    64,KIND_BYTES
         dc.l    $4998,snd_rate_tab
         dc.w    18,KIND_LE32
+        ; The music driver's tables into its block, which mirrors flat
+        ; 0002C48C-0002DA00 (src/music.s): the effect voice orders, then the
+        ; patches through the envelope pointer table.
+        dc.l    $2C619,music_mem+($2C619-$2C48C)
+        dc.w    $30,KIND_BYTES
+        dc.l    $2C70D,music_mem+($2C70D-$2C48C)
+        dc.w    $2DA00-$2C70D,KIND_BYTES
         dc.l    -1
 
 orig_exe_name

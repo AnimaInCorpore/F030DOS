@@ -36,6 +36,21 @@ Falcon CPU paths exercise that route; DSP acceleration is a later
 optimization workstream governed by `../PORTING.md`; it must not get ahead of
 recovering and validating the game itself.
 
+## The music driver ported (2026-10-15)
+
+`src/music.s` is the original's MS3 music and FM driver (`0002B9CF-0002C4A0`) in 68k code, wired in at the
+original's call sites: the startup device detect and select, the 65 Hz tick from the Timer C adapter, the
+attract's songs and the two screens that end with their song, the mission theme, the debrief song, the menu
+songs, the options bar's pause and resume, the Music radios and the exit. Against the original's own captures
+(`tools/check-falcon-music.py`) all 23 OPL2 captures - every shipped song played whole, the device select and
+detect, queue, loop, pause, the FM effects and the 16-bit cursor wrap - are identical on both CPUs: 46,759
+ops, 46,499 register writes. The tables come from the player's `COMANCHE.EXE` (`src/origexe.s`).
+
+Nothing sounds yet: the register stream goes to one sink, `music_opl_write`, and with no synthesiser behind it
+the status port reads as no card, so detection fails exactly as on a PC without one and the attract keeps
+today's timing. The synthesiser planned for the 68060 image is F030OPL2 (DSP56001); it is the next step. See
+`analysis/functions/sound-driver.md` section 13.
+
 ## Every mission of both campaigns starts as the original's (2026-10-15)
 
 The game ships two campaign files, `0.MIS` ("Comanche Training") and `1.MIS`

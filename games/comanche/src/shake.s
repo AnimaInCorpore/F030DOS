@@ -4,7 +4,7 @@
         include "inc/comanche.s"
         global flight_shake_tick, flight_shake_clock, shake_present
         global flt_shake_rng, flt_shake_phase, flt_shake_timer
-        xref    flt_crash_drop, console_rgb
+        xref    flt_crash_drop, console_rgb, music_tick
         global shake_clock_accumulator, shake_presentation_unproven
         text
 
@@ -51,6 +51,8 @@ flight_shake_clock
         cmpi.l  #200*$47b4,shake_clock_accumulator
         bcs     .done
         subi.l  #200*$47b4,shake_clock_accumulator
+        ; 00001D2C: the ISR calls the music driver's tick before anything else.
+        jsr     music_tick
         bra     flight_shake_tick
 .done
         rts
