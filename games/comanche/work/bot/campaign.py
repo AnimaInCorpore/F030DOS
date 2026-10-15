@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Play the campaign mission by mission with the rule-based pilot."""
-import sys, time, json, pathlib
+import os, sys, time, json, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from hbot import Session, K
 from pilot import Pilot
@@ -18,13 +18,27 @@ def main():
     out = pathlib.Path(sys.argv[1]); out.mkdir(parents=True, exist_ok=True)
     missions = int(sys.argv[2]) if len(sys.argv) > 2 else 10
     limit = float(sys.argv[3]) if len(sys.argv) > 3 else 1800
+    # The campaign's row on the campaign screen (its place in the catalog
+    # screen_fill_campaigns builds: 0.MIS first). None keeps the roster's own.
+    crow = int(sys.argv[4]) if len(sys.argv) > 4 else None
+    # Rows to fly first whatever their colour, e.g. "0" for a blue one.
+    force = [int(r) for r in sys.argv[5].split(",")] if len(sys.argv) > 5 else []
     s = Session(str(pathlib.Path(__file__).resolve().parents[2] / 'release/68060'), out)
     log = open(out / "campaign.log", "a")
     def note(m):
         print(m, flush=True); log.write(m + "\n"); log.flush()
     results = []
     try:
-        time.sleep(6); s.tap(K['SPACE']); time.sleep(2)
+        time.sleep(6)
+        if os.environ.get("BOT_TRAP_EXIT"):
+            # Stop the emulator the instant the program asks to end, with the
+            # CPU history and the state that led there in the debugger log.
+            trap = out / "exit-trap.ini"
+            trap.write_text("r\nhistory 64\nm a7 $80\n"
+                            f"savebin {out}/exit-keys.bin key_state $80\n")
+            s.send("hatari-debug history on")
+            s.send(f"hatari-debug b (exit_requested).w ! 0 :once :file {trap}")
+        s.tap(K['SPACE']); time.sleep(2)
         for n in range(missions):
             st = wait_screen(s, 0)
             note(f"main menu: sel={st.sel} count={st.count}")
@@ -35,6 +49,11 @@ def main():
             s.tap(K['RET']); time.sleep(2)               # Begin Mission
             st = s.state()
             if st.screen_id == 1:                         # campaign select
+                for _ in range(10):
+                    if crow is None or st.sel == crow:
+                        break
+                    s.tap(K['DOWN'] if st.sel < crow else K['UP']); time.sleep(0.4)
+                    st = s.state()
                 s.tap(K['RET']); time.sleep(2)
             st = wait_screen(s, 2)
             if st.screen_id != 2:
@@ -43,6 +62,9 @@ def main():
             note(f"mission list ink={st.ink!r} sel={st.sel} count={st.count}")
             s.shot(f"list{n:02d}")
             rows = [i for i, c in enumerate(st.ink[:st.count]) if c == 'g']
+            if force:
+                # a mission named on the command line, flown or not
+                rows = [force.pop(0)]
             if not rows:
                 note("no green mission left"); break
             row = rows[0]

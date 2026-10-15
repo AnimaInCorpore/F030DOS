@@ -28,8 +28,27 @@ the campaign's progression and the saved roster.
   records each result in `results.json`.
 
 ```sh
-python3 work/bot/campaign.py build/bot-campaign 10 2400
+python3 work/bot/campaign.py build/bot-campaign 10 2400 [campaign-row]
 ```
+
+The campaign row is the campaign's place on the campaign screen: 0 is
+`0.MIS` ("Comanche Training"), 1 is `1.MIS` ("Operation Maximum Overkill").
+Without it the bot takes the campaign the roster opens on.
 
 The roster is the staged `release/68060/COMANCHE.NAM`, so progress carries
 from one run to the next exactly as a player's does; a rebuild restages it.
+
+## Mission start against the original
+
+`start_state.py` starts any mission on the port and saves its state at the end
+of the first object pass; `../trace_mission_start.py` does the same on the
+original in QEMU; `compare_start.py` compares the two (see "Every mission of
+both campaigns starts as the original's" in `docs/PORTING-PLAN.md`).
+
+```sh
+python3 work/trace_mission_start.py --campaign 0 --mission 7 --out /tmp/dos-c0m7.json
+python3 work/bot/start_state.py 0 7 /tmp/port-c0m7 /tmp/dos-c0m7.json
+python3 work/bot/compare_start.py /tmp/dos-c0m7.json /tmp/port-c0m7/start.json /tmp/pairs.json
+```
+
+The DOS dumps are captures of the original and stay out of the repository.

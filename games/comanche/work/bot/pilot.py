@@ -124,42 +124,82 @@ class Pilot:
                     return page
         return None
 
+    def settle(self, timeout=2.0):
+        """Wait until the game has consumed the keys sent so far.
+
+        The bar takes direction, Return and Esc as edge bits in
+        input_pending, one pass at a time: a key sent before the last one
+        is consumed merges with it or overtakes it. A stale Right wraps the
+        column to Game and a stale Up then wraps its row to 4 - Exit to DOS -
+        which is how two bot runs once quit the program.
+        """
+        t0 = time.time()
+        st = self.s.state()
+        while st is not None and st.pending and time.time() - t0 < timeout:
+            time.sleep(0.05)
+            st = self.s.state()
+        return st
+
+    def key(self, code, t=0.06):
+        self.s.tap(code, t)
+        return self.settle()
+
+    def close_bar(self):
+        """Close the options bar if it is open; True when flight is live."""
+        for _ in range(3):
+            st = self.settle()
+            if st is None or not st.flying:
+                return False
+            if not st.menu:
+                return True
+            self.key(K['ESC'], 0.08); time.sleep(0.3)
+        st = self.settle()
+        return bool(st and st.flying and not st.menu)
+
     def cheat(self, row):
         """The shipped KYLE column (00026012): row 0 Fix Damage, 1 Reload."""
         s = self.s
         s.hold(set())
-        s.tap(K['ESC'], 0.08); time.sleep(0.6)
+        # A flight that has just ended takes these keys as menu choices:
+        # menu_col/menu_row still say where the bar was, and Return on the
+        # main menu can pick Exit. Only open the bar from live flight.
+        if not self.close_bar():
+            return
+        m = self.key(K['ESC'], 0.08); time.sleep(0.3)
         if not self.kyle:
             s.down(K['BS']); time.sleep(0.15)
             for c in (0x25, 0x15, 0x26, 0x12):      # K Y L E
-                s.tap(c, 0.06); time.sleep(0.1)
-            s.up(K['BS']); time.sleep(0.4)
+                self.key(c, 0.06)
+            s.up(K['BS']); time.sleep(0.2)
             Pilot.kyle = True
         # The bar keeps its column and row between openings, so steer by
-        # what it says rather than by a fixed count of presses.
-        for _ in range(8):
-            m = s.state()
-            if m.menu_col == 4:
-                break
-            s.tap(K['RIGHT'], 0.06); time.sleep(0.25)
-        for _ in range(4):
-            m = s.state()
-            if m.menu_row == row:
-                break
-            s.tap(K['DOWN'] if m.menu_row < row else K['UP'], 0.06); time.sleep(0.25)
-        m = s.state()
-        if m.menu_col != 4 or m.menu_row != row:
-            self.note(f"cheat: bar at column {m.menu_col} row {m.menu_row}, not pressing")
-            s.tap(K['ESC'], 0.08); time.sleep(0.6)
+        # what it says rather than by a fixed count of presses - one key at a
+        # time, each read back once the game has taken it.
+        m = self.settle()
+        if m is None or not m.menu or m.screen:
+            self.note("cheat: the options bar did not open, not steering it")
+            self.close_bar()
             return
-        s.tap(K['RET'], 0.06); time.sleep(0.8)
-        s.tap(K['BS'], 0.06); time.sleep(0.4)       # any key closes the box
-        s.tap(K['ESC'], 0.08); time.sleep(0.6)
-        st = s.state()
-        if st and st.menu:
-            s.tap(K['ESC'], 0.08); time.sleep(0.6)
+        for _ in range(8):
+            if m is None or m.menu_col == 4:
+                break
+            m = self.key(K['RIGHT'])
+        for _ in range(4):
+            if m is None or m.menu_row == row:
+                break
+            m = self.key(K['DOWN'] if m.menu_row < row else K['UP'])
+        time.sleep(0.2)
+        m = self.settle()
+        if m is None or not m.menu or m.menu_col != 4 or m.menu_row != row:
+            self.note(f"cheat: bar at column {m.menu_col if m else '?'} row {m.menu_row if m else '?'}, not pressing")
+            self.close_bar()
+            return
+        self.key(K['RET']); time.sleep(0.5)
+        self.key(K['BS']); time.sleep(0.3)          # any key closes the box
+        self.close_bar()
         self.cheats[row] += 1
-        self.note(f"cheat {'Fix Damage' if row == 0 else 'Reload'} (#{self.cheats[row]}): {s.state().summary()}")
+        st = s.state()
+        self.note(f"cheat {'Fix Damage' if row == 0 else 'Reload'} (#{self.cheats[row]}): {st.summary() if st else 'no state'}")
 
     def notch_to(self, st, target):
         """Step the collective notch toward target with E / D (00001BA6)."""
@@ -184,10 +224,17 @@ class Pilot:
             self.note(f"fire p{page} at #{t.slot} hp={t.health} d={dist:.0f} ammo={st.ammo} hull={st.hull}")
 
     def step(self, st):
+        if st.menu:
+            # flight keys would steer the bar (and Space confirm in it)
+            self.s.hold(set())
+            self.close_bar()
+            return 'closed the bar'
         if self.allow_cheat and st.hull < 22:
             self.cheat(0)
             return 'repaired'
-        ground_dry = st.ammo[1] == 0 and st.ammo[2] == 0 and st.ammo[5] == 0
+        # Unguided rockets alone do not take a 20-hp tank: reload once the
+        # guided ground weapons are gone, not after the rockets too.
+        ground_dry = st.ammo[2] == 0 and st.ammo[5] == 0
         air_dry = st.ammo[3] == 0 and st.ammo[0] < 40
         if self.allow_cheat and time.time() - self.last_reload > 20 and (
                 st.fuel < 2500 or ground_dry or air_dry):

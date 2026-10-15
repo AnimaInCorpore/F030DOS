@@ -36,6 +36,66 @@ Falcon CPU paths exercise that route; DSP acceleration is a later
 optimization workstream governed by `../PORTING.md`; it must not get ahead of
 recovering and validating the game itself.
 
+## Every mission of both campaigns starts as the original's (2026-10-15)
+
+The game ships two campaign files, `0.MIS` ("Comanche Training") and `1.MIS`
+("Operation Maximum Overkill"), ten missions each. Nothing in them is outside
+the ported paths: the 20 missions place types 0-6 only (the factory's 7 and 9
+are never used), every resource they name is a family the loader handles, and
+f10 - stored and seemingly unread - is the hold countdown `[00022028]`
+(`OBJ_HOLD`) whose six DOS readers are all ported.
+
+That is now measured, not argued. `work/trace_mission_start.py` drives the
+original in QEMU into any mission of either campaign (it sets the pilot's
+campaign byte at `00028F3A`, marks every row flown at `00028FBA` and sets
+`[0002975A]` at `00029038`) and dumps the state at the end of the mission's
+first object pass, `000234CE` - after `000068A5`'s factory, `0000694D`'s start
+altitude and `000069CC`'s first `frame_driver`. `work/bot/start_state.py`
+does the same on the port in Hatari (060 profile, Hatari 2.6.1-devel of
+2026-09-22) at `object_update_done`, and `work/bot/compare_start.py` compares
+them: the mission scalars (start position and angle, loads and live ammo,
+fuel, countermeasures, damage table, hull, '*' and target counts, console
+page), the active palette, SHA-1 of the height and colour maps, and every
+field of the 31 slots the original has active, with handler and sprite-bank
+pointers compared as a mapping (one port symbol per DOS address across all
+missions).
+
+Two inputs are history, not logic, and the port is given the original's:
+the fields the factory never writes (sprite, variant, steering latch, timer,
+previous position and altitude) and the heading sine/cosine `[00019CB8]`
+keep what the attract flights left, so their DOS values are injected before
+`object_spawn_mission`; and the Timer C PRNG `[00019DB8]`, which the unit
+state's jitter branches read, is set to the original's value as the pass
+begins. A Timer C tick inside one program's pass still moves it; those runs
+are repeated until the pass is tick-free.
+
+Result: **all 20 missions identical**, 9 to 30 objects each. The pairing is
+13 DOS handlers onto 13 port routines (four draw, three shot, six state).
+Recorded difference: the fixed slot 31's shot pointer is 0 in the original
+(its slot of `[00021FB0]` is never written) and `object_fire_rock` in the
+port; no fixed-slot handler fires.
+
+The bot then flew the training campaign (`work/bot/campaign.py ... 0`).
+Nine of its ten missions were won, two of them with no cheat at all
+("Oil Tank Holiday" and "Wing Leader"; the rest used the KYLE repairs or
+reloads), and the progression rules held throughout:
+each win opened the next row, and every timeout with a lost hull took back
+the mission before it ("Afghan Unrest" after a "Werewolf Jamboree" loss,
+"Werewolf Jamboree" after a "Kilauea Encounter" loss), which the bot won
+again. "The Kilauea Encounter" was not won: its last goal sits on the
+volcano at altitude 115-235, above what the bot's router will climb to.
+
+Twice in those runs the program ended in flight. Both times the bot was
+working the options bar, and the cause was the bot: the bar takes direction,
+Return and Esc as edge bits in `input_pending`, one pass at a time, and the
+bot sent its next key before the game had consumed the last. A stale Right
+wraps the column to Game (resetting the row) and a stale Up wraps that row to
+4, Exit to DOS (`00026E11`); a late Esc can also leave the bar open while the
+bot flies on, so its keypad and Space steer and confirm in it. The bot now
+waits for `input_pending` to clear after every key and closes any open bar
+before acting; an exit trap (`BOT_TRAP_EXIT=1`: a breakpoint on
+`exit_requested`) has not fired since.
+
 ## Three live-play faults a playing bot found (2026-10-14)
 
 A rule-based pilot (state read through Hatari's debugger, real IKBD key
