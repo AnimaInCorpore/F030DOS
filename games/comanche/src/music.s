@@ -59,6 +59,12 @@
         global  music_enable
 
         xref    snd_cfg, snd_bank_load, menu_settings, mission_music_names
+    ifnd OPL2
+OPL2 = 0
+    endc
+    ifne OPL2
+        xref    opl_host_write, opl_host_running
+    endc
 
 MUS_BASE        = $2C48C                ; flat address of mus_mem's first byte
 MUS_END         = $2DA00                ; one past the last byte any table needs
@@ -1360,6 +1366,12 @@ music_opl_write
         beq.s   .not_timer
         move.b  #$c0,music_chip_status          ; timer 1 started: IRQ, T1 (expired)
 .not_timer
+    ifne OPL2
+        tst.w   opl_host_running
+        beq.s   .no_synth
+        jsr     opl_host_write                  ; F030OPL2: decoded into the DSP's stream
+.no_synth
+    endc
         tst.w   music_log_on
         beq.s   .out
         move.l  music_log_count,d2

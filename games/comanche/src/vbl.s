@@ -27,6 +27,12 @@
 
 VBL_VECTOR      = $70
 
+    ifnd OPL2
+OPL2 = 0
+    endc
+    ifne OPL2
+        xref    opl_host_clock, opl_host_service
+    endc
         text
 
 ; Install the handler, remembering the vector it displaces. Supervisor only.
@@ -117,7 +123,13 @@ vbl
 ; Kind: replaced.
 ; Status: emulator timer/teardown check required; physical phase Unproven.
 shake_timer_interrupt
+    ifne OPL2
+        jsr     opl_host_clock                  ; 5 ms of the stream's write clock
+    endc
         bsr     flight_shake_clock
+    ifne OPL2
+        jsr     opl_host_service                ; one step of the period refill
+    endc
         move.l  saved_shake_timer,-(sp)
         rts
 

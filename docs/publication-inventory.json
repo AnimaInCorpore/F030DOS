@@ -6,7 +6,7 @@
    "repository": "F030Comanche",
    "origin": "git@github.com:AnimaInCorpore/F030Comanche.git",
    "directory": "games/comanche",
-   "source_commit": "711666e3b4302700ab921b3df1d1f7dd078784de"
+   "source_commit": "eebbaf3ed4a5e789a9a53e213f5c74c6384636af"
   },
   "f29": {
    "repository": "F030F29",
@@ -120,9 +120,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "e2078bbdfac4ca49587061fccf2ad66cbaf8df4b",
-   "bytes": 12252,
-   "sha256": "b727c75c58c3e850bd637a9e4143229ad4b19f7459673499651143f11000703f"
+   "git_object": "dcd1b18658d62bb49fde6e70a1e4d1ad3929ea0c",
+   "bytes": 12417,
+   "sha256": "85cdf2b90d1d088d5ca4c95b2aec01863630f3019acd44ec15852d5de82adf19"
   },
   {
    "path": "games/comanche/analysis/functions/browser-attract.md",
@@ -156,9 +156,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "a59eb573031d4770d4f56dc9c7389b5c6d6ab3fb",
-   "bytes": 93820,
-   "sha256": "0ebf6a79d3753e468edd3f1e5053ccca4408cca23f49e9e9f4c69564ad04f7f3"
+   "git_object": "07cd4731b2a86bb243eb68c2015ba7bb20248fc5",
+   "bytes": 94863,
+   "sha256": "ac5b201c5a3541db9db8a82a7190797b40538d6d6b50e2008df9ca9da417f58b"
   },
   {
    "path": "games/comanche/analysis/functions/sound-falcon.md",
@@ -282,9 +282,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "1850f8d8c4fcd35159b9555730111bbe6037e164",
-   "bytes": 194037,
-   "sha256": "c3fd4ae03193b81efcd3cdff049b6117460f6a190a3e88722c7c5b3c0993fef9"
+   "git_object": "09fbff1cfacb61484056005e43201e5add04fd17",
+   "bytes": 194285,
+   "sha256": "287bab638bae0f8d3ecafac353ced27b8b1f19bad0e61ea2a612ad5aa3725a42"
   },
   {
    "path": "games/comanche/docs/RE-WORKFLOW.md",
@@ -993,9 +993,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "60002a4c5ccd6b2bb7e68e3718597f4453f96f63",
-   "bytes": 51690,
-   "sha256": "081eff966df4bc423ead5d6bab51d88650f020b3829d3805d7f4462191807854"
+   "git_object": "c6dffebac884f6f284ed9da35fb8e8c14e4a786c",
+   "bytes": 51976,
+   "sha256": "3e02cb4349bb2714b1cfdddecfaddda3debfbed0437fc7cd2fde37e22cf3b0fb"
   },
   {
    "path": "games/comanche/src/object.s",
@@ -1056,9 +1056,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "2c59f61e55ebd6b2bb5c5c34828570df2b4449a5",
-   "bytes": 54004,
-   "sha256": "8914dfa7261b954db3075f718d87b6b14a610543ec9d9741b201b2336fc2226e"
+   "git_object": "749bc3047a5918405d981370240492f9a6f5da1a",
+   "bytes": 57538,
+   "sha256": "8ecb30325cc719df805bd3845e7c4e7216ddfb8589d6c36c32a2e8845d3e00fd"
   },
   {
    "path": "games/comanche/src/sprite.s",
@@ -1083,9 +1083,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "58f2d6b3ae0a894001659dff9db8316b1725b3ec",
-   "bytes": 5160,
-   "sha256": "6662d3fe1703d26cdb05ad75bf763acda6d379e329adecbbeb1913e58d75cdf9"
+   "git_object": "99248f7b83d651b43319aadc434bc3dfc7f372a4",
+   "bytes": 5473,
+   "sha256": "b06848dfdb3e59ef5e12537288d4d5469225b7e22434474fc07da0485efd808b"
   },
   {
    "path": "games/comanche/src/view.s",
@@ -1137,9 +1137,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "fb51e133b9ecead39e3bff0dc27bed6a68e84893",
-   "bytes": 15371,
-   "sha256": "8d9c2a2039051c2a8b59b6c6dbe541dfc18ea6318885602d5d922ee835ca1d81"
+   "git_object": "f269feb892f6b6d3103ebbc631544eab70a112c5",
+   "bytes": 16540,
+   "sha256": "e697f01e69e5451e416ea2db94f697c84f469a25938639dbb385d605d11bab6e"
   },
   {
    "path": "games/comanche/tools/capture-target-frame.py",

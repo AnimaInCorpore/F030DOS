@@ -956,7 +956,16 @@ and MENUMUS2 queued. The register streams of a natural run are not compared acro
 writes carry the B0 shadow the previous song left, and the two runs' screen lengths differ (QEMU's VGA retrace is not
 paced, so the original's frame budgets run out within a few dozen ticks there).
 
-*Open.* What the stream sounds like: no synthesiser is attached yet. The planned one is F030OPL2 (the DSP56001 OPL2
-renderer of `../F030OPL2`), for the 68060 image; it needs its register-to-event decoder on the 68k and the DAC shared
-with the digital effects.
+*The synthesiser (2026-10-15).* An `OPL2=1` build attaches F030OPL2's DSP kernel: `tools/build-run.sh` assembles
+its 68k register decoder and stream host (`opldec.s`, `oplhost.s`, F030OPL2 `docs/68k-host.md`) from the sibling
+checkout `../F030OPL2` - GPL-3.0, kept there; nothing of it is in this repository - and generates its upload image
+`OPLDATA.BIN` into the output directory. At start-up `snd_dma_open` (`src/sound.s`) boots the kernel; when that
+works the DAC is the DSP's, `music_opl_write` feeds `opl_host_write`, the status port reads as a chip (so the
+driver's own detect passes), the 200 Hz Timer C serves the refills (`src/vbl.s`), and the digital effects travel
+as the stream's PCM - 192 samples of `snd_resample`'s 12,292 Hz output a period - instead of through the DMA ring.
+When the boot fails (no file, DSP in use) the DMA path runs as before and the music stays silent. On Hatari's
+emulated DSP (68060 profile, the F030Arcade Hatari): 2,041 periods in 40 s of attract, no protocol error, no late
+period, and a recording that plays the music and the effects. F030OPL2's decoder is event-exact with its C++
+reference (32 streams, 22 of them this game's songs). *Open:* listening, the music/effects balance (`<< 14`, a
+choice), the kernel checksum for these payloads, and real hardware.
 

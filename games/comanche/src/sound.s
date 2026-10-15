@@ -50,6 +50,14 @@
 
         xref    resource_buffer, krl_decode, menu_settings, frame_count
         xref    music_command, music_apply_settings
+    ifnd OPL2
+OPL2 = 0
+    endc
+    ifne OPL2
+        xref    opl_host_boot, opl_host_start, opl_host_stop, opl_host_pcm_hook
+        xref    music_chip_present
+        global  snd_opl_mode
+    endc
 
 ; ---------------------------------------------------------------------------
 ; Constants. SL_* is the layout of one slot record (three, SL_SIZE apart); the
@@ -783,6 +791,15 @@ snd_shutdown
         moveq   #0,d0
         bsr     snd_mode                        ; 00006B2A
         bsr     snd_dma_stop                    ; (platform) even if a mode byte was already 0
+    ifne OPL2
+        tst.w   snd_opl_mode
+        beq.s   .not_opl
+        jsr     opl_host_stop
+        clr.w   snd_opl_mode
+        Unlocksnd
+        bra     .out
+.not_opl
+    endc
         tst.l   snd_ring
         beq     .out
         Unlocksnd
@@ -1010,6 +1027,11 @@ snd_dma_open
         Locksnd
         cmpi.l  #1,d0
         bne     .fail
+    ifne OPL2
+        bsr     snd_opl_open
+        tst.l   d0
+        bne     .out                            ; the DSP plays: the effects ride its stream
+    endc
         Mxalloc #SND_RING,#0                    ; ST-RAM, like the screens
         tst.l   d0
         ble     .unlock
@@ -1033,6 +1055,18 @@ snd_dma_open
 ; Start from a silent ring.
 snd_dma_start
         movem.l d0-d2/a0-a2,-(sp)
+    ifne OPL2
+        tst.w   snd_opl_mode
+        beq.s   .dma
+        move.w  sr,-(sp)
+        ori.w   #$0700,sr
+        clr.l   snd_rs_phase
+        clr.l   snd_rs_have
+        move.b  #1,snd_dma_on                   ; the stream's PCM from the next period
+        move.w  (sp)+,sr
+        bra     .out
+.dma
+    endc
         tst.l   snd_ring
         beq     .out
         move.w  sr,-(sp)
@@ -1063,6 +1097,13 @@ snd_dma_start
 
 snd_dma_stop
         movem.l d0-d2/a0-a2,-(sp)
+    ifne OPL2
+        tst.w   snd_opl_mode
+        beq.s   .dma
+        clr.b   snd_dma_on                      ; the stream's PCM flag 0 from the next period
+        bra     .out
+.dma
+    endc
         tst.l   snd_ring
         beq     .out
         clr.b   snd_dma_on
@@ -1070,6 +1111,75 @@ snd_dma_stop
 .out
         movem.l (sp)+,d0-d2/a0-a2
         rts
+
+    ifne OPL2
+; ===========================================================================
+; The DSP route (OPL2=1 builds): F030OPL2's kernel plays the music's OPL2
+; stream and, as its stream's PCM, these effects.
+; ===========================================================================
+; snd_opl_open: with the sound system locked, boot the kernel from
+; OPLDATA.BIN (../F030OPL2, tools/opl/opl-upload-image) and route the DSP to
+; the DAC. Out: d0 = -1 when the DSP plays (snd_opl_mode set, the music
+; driver's chip present), 0 when it does not (the DMA path follows).
+; Kind: N/A - platform replacement (the Falcon's DSP route).
+snd_opl_open
+        movem.l d1-d7/a0-a6,-(sp)
+        clr.w   -(sp)
+        pea     snd_opl_name
+        move.w  #61,-(sp)                       ; Fopen
+        trap    #1
+        addq.l  #8,sp
+        tst.l   d0
+        bmi     .no
+        move.w  d0,d7
+        pea     resource_buffer
+        move.l  #RESOURCE_BUFFER_BYTES,-(sp)
+        move.w  d7,-(sp)
+        move.w  #63,-(sp)                       ; Fread
+        trap    #1
+        lea     12(sp),sp
+        move.l  d0,d6
+        move.w  d7,-(sp)
+        move.w  #62,-(sp)                       ; Fclose
+        trap    #1
+        addq.l  #4,sp
+        tst.l   d6
+        ble     .no
+        lea     resource_buffer,a0
+        jsr     opl_host_boot
+        tst.l   d0
+        bne     .no
+        move.l  #snd_opl_pcm,opl_host_pcm_hook
+        jsr     opl_host_start
+        move.w  #1,snd_opl_mode
+        move.w  #1,music_chip_present
+        moveq   #-1,d0
+        bra     .out
+.no
+        moveq   #0,d0
+.out
+        movem.l (sp)+,d1-d7/a0-a6
+        rts
+
+; The stream's PCM hook (oplhost.s): 192 signed 8-bit samples at 12,292 Hz
+; to a0 - the same resampler output the DMA ring gets - while the mixer is
+; on. Out: d0 = 1, or 0 for a silent period. Runs in the Timer C interrupt.
+snd_opl_pcm
+        moveq   #0,d0
+        tst.b   snd_dma_on
+        beq.s   .out
+        movem.l d1-d7/a0-a6,-(sp)
+        move.l  #192,d3
+        bsr     snd_resample
+        movem.l (sp)+,d1-d7/a0-a6
+        moveq   #1,d0
+.out
+        rts
+
+snd_opl_name
+        dc.b    "OPLDATA.BIN",0
+        even
+    endc
 
 ; The 50 Hz refill. Called from the VBL handler with interrupts at level 4; it
 ; saves what it uses.
@@ -1082,6 +1192,10 @@ snd_dma_stop
 ; Difference (platform): a lead below 0 (the DMA overtook the writer) skips the
 ;   writer to the play position instead of replaying stale ring bytes.
 snd_vbl
+    ifne OPL2
+        tst.w   snd_opl_mode
+        bne     .none                           ; the DSP pulls the samples (snd_opl_pcm)
+    endc
         tst.b   snd_dma_on
         beq     .none
         movem.l d0-d7/a0-a6,-(sp)
@@ -1261,6 +1375,13 @@ snd_name_speak0
 snd_name_speak1
         dc.b    "SPEAK1.RLE",0
         even
+
+    ifne OPL2
+        bss
+        even
+snd_opl_mode
+        ds.w    1                               ; the DSP route is playing
+    endc
 
         bss
         even

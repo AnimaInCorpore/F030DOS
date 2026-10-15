@@ -46,10 +46,12 @@ songs, the options bar's pause and resume, the Music radios and the exit. Agains
 detect, queue, loop, pause, the FM effects and the 16-bit cursor wrap - are identical on both CPUs: 46,759
 ops, 46,499 register writes. The tables come from the player's `COMANCHE.EXE` (`src/origexe.s`).
 
-Nothing sounds yet: the register stream goes to one sink, `music_opl_write`, and with no synthesiser behind it
-the status port reads as no card, so detection fails exactly as on a PC without one and the attract keeps
-today's timing. The synthesiser planned for the 68060 image is F030OPL2 (DSP56001); it is the next step. See
-`analysis/functions/sound-driver.md` section 13.
+In the default build nothing sounds yet: the register stream goes to one sink, `music_opl_write`, and with no
+synthesiser behind it the status port reads as no card, so detection fails exactly as on a PC without one and the
+attract keeps today's timing. An `OPL2=1` 68060 build attaches F030OPL2's DSP56001 kernel from the sibling
+checkout (GPL-3.0, linked from there, not copied): the music plays and the digital effects ride its stream as
+PCM. On Hatari's emulated DSP it streams without a late period and the recording plays; it is not auditioned or
+hardware-tested. See `analysis/functions/sound-driver.md` section 13.
 
 ## Every mission of both campaigns starts as the original's (2026-10-15)
 

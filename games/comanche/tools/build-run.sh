@@ -279,7 +279,7 @@ fi
 # marcher's own silhouette can be diffed against the original's archive.
 # It is a diagnostic build and never a game one - it freezes the camera.
 MARCHER_ORACLE=${MARCHER_ORACLE:-0}
-VASMDEFS="-DTARGET_CPU=$TARGET_CPU -DUSE_DSP=0 -DPARITY_TILE=0 -DMARCHER_ORACLE=$MARCHER_ORACLE -DMUSIC_CHIP=${MUSIC_CHIP:-0}"
+VASMDEFS="-DTARGET_CPU=$TARGET_CPU -DUSE_DSP=0 -DPARITY_TILE=0 -DMARCHER_ORACLE=$MARCHER_ORACLE -DMUSIC_CHIP=${MUSIC_CHIP:-0} -DOPL2=${OPL2:-0}"
 
 # start.s comes first when present - vlink places the first object at the TEXT
 # base and the entry point has to sit there for the TOS startup header.
@@ -318,6 +318,25 @@ for name in $SOURCES; do
     esac
     OBJECTS="$OBJECTS $OBJECT_DIR/$name.o"
 done
+
+# OPL2=1: the music's synthesiser, F030OPL2's DSP kernel and its 68k host
+# (decoder opldec.s, refills oplhost.s), assembled from the sibling checkout
+# ../F030OPL2 - it is GPL-3.0 and stays there: nothing of it is copied into
+# this repository. Its upload image OPLDATA.BIN (the kernel's tables, made by
+# its tools/opl/opl-upload-image) is generated into the output directory.
+if [ "${OPL2:-0}" != 0 ]; then
+    OPL2_ROOT=${OPL2_ROOT:-../F030OPL2}
+    [ -f "$OPL2_ROOT/tools/opl/m68k/oplhost.s" ] || { echo "error: OPL2=1 needs F030OPL2 at $OPL2_ROOT" >&2; exit 1; }
+    for f in opldec oplhost; do
+        "$VASM" "$OPL2_ROOT/tools/opl/m68k/$f.s" -quiet -Felf "-m$TARGET_CPU" \
+            -I "$OPL2_ROOT/src/m68k" -I "$OPL2_ROOT/tools/opl/dsp" -o "$OBJECT_DIR/opl2_$f.o" || exit 1
+        OBJECTS="$OBJECTS $OBJECT_DIR/opl2_$f.o"
+    done
+    ${HOST_CXX:-c++} -std=c++17 -O1 -I "$OPL2_ROOT/tools/opl" -o "$OBJECT_DIR/opl-upload-image" \
+        "$OPL2_ROOT/tools/opl/opl-upload-image.cpp" || exit 1
+    "$OBJECT_DIR/opl-upload-image" "$OUTDIR/OPLDATA.BIN" || exit 1
+    echo "linked F030OPL2 ($OPL2_ROOT): opldec, oplhost; staged OPLDATA.BIN"
+fi
 
 # The code uses absolute references into the TOS-allocated BSS and framebuffer
 # surfaces. Keep the relocation table; -tos-fastload would leave those words
