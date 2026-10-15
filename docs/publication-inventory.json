@@ -6,7 +6,7 @@
    "repository": "F030Comanche",
    "origin": "git@github.com:AnimaInCorpore/F030Comanche.git",
    "directory": "games/comanche",
-   "source_commit": "20a37840da2dbc934b8f8ee213fb958e3686ac90"
+   "source_commit": "8ce100d7ea4a92ed36220425f4089937e502ef5f"
   },
   "f29": {
    "repository": "F030F29",
@@ -282,9 +282,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "e3d0a36209a15c220c10d17280fd1ec1d2bf4de5",
-   "bytes": 188403,
-   "sha256": "742f87c1e0b30e032c019073187f20a8fabe6fe5cf0b3210c2686faf5fb4d4e5"
+   "git_object": "710bf5efaead514372bdbf1a018cce61a0b5ce81",
+   "bytes": 189139,
+   "sha256": "7df08b0177e34c28948471c3ee23a890b84a1feda6f77f5351d8e0a02ddff1ed"
   },
   {
    "path": "games/comanche/docs/RE-WORKFLOW.md",
@@ -5505,6 +5505,42 @@
    "git_object": "a5206448b85075bd8868124bc194d5fdea632d97",
    "bytes": 10536,
    "sha256": "0a26a07372b0f890ca690afa604563928cfba7123885d2d97f810346a9a73a5f"
+  },
+  {
+   "path": "games/comanche/work/bot/README.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "e671bf42217fb42be5f3d6ebcd1d04870b7e2ee7",
+   "bytes": 2049,
+   "sha256": "12d759ebc1ff9b0c16921dfb117f1a6616c5d30c488a1ad84e41d1d4d2fff8c6"
+  },
+  {
+   "path": "games/comanche/work/bot/campaign.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "8a73cf198920f2524acbadbdd29f7922311c64b2",
+   "bytes": 3690,
+   "sha256": "4554aef64c9a17aaf65b0d601dc255c77c5cf5679d616faf158cd096b2b6f725"
+  },
+  {
+   "path": "games/comanche/work/bot/hbot.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "bf39b00f532d36d0a16ae8989053210cbc313e13",
+   "bytes": 12277,
+   "sha256": "06337c92221dad8b35f0627ab936bff45b6f1fdb5a4400698eb37d3023fcb7d0"
+  },
+  {
+   "path": "games/comanche/work/bot/pilot.py",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "eda2c7c9f618697d1680f39cdc9ca441e3f78d7b",
+   "bytes": 17569,
+   "sha256": "425988f7b6485c6dcaad9d5913dd66abd1e6c5efef8d0e490251761c08717301"
   },
   {
    "path": "games/comanche/work/build_dos_hdd.py",

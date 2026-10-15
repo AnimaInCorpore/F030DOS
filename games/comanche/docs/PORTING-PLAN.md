@@ -60,6 +60,17 @@ attract replay can never reach, all fixed:
   word's high byte, so they landed in bits 8-11 where nothing reads them.
   Esc, Return and the any-key bit (13-15) are high-byte bits and worked.
 
+With the three fixed, the bot (`work/bot/`) played the first campaign's
+mission list in order. Missions 1-8 were won, each with the game's own
+KYLE Fix Damage cheat (4 to 424 repairs a mission; none was won without
+one). The campaign behaved as the original's rules say at every step: a
+win turns the row blue and opens the next, the roster is saved and read back
+by the next program run, and a loss with a lost hull takes back the gated
+mission before it (mission 8's flag, after mission 9 was lost), which the
+bot then won again. Mission 9 has not been won: it has no goal within reach
+of the start, a patrol that does not break off, and enough fire to take a
+full hull in one volley. Missions 9-10 and the second campaign are open.
+
 The same probe answers a fidelity question the bot raised: the patrol in
 "Werewolves on Patrol" ignores a helicopter on its pad in both the original
 and the port, and destroys a hovering one - in the original at frames
