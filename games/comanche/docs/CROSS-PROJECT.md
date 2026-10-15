@@ -2201,6 +2201,17 @@ load-bearing policies, so their names are known here:
   and target boundaries, outside the semantic function path. A boundary guard
   required to prevent a host crash is a documented target artefact, never
   invented DOS error handling.
+- **A cell reader may return pointer bits above its logical value.** PG's
+  `sub_000484D8` loads AL or AX without clearing the full EAX pointer first.
+  Eleven fresh DOS witnesses confirm that byte layers return the pointer's high
+  half plus the byte, while word layers retain the selected address's high half
+  plus the word. EDX and scratch pointer stores also differ by element size.
+  JavaScript and relocated native memory must preserve virtual pointer values
+  when those bits are observable; comparing only the cell's low byte/word hides
+  a contract difference. Preserve partial-register effects and compare complete
+  registers and memory writes, then narrow only at a proven consumer boundary.
+  Evidence: PG `analysis/functions/sub_000484D8.md`, DOS/JS/native fixtures,
+  2026-10-10. This does not close table producers or connected game flow.
 - **A zero high dividend permits a narrower native divide.** A DOS
   `xor edx,edx; div` consumes a 32-bit unsigned dividend despite the instruction's
   EDX:EAX interface. On m68k, explicitly select the 32-bit quotient/remainder

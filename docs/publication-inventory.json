@@ -6,7 +6,7 @@
    "repository": "F030Comanche",
    "origin": "git@github.com:AnimaInCorpore/F030Comanche.git",
    "directory": "games/comanche",
-   "source_commit": "eebbaf3ed4a5e789a9a53e213f5c74c6384636af"
+   "source_commit": "0d40e42f94ac46a92e2104a871059e14e490186d"
   },
   "f29": {
    "repository": "F030F29",
@@ -192,9 +192,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "af569ccd53e44d985baad0512ea8518190359d63",
-   "bytes": 161864,
-   "sha256": "48ffa888a625a106af36f51ebe4b8de1d60330784a0f9c868cb346fd29c6d3aa"
+   "git_object": "1117d40b8247fd2dcb89831d7176ffafe70f946c",
+   "bytes": 162720,
+   "sha256": "7a1458f1bd58036708cdf3b3a4e58fd38c62a6780d7eea6d26f25fc47587529d"
   },
   {
    "path": "games/comanche/docs/DOS-ORACLE.md",
