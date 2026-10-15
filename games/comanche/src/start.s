@@ -10,6 +10,9 @@
         include "inc/cpu.s"
 
         xref    snd_shutdown, music_shutdown
+    ifne HWTEST
+        xref    hwtest_begin, hwtest_end, hwtest_write
+    endc
         global  _main
         global  work_screen, display_screen
         global  vector_base
@@ -203,6 +206,9 @@ init
 .video_ready
         move.w  #SCREEN_WIDTH,$ffff8210.w
         clr.w   $ffff820e.w
+    ifne HWTEST
+        jsr     hwtest_begin                    ; target diagnostic (src/hwtest.s)
+    endc
         move    #$2300,sr
         rts
 
@@ -214,6 +220,9 @@ init
 ; Status: ported; validation is the native teardown path.
 deinit
         move    #$2700,sr
+    ifne HWTEST
+        jsr     hwtest_end
+    endc
         jsr     snd_shutdown                    ; 00006B28-00006B2A MODE(0); the sound system is released
         jsr     music_shutdown                  ; 00006B2F-00006B38 stop, device 0
         clr.w   $ffff820e.w
@@ -257,6 +266,9 @@ deinit
 
         move.l  savssp,a0
         Super   (a0)
+    ifne HWTEST
+        jsr     hwtest_write                    ; HWTEST.TXT, the machine TOS's again
+    endc
         ; Terminate from here rather than returning. The supervisor stack was
         ; relocated in init, so the RTS that used to carry us back to _main
         ; would pop from the user stack this Super() call just switched to.

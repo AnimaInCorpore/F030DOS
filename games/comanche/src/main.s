@@ -11,6 +11,9 @@
         xref    dtl_status
 
         global  main
+    ifne HWTEST
+        xref    hwtest_frame, hwtest_loop
+    endc
         global  work_screen, display_screen, frame_count
         global  render_frame_path
     ifne USE_DSP
@@ -91,6 +94,9 @@ main
         bne     .done
         move.l  frame_count,last_frame
 .loop
+    ifne HWTEST
+        jsr     hwtest_loop                     ; target diagnostic (src/hwtest.s)
+    endc
         ; One update/render is scheduled per completed loop, normally after the
         ; next VBL. This keeps the producer from recycling the scanout buffer
         ; while VIDEL is reading it and preserves one DOS tick per frame.
@@ -213,6 +219,9 @@ main
         move.l  display_screen,work_screen
         move.l  d0,display_screen
         bsr     publish_screen
+    ifne HWTEST
+        jsr     hwtest_frame                    ; target diagnostic (src/hwtest.s)
+    endc
         bra     .loop
 
 .done

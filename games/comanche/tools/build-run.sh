@@ -279,7 +279,7 @@ fi
 # marcher's own silhouette can be diffed against the original's archive.
 # It is a diagnostic build and never a game one - it freezes the camera.
 MARCHER_ORACLE=${MARCHER_ORACLE:-0}
-VASMDEFS="-DTARGET_CPU=$TARGET_CPU -DUSE_DSP=0 -DPARITY_TILE=0 -DMARCHER_ORACLE=$MARCHER_ORACLE -DMUSIC_CHIP=${MUSIC_CHIP:-0} -DOPL2=${OPL2:-0}"
+VASMDEFS="-DTARGET_CPU=$TARGET_CPU -DUSE_DSP=0 -DPARITY_TILE=0 -DMARCHER_ORACLE=$MARCHER_ORACLE -DMUSIC_CHIP=${MUSIC_CHIP:-0} -DOPL2=${OPL2:-0} -DHWTEST=${HWTEST:-0}"
 
 # start.s comes first when present - vlink places the first object at the TEXT
 # base and the entry point has to sit there for the TOS startup header.
@@ -287,6 +287,8 @@ SOURCES=""
 if [ -f src/start.s ]; then
     SOURCES="start"
 fi
+# HWTEST=1 adds src/hwtest.s's report (HWTEST.TXT at exit) for testing on
+# real hardware; it links last with krl and sound and is empty otherwise.
 # krl and sound link last. The older modules reach each other with 16-bit
 # `bsr`s, and the text between hud and sprite is within a few hundred bytes of
 # that range; new code placed alphabetically between them pushes a branch out.
@@ -297,9 +299,10 @@ for f in src/*.s; do
     [ "$name" = start ] && continue
     [ "$name" = krl ] && continue
     [ "$name" = sound ] && continue
+    [ "$name" = hwtest ] && continue
     SOURCES="$SOURCES $name"
 done
-for name in krl sound; do
+for name in krl sound hwtest; do
     [ -f "src/$name.s" ] && SOURCES="$SOURCES $name"
 done
 

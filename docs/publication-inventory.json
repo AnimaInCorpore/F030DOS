@@ -6,7 +6,7 @@
    "repository": "F030Comanche",
    "origin": "git@github.com:AnimaInCorpore/F030Comanche.git",
    "directory": "games/comanche",
-   "source_commit": "0d40e42f94ac46a92e2104a871059e14e490186d"
+   "source_commit": "3a95862a7118362665d23398a10fa80cee31e93b"
   },
   "f29": {
    "repository": "F030F29",
@@ -231,6 +231,15 @@
    "git_object": "2bdc2d14dc1ea67c89bcabe5ccfea9f23490f160",
    "bytes": 7564,
    "sha256": "d383739d74a7e91ee6de215a6cb2fae51e5276c7c0d6a1cf5e8298c0ae80b203"
+  },
+  {
+   "path": "games/comanche/docs/HARDWARE-TEST.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "e81d8a8e2ae1f321a12e4fd80b34a62b1e62f1f3",
+   "bytes": 9460,
+   "sha256": "d5a38d3d98400d2b9e81600567f15fb15b791d13924758cbba1154fbb1e8b629"
   },
   {
    "path": "games/comanche/docs/M68000PRM.pdf",
@@ -881,6 +890,15 @@
    "sha256": "9b11eb4c97299ac13c71c3e894b3cbe6d71efd4a38de348d134521585e0f46bb"
   },
   {
+   "path": "games/comanche/src/hwtest.s",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "cdc61b5ef37d9c8e14c9a79436d4d4aa87eda680",
+   "bytes": 17697,
+   "sha256": "145dd5590fcc0108b1924b4afea89a82f19a7361709b59152d7bfcba6710f790"
+  },
+  {
    "path": "games/comanche/src/inc/bios.s",
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
@@ -966,9 +984,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "4b83fca9c91ffe88c69042f98387a4d5df003e71",
-   "bytes": 16653,
-   "sha256": "e39d78efeddde3bcaac6707409aa70bcbf5270a1397ede0b79cd55b42edadc55"
+   "git_object": "45b45b438affb7f4e17f282d00a3514edef92d3b",
+   "bytes": 16936,
+   "sha256": "7b0f7539d9f5e742d3857c01c127a5715c1c010b0263f2cf7c0408c4e4e30f88"
   },
   {
    "path": "games/comanche/src/menu.s",
@@ -1074,9 +1092,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "733df5a40fa02854d981b8a214d4f06174d2b12f",
-   "bytes": 17288,
-   "sha256": "a61d4aa8ff44b8848c3cdb1570500652422c2b56bfb926c7b9cb8927426b0dcc"
+   "git_object": "f09770f9f270f58f616300184a63bed3d0ed91eb",
+   "bytes": 17639,
+   "sha256": "e45dea12d59456bf459ab4314bf128f220fc1df27e610d261bfde1e819b48d3a"
   },
   {
    "path": "games/comanche/src/vbl.s",
@@ -1137,9 +1155,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "f269feb892f6b6d3103ebbc631544eab70a112c5",
-   "bytes": 16540,
-   "sha256": "e697f01e69e5451e416ea2db94f697c84f469a25938639dbb385d605d11bab6e"
+   "git_object": "5aa63c4ec8d656dc750b3601a0f45071f4366777",
+   "bytes": 16754,
+   "sha256": "58aa93e9f1ef3d1b886bbd4c3924d40bea6d1738455c7bc0958b13534354655a"
   },
   {
    "path": "games/comanche/tools/capture-target-frame.py",
