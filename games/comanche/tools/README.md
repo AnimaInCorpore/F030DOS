@@ -23,7 +23,12 @@ TARGET_CPU=68060 bash tools/build-run.sh
 ```
 
 - `build-run.sh` assembles and links the CPU-only 68030 side into
-  `release/comanche.tos` and rejects DSP options.
+  `release/comanche.tos` and rejects DSP renderer options. Its variables:
+  `TARGET_CPU=68060` the accelerator image (`release/68060/`, loaded into
+  TT-RAM); `OPL2=1` the music through `../F030OPL2`'s DSP kernel (writes
+  `OPLDATA.BIN`; run only with the 68060 image so far); `HWTEST=1` links
+  `src/hwtest.s`, the report written to `HWTEST.TXT` at quit (see
+  `docs/HARDWARE-TEST.md`); `OUTDIR` stages the build elsewhere.
 - `run.sh` launches the CPU-only program in Hatari as a Falcon030 with DSP off.
 - `grab-frame.sh` captures the active Videl framebuffer at a chosen VBL.
   **Do not lower the VBL count below roughly 1200** for a standalone build,

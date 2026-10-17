@@ -36,6 +36,20 @@ Falcon CPU paths exercise that route; DSP acceleration is a later
 optimization workstream governed by `../PORTING.md`; it must not get ahead of
 recovering and validating the game itself.
 
+## A test build for the first real Falcon (2026-10-15)
+
+Nothing in this plan has run on hardware. `HWTEST=1` (with `TARGET_CPU=68060 OPL2=1`) links
+`src/hwtest.s`, which only reads counters and writes `HWTEST.TXT` when the program quits: the cookies, TOS,
+the monitor and the Videl setup chosen, the 68060's CACR and PCR, the program's load address (TT-RAM or
+not), the measured refresh rate, frames per second and a VBL histogram for the attract's flights and for live
+flight apart, and the DSP music delivered against the time that passed. The first flight frame after a title
+screen, menu or load is counted as not timed. Without `HWTEST` the 68030 and 68060 images are byte-identical
+to the build before it. In Hatari (2.6.1-devel, binary of 2026-09-22, 060 profile) the report gives 19.30 fps
+in the attract's flights, 22.57 in live flight, 59.573 Hz, 149.3 s of music in 149.3 s and no protocol error.
+[HARDWARE-TEST.md](HARDWARE-TEST.md) is the tester's procedure: installation, the run order, what to watch
+and what to send back. It answers what Hatari cannot: speed with caches and the shared ST-RAM bus, the
+`CPUSHA DC` screen publication, the DSP music, CT60 TOS and the never-run VGA setup.
+
 ## The music driver ported (2026-10-15)
 
 `src/music.s` is the original's MS3 music and FM driver (`0002B9CF-0002C4A0`) in 68k code, wired in at the

@@ -6,85 +6,85 @@
    "repository": "F030Comanche",
    "origin": "git@github.com:AnimaInCorpore/F030Comanche.git",
    "directory": "games/comanche",
-   "source_commit": "3a95862a7118362665d23398a10fa80cee31e93b"
+   "source_commit": "110b63ca2eea1fe41175ece68326802e1f688258"
   },
   "f29": {
    "repository": "F030F29",
    "origin": "git@github.com:AnimaInCorpore/F030F29.git",
    "directory": "games/f29",
-   "source_commit": "bc3d5be042edfb23b8f71a169034dee27a58eb39"
+   "source_commit": "5fe3c27c2a539b1cd65a4f48a8ed324708c7f9a2"
   },
   "por": {
    "repository": "F030POR",
    "origin": "git@github.com:AnimaInCorpore/F030POR.git",
    "directory": "games/por",
-   "source_commit": "1426d4f93e495c2043aa0ea31061a150a06e409c"
+   "source_commit": "64c987bc179016da1216351f1ec75addcf52b83e"
   },
   "uw2": {
    "repository": "F030Underworld2",
    "origin": "git@github.com:AnimaInCorpore/F030Underworld2.git",
    "directory": "games/uw2",
-   "source_commit": "dd326c838044229fed78c92108864519db86b469"
+   "source_commit": "248e7d333d23d23008fbd37ef55a6c9bccdd1c4c"
   },
   "pg": {
    "repository": "F030PanzerGeneral",
    "origin": "git@github.com:AnimaInCorpore/F030PanzerGeneral.git",
    "directory": "games/pg",
-   "source_commit": "499469826acd7f0f379438d8da3ed2e7c419d669"
+   "source_commit": "8fe31dcfe5d544c7185bafc2066c3ada7a1651fe"
   },
   "uw": {
    "repository": "F030Underworld",
    "origin": "git@github.com:AnimaInCorpore/F030Underworld.git",
    "directory": "games/uw",
-   "source_commit": "15221269e4d0dac0107c2854e3e948c029cc98f8"
+   "source_commit": "c61eb6ec89ee76eb23194b8c5eeef8cb86b143de"
   },
   "tie": {
    "repository": "F030TieFighter",
    "origin": "git@github.com:AnimaInCorpore/F030TieFighter.git",
    "directory": "games/tie",
-   "source_commit": "2b1756cce7a4aefb60ef886a6ecd2df8a2e682e2"
+   "source_commit": "ea5d1f20bc47d766d0c536ee1176fb2610ddb7bc"
   },
   "falcon3": {
    "repository": "F030Falcon3",
    "origin": "git@github.com:AnimaInCorpore/F030Falcon3.git",
    "directory": "games/falcon3",
-   "source_commit": "2fe35d25f55632ac690b1a597b91c383b6dc367d"
+   "source_commit": "17024921ad2faa79486e8d261e808cd89d0834b8"
   },
   "links386": {
    "repository": "F030Links386",
    "origin": "git@github.com:AnimaInCorpore/F030Links386.git",
    "directory": "games/links386",
-   "source_commit": "da9ff45946c7b0f9e0155607c6656c0876786c81"
+   "source_commit": "2de4a398b4aae0f0b67ba71d98feb5298203a7cc"
   },
   "lol": {
    "repository": "F030LOL",
    "origin": "git@github.com:AnimaInCorpore/F030LOL.git",
    "directory": "games/lol",
-   "source_commit": "264951ff96fa4f6ef3d9eabb71334fd61f2d4d2d"
+   "source_commit": "10567124ff12e0c896bb29f7314fb0247ca0f9d7"
   },
   "magiccarpet": {
    "repository": "F030MagicCarpet",
    "origin": "git@github.com:AnimaInCorpore/F030MagicCarpet.git",
    "directory": "games/magiccarpet",
-   "source_commit": "7780c3ef325f36de476e85752d7a86dd090adde7"
+   "source_commit": "bf381e85573691ac83e8aa78427aa63381e847f2"
   },
   "icr": {
    "repository": "F030ICR",
    "origin": "git@github.com:AnimaInCorpore/F030ICR.git",
    "directory": "games/icr",
-   "source_commit": "1e8487c73b0daba0eaf6bebb7d5e5262e73e4638"
+   "source_commit": "3a429248960875a0ef2c896b8b270f4a1672f5e8"
   },
   "method": {
    "repository": "F030Method",
    "origin": "git@github.com:AnimaInCorpore/F030Method.git",
    "directory": "method",
-   "source_commit": "4a345e908bd810549f4609780fb0354f6221c40f"
+   "source_commit": "44d6808d0d069cf3e281e3cbffb034c2d0d19ca0"
   },
   "wc1": {
    "repository": "F030WC1",
    "origin": "",
    "directory": "games/wc1",
-   "source_commit": "98493d2bc8592448ca66a75595ce008353edc06f"
+   "source_commit": "b8ebbc7f356621b611aee1dfa970d7d99c56b2d2"
   }
  },
  "files": [
@@ -120,9 +120,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "dcd1b18658d62bb49fde6e70a1e4d1ad3929ea0c",
-   "bytes": 12417,
-   "sha256": "85cdf2b90d1d088d5ca4c95b2aec01863630f3019acd44ec15852d5de82adf19"
+   "git_object": "a944200cc1ca5c81cf8cdf44533d983c961ca9c1",
+   "bytes": 12698,
+   "sha256": "e724aba5168b149825ecc9b13bee486a871193b804db2b09b85db93739eb3dd3"
   },
   {
    "path": "games/comanche/analysis/functions/browser-attract.md",
@@ -192,9 +192,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "1117d40b8247fd2dcb89831d7176ffafe70f946c",
-   "bytes": 162720,
-   "sha256": "7a1458f1bd58036708cdf3b3a4e58fd38c62a6780d7eea6d26f25fc47587529d"
+   "git_object": "0bd6d78f9933558115e5f9da471f32745da075a9",
+   "bytes": 167721,
+   "sha256": "d4adfc73f39f10c7ef1800cf6a47fb1ddf03fe823c05511aa128d548f0ba9442"
   },
   {
    "path": "games/comanche/docs/DOS-ORACLE.md",
@@ -291,9 +291,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "09fbff1cfacb61484056005e43201e5add04fd17",
-   "bytes": 194285,
-   "sha256": "287bab638bae0f8d3ecafac353ced27b8b1f19bad0e61ea2a612ad5aa3725a42"
+   "git_object": "eaaf3fa0fcff1252651969564b80dcb3c99a30eb",
+   "bytes": 195489,
+   "sha256": "8b2c46794f5f8034d28f7dcf2118f9bdd60fdac44ccdad8a17ffa373a9c301f2"
   },
   {
    "path": "games/comanche/docs/RE-WORKFLOW.md",
@@ -1119,9 +1119,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "bfa447ecf15d60f22edaae1527e098541321df51",
-   "bytes": 15213,
-   "sha256": "dc82000527ae8072567cc161ee7df750be859e5b1ff5f0ad1fd34ede917545ee"
+   "git_object": "57de35cc2650a1c0bd63337df6c74ac10ba6b540",
+   "bytes": 15588,
+   "sha256": "efb85fe7feeffc38ff4f8257b726d0fa61c85bf5b6e4dda55aeb927b67b90162"
   },
   {
    "path": "games/comanche/tools/acceptance-report.py",
@@ -5943,9 +5943,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "fbdb1eb8c84fee5cdf1c70376a096b0d9f374db5",
-   "bytes": 162241,
-   "sha256": "16a00c516c9b84498d22e9f02733ae46d9cd8979ea806b2c6bab1c36c1ed743e"
+   "git_object": "6430c3265342fcb679401de84caab81aa16ee9cd",
+   "bytes": 167798,
+   "sha256": "ec551944de55cd6942f133f4eecaa0779baaa165d038653aa684fdccf5e66416"
   },
   {
    "path": "games/f29/docs/DISPLAY-LIST.md",
@@ -6564,9 +6564,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "12550ea7c83143315d35dfbff4ee93083cfb14cd",
-   "bytes": 160758,
-   "sha256": "7f327d27c4b38faba77b854387371b26a5e0d1584ede278da1f3b1a0460ec92d"
+   "git_object": "ccf88564f9aa7115e7501364606d946207abd300",
+   "bytes": 166315,
+   "sha256": "3a36f4db127d6dd963bbdd10eb31bd2dd0f2927a66ba355ce55e0c11559e071a"
   },
   {
    "path": "games/falcon3/analysis/executable.md",
@@ -6924,9 +6924,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "710a6f0eca950177887f518093c50e56d145700f",
-   "bytes": 161294,
-   "sha256": "e4086d1b6246f70529f2c12c1f00df892a9792c0590247e002e9101f934bcd44"
+   "git_object": "b677897801ca90f12b11f0cd2ede129524de62de",
+   "bytes": 166851,
+   "sha256": "385d9026ab17fee9d2190fdec8d6bbaa241734d132703c5600309f71a37f920d"
   },
   {
    "path": "games/icr/analysis/executable.md",
@@ -7212,9 +7212,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "d57a10f044cf782740e6ac4f92d08edb698315f0",
-   "bytes": 160730,
-   "sha256": "e338c4c72d4239ef7af7cf5047925f712b278226f75e51b748700c7959af1313"
+   "git_object": "0b1897b0ef6be410c888f858b88c9582beb62fa6",
+   "bytes": 166287,
+   "sha256": "3f4935b9d82ab2c7824333c28d07ace82f793ae0cd9b434cdb3f697fc53a2571"
   },
   {
    "path": "games/links386/analysis/executable.md",
@@ -7527,9 +7527,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "41d166ef99b8aa89b4474545504dcf180efea571",
-   "bytes": 160863,
-   "sha256": "2151d71740eae4dc9744ae25cc6bed8ed687165208c1a56fc5e53631581251ea"
+   "git_object": "f6efca891cd03c1610e1c9c5dd7360e3d7c16b3d",
+   "bytes": 166420,
+   "sha256": "26c41b94124a2d6984c9fa8465f9683e1fdb556605150ce662b4b904ab0618d7"
   },
   {
    "path": "games/lol/analysis/data-formats.md",
@@ -7833,9 +7833,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "1a3ffa96cbcbe996ff1523a009dd6d7cb5ba666a",
-   "bytes": 160422,
-   "sha256": "8eadcf5028c2bb8fdeba0dc85cf625c6c4953426f217f987b1f0894d776536b0"
+   "git_object": "099c1158f509b2eace9ce5d1def838f678763211",
+   "bytes": 165979,
+   "sha256": "dde8bce7c3e2202865b7af65e75ce448663e74abf40863b74639fe8b9e0d13dd"
   },
   {
    "path": "games/magiccarpet/analysis/executable.md",
@@ -8148,9 +8148,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "c536b8bd3a3dd859202a3e2bd13dfda098aa4eaf",
-   "bytes": 161432,
-   "sha256": "812a4d8de1544805623b5102629e460275b4d1d8fe3884eebfee03047d47bd70"
+   "git_object": "8fdc8cb4b2324d228113175081478e89f65dd766",
+   "bytes": 166989,
+   "sha256": "429f48290fe749f099c2610d74538482bda1dbc45b173d1484e68fc2c69882c4"
   },
   {
    "path": "games/pg/analysis/display-driver.md",
@@ -9408,9 +9408,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "7cc41d810a735018e5847ee3a40fe3a23ddf388f",
-   "bytes": 161091,
-   "sha256": "5eac5da09e20a748b022a03c4eea8e6f12fc6d3ce6b8613e69d4bb34adccf17f"
+   "git_object": "3471202d5eac4b8bc187623b96926c3a344c7967",
+   "bytes": 166648,
+   "sha256": "6d58014eeb72b2478ae45387275310293622534a3c30c01abeaa4b18d7d59fd8"
   },
   {
    "path": "games/por/analysis/data-formats.md",
@@ -10497,9 +10497,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "b583517510d215976379045aea33f9d066215072",
-   "bytes": 162074,
-   "sha256": "aa8fbdc9fbf89beb62801898c43449bf921e32fa8911ce552723915e9f2491a4"
+   "git_object": "862376f4d4fd10cca06a2d91a84a4c65932aa749",
+   "bytes": 167631,
+   "sha256": "020445ddada1ea5aff746c53b58f46b4a091dde373d28ea37e345381daf21ef2"
   },
   {
    "path": "games/tie/analysis/data-formats.md",
@@ -19695,9 +19695,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "0865e1da0b9999e2b6024598230aaa290ad9844f",
-   "bytes": 163364,
-   "sha256": "d1cbe28762a7d0baf7a7fdc5c77d5f3c8f428efcd37ffd14e86023bf8c95ef7b"
+   "git_object": "fda048f08e31790d025d5a96d644bf7f0834bf7f",
+   "bytes": 168921,
+   "sha256": "9dd5ae1a4082b3a462a4b035dfb5c3327abb4fbb54ce3eb219ee7c20b2096346"
   },
   {
    "path": "games/uw/analysis/data-formats.md",
@@ -23916,9 +23916,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "4708b4c1f0bfaaeb88e11c4e6af99b57804ea18d",
-   "bytes": 164752,
-   "sha256": "b2cfa0dbe28ca9ed34b201f3c40afaf2e189ce4df4c32e4fa4c4280c9920bf7b"
+   "git_object": "de6afd40d755b94ae98b76a5ed4a7331ef9708cb",
+   "bytes": 170309,
+   "sha256": "c59b36efe1894c4e8b57b097d14d8a09635fe92b6ece47a5427f31197888011f"
   },
   {
    "path": "games/uw2/analysis/cutscene-fixtures.json",
@@ -28038,9 +28038,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "8d97d800f8447f93169d4477be1ef69222f7f5c3",
-   "bytes": 162541,
-   "sha256": "39093eb9eb901e12eed9020c264caec7cc8e8ae4ed61f2012367521ba4791ed3"
+   "git_object": "6de3da24cb66fcddd355286508e6d9244e82e57a",
+   "bytes": 167334,
+   "sha256": "64b4b330021e347810014d9819a8bd8f25754e54e5d88b5b806d61bd26e82606"
   },
   {
    "path": "games/wc1/docs/DOS-SOURCE-MAP.md",
@@ -28416,9 +28416,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "38840c64e54a2fc1071e19571ec03bc0376e1714",
-   "bytes": 158241,
-   "sha256": "4029595a02ce36e191d0d669ab3389b84337e3f4956aedd0e604afdf480c845f"
+   "git_object": "6f45e334f80ef6b718b76749f743ec404a321bff",
+   "bytes": 163798,
+   "sha256": "58db8509db4de0063ba2948913b4215783b0d8ae03b0b544e29a54a3253bd44c"
   },
   {
    "path": "method/DEPENDENCIES.md",
@@ -28443,9 +28443,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "0884f6d511a97f70adbf2423470d0f21a9310d3c",
-   "bytes": 17541,
-   "sha256": "68a9a26ee3f333e0393092505b6d7392bd6ce258b0bd7fe244f758a4120518cf"
+   "git_object": "84e048300a0cdf36587db6260c7f893380aacae2",
+   "bytes": 17778,
+   "sha256": "61417b42f3bb033cdf919f74c68ac268e0b83813eb3f6723d1a79dbad3131a43"
   },
   {
    "path": "method/analysis/f030ct-translator-review.md",
@@ -28587,9 +28587,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "fe5c301f40aa07db1a56d61751acba3f8e11d417",
-   "bytes": 207827,
-   "sha256": "c3066fcc87dc0bdcb89e102ad0da5786ff76e30eae4ef75a4ec65d8473115d3f"
+   "git_object": "2ce0af5979dde92a4959d0654c8f4ecf90e72d65",
+   "bytes": 213776,
+   "sha256": "6578cae3f529eb2b1944bc1b7134ab5dfa72479da036f9e646949e374cc61973"
   },
   {
    "path": "method/templates/port-slice.md",

@@ -48,10 +48,10 @@ Unproven, and a complete DOS-validated browser/game route is not established.
 Source availability does not establish fidelity. **Correction, 2026-10-14:**
 "no Git repository, publication skipped at the owner's request" is historical;
 the checkout is a local Git repository (no remote) and, at the owner's request,
-is part of the F030DOS publication copy. The same note in
-`gen_cross_project.py` (§0 and the WC1 tail) still needs this correction.
+is part of the F030DOS publication copy. The generated ledger (§0 and the WC1
+tail) carries the same correction since 2026-10-17.
 
-## Porting status — reviewed 2026-10-10
+## Porting status — reviewed 2026-10-10 (Comanche row 2026-10-17)
 
 This is a review of local sources and existing evidence records, not a fresh
 acceptance run of every game. None is documented as a completed, fully
@@ -61,7 +61,7 @@ percentages. The linked project records own the details and next experiments.
 
 | Port | Current milestone | Remaining boundary |
 |---|---|---|
-| [Comanche](../F030Comanche/docs/PORTING-PLAN.md) | CPU attract plus live-flight/menu/combat extensions; JS reference; digital effects with isolated native checks | Overall NOT CERTIFIED; full frames/sequences, live parity and real hardware open; DSP dormant |
+| [Comanche](../F030Comanche/docs/PORTING-PLAN.md) | CPU attract, menus, briefing, live flight, combat and debrief; all 20 mission starts equal the original's; tables read from the player's `COMANCHE.EXE`; ported music driver, played through F030OPL2 in a 68060 build; a playing bot; a 68060 hardware-test build | Overall NOT CERTIFIED; full frames/sequences and live parity open; never run on a real Falcon (`docs/HARDWARE-TEST.md` is the procedure); DSP renderer dormant |
 | [Wing Commander](../F030WC1/PORTING.md) | Native title, flight, cockpit, mission loading and cannon combat prototype | Campaign/navigation/missiles and DOS/browser validation incomplete; depth merge Unproven |
 | [F29 Retaliator](../F030F29/docs/ENGINE.md) | Hatari-running DSP/blitter scene renderer, flight-state core, custom menu/HUD | Original presentation and complete mission/game behaviour unproven |
 | [Pool of Radiance](../F030POR/PORTING.md#slice-status) | Falcon title/image endpoint matches host expansion at 4 MB and 14 MB | Layout/text, dungeon view, script semantics and gameplay unfinished |

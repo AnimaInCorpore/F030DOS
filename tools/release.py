@@ -32,8 +32,9 @@ GAMES = [
      "tables from COMANCHE.EXE (the 1990 version, 61,154 bytes) and the terrain, palettes, sprites, skies, demo "
      "flights, sound banks and missions from the other files. COMANCHE.MNU selects the "
      "detail level as in DOS: the shipped file says MEDIUM; the development builds stage a copy set to HIGH.",
-     "the attract cycle on the CPU renderer with live-flight, menu, mission-end and combat extensions; not certified "
-     "against the DOS original, the DSP renderer is dormant, real-hardware speed not measured"),
+     "the attract cycle, menus, briefing, live flight, combat and debrief on the CPU renderer; all 20 mission starts "
+     "equal the original's; this 68030 program plays the sound effects, not the music (that needs a 68060 build with F030OPL2); not "
+     "certified against the DOS original, the DSP renderer is dormant, never run on a real Falcon"),
     ("f29", "F29 Retaliator (1990)",
      ["release/f29.tos", "release/3d.lod"], ["assets"],
      "Keep F29.TOS and 3D.LOD (the DSP program) together.",

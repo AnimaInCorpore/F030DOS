@@ -19,7 +19,7 @@ repository was screened is in [docs/PUBLICATION.md](docs/PUBLICATION.md).
 
 | game | directory | state |
 |---|---|---|
-| Comanche: Maximum Overkill (1992) | [games/comanche](games/comanche/README.md) | CPU attract plus live-flight, menu, mission-end and combat extensions; JS reference; not certified, DSP renderer dormant |
+| Comanche: Maximum Overkill (1992) | [games/comanche](games/comanche/README.md) | CPU attract, menus, briefing, live flight, combat and debrief; all 20 mission starts equal the original's; music through F030OPL2 in a 68060 build; not certified, DSP renderer dormant, never run on a real Falcon |
 | F29 Retaliator (1990) | [games/f29](games/f29/README.md) | DSP/blitter scene renderer, flight-state core, custom menu and HUD; original presentation and missions not reproduced |
 | Pool of Radiance (1988) | [games/por](games/por/README.md) | title image matches the host expansion at 4 MB and 14 MB; layout, text, dungeon view and scripts open |
 | Wing Commander (1990) | [games/wc1](games/wc1/README.md) | title, opening, mission loading, cockpit, fighters, cannon combat and damage; campaign, navigation and missiles unfinished, depth merge unproven |

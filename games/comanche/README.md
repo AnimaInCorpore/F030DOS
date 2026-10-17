@@ -36,7 +36,11 @@ source-selection record is `analysis/functions/falcon-attract.md`: the DOS
 route was traced first with QEMU TCG `exec,nochain`. Later slices added menus,
 live command keys, weapons/damage, mission-end and pilot/briefing logic, and
 the digital effect layer. Their existence does not certify a complete playable
-mission or close the implementation-wide DOS-fidelity gates. DSP remains dormant.
+mission or close the implementation-wide DOS-fidelity gates. The DSP terrain
+renderer remains dormant; the DSP plays the music only in an `OPL2=1` build.
+Nothing has run on a real Falcon yet: `HWTEST=1` builds an image that writes a
+measurement report, and [docs/HARDWARE-TEST.md](docs/HARDWARE-TEST.md) is the
+procedure for the 68060 image's first hardware run.
 
 ## Priority focus
 
