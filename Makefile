@@ -25,9 +25,11 @@ OPL2 ?= $(abspath ../F030OPL2)
 
 # The ports' scripts call `python`; a pyenv shim that points nowhere makes
 # Comanche's build fail without relinking.  build/pybin puts PYTHON first.
-# PYTHON is looked up in the PATH before that, or pybin would link to itself.
+# PYTHON is looked up in the PATH before that, or pybin would link to itself;
+# a nested make (tools/release.py runs one per game) inherits PYBIN in PATH, so
+# it is taken out again.
 PYBIN := $(CURDIR)/build/pybin
-OUTER_PATH := $(PATH)
+OUTER_PATH := $(subst $(PYBIN):,,$(PATH))
 export PATH := $(PYBIN):$(PATH)
 
 .PHONY: list pybin check status release comanche comanche060 f29 por wc1 uw2 \
