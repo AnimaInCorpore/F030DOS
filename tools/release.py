@@ -66,7 +66,9 @@ GAMES = [
      "model about 20 frames a second and the music in time, never run on a real Falcon"),
     ("f29", "F29 Retaliator (1990)",
      ["release/f29.tos", "release/3d.lod"], ["assets"],
-     "Keep F29.TOS and 3D.LOD (the DSP program) together.",
+     "Keep F29.TOS and 3D.LOD (the DSP program) together.  The scenery comes from SCENE.F29 next to them, built from "
+     "your own copy with the tools in games/f29 (tools/re/unpack.py, decompress.py, then scene2f29.py; see "
+     "docs/ENGINE.md); without it the program falls back to a single-model view (MODEL.O3D).",
      "the DSP/blitter scene renderer with the flight-state core and a custom menu and HUD; the original presentation "
      "and mission behaviour are not reproduced yet"),
     ("por", "Pool of Radiance (1988)",
@@ -95,6 +97,10 @@ F030Arcade project; speed on a real Falcon has not been measured.
 
 Requirements: a Falcon030 with 14 MB of RAM (COMAN060.TOS: a CT60/CT63 68060 with TT-RAM), an RGB or VGA monitor,
 and your own copy of each game.  No game data is included in this archive.
+
+Installation: give each game its own folder on the Falcon's hard disk or CompactFlash card (8.3 names, for example
+C:\\COMANCHE), put its program there with the files of your copy as listed below, and start the .TOS program from the
+desktop.  Do not run accessories that use the DSP at the same time.  Tested in Hatari with TOS 4.02/4.04 and EmuTOS.
 
 Games
 -----
