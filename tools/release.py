@@ -98,6 +98,12 @@ F030Arcade project; speed on a real Falcon has not been measured.
 Requirements: a Falcon030 with 14 MB of RAM (COMAN060.TOS: a CT60/CT63 68060 with TT-RAM), an RGB or VGA monitor,
 and your own copy of each game.  No game data is included in this archive.
 
+You need the original games: none of these programs works without the original game's files, which are not included
+and never will be (the games are still under their publishers' copyrights).  Comanche uses the directory of the DOS
+game as installed from its three disks on a PC or in DOSBox, unchanged.  F29, Pool of Radiance and Wing Commander
+need their original files converted or unpacked on a Mac or Linux computer with the F030DOS repository first; each
+game's entry below names the step.
+
 Installation: give each game its own folder on the Falcon's hard disk or CompactFlash card (8.3 names, for example
 C:\\COMANCHE), put its program there with the files of your copy as listed below, and start the .TOS program from the
 desktop.  Do not run accessories that use the DSP at the same time.  Tested in Hatari with TOS 4.02/4.04 and EmuTOS.

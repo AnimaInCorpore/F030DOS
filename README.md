@@ -49,9 +49,14 @@ game needs from your copy, each game's state, the licences, SHA-256 sums).
 Comanche comes twice: `COMANCHE.TOS` for a 14 MB Falcon030 (sound effects),
 and `COMAN060.TOS` with `OPLDATA.BIN` for a CT60/CT63 68060 with TT-RAM,
 with the music; `COMANCHE.TXT` is its installation guide and key list, and
-`COPYING.TXT` its licence (GPL-3.0-or-later). No game data is included: copy
-the files of your own DOS installation next to each program as `README.TXT`
-says. Requirements: a Falcon030 with 14 MB of RAM and an RGB or VGA monitor.
+`COPYING.TXT` its licence (GPL-3.0-or-later).
+
+**You need the original games.** No game data is included, and none of the
+programs works without its game's files: Comanche uses the DOS game's
+directory as installed from its three disks (on a PC or in DOSBox),
+unchanged; F29, Pool of Radiance and Wing Commander need their original
+files converted or unpacked on a computer with this repository first (see
+each game's README). `README.TXT` says which files go where. Requirements: a Falcon030 with 14 MB of RAM and an RGB or VGA monitor.
 Comanche, Pool of Radiance and Wing Commander were checked against their
 games' files and contain none of them; F29's program could not be checked
 (its game files were not at hand), and `README.TXT` says so. Nothing in it
