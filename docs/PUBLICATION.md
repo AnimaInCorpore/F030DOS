@@ -9,8 +9,12 @@ reverses the earlier "publication skipped" decision recorded in F030Method.
 
 Status: **public** since 2026-10-14, at the owner's decision, with release
 `v0.1-preview` (tagged at d32bd12). The rights review below (blocker 1) was the
-owner's call and was not done item by item. License: none chosen; all rights
-reserved.
+owner's call and was not done item by item. License: `games/comanche` is
+GPL-3.0-or-later since F030Comanche 2e71c63 (2026-10-18, the owner's decision,
+so the 68060 build with F030OPL2's GPL music can be released); it covers the
+port's own work, not the original game, and not the third-party tools the
+development repository keeps (its README lists them). Everything else: none
+chosen; all rights reserved.
 
 ## Preparation
 

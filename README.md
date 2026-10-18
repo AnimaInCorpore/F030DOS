@@ -13,8 +13,11 @@ author's direction. Correctness is checked against the DOS original rather
 than taken on trust; [method/METHOD.md](method/METHOD.md) is the procedure
 every port follows.
 
-**Status: preview.** None of the games is complete. No license has been
-chosen yet: the code is published for reading, all rights reserved. How the
+**Status: preview.** None of the games is complete. Licence: the Comanche
+port (`games/comanche`) is GPL-3.0-or-later ([its COPYING](games/comanche/COPYING)),
+which lets its 68060 build carry F030OPL2's GPL music synthesiser; the licence
+covers the port, not the original game. No licence has been chosen for the
+rest yet: it is published for reading, all rights reserved. How the
 repository was screened is in [docs/PUBLICATION.md](docs/PUBLICATION.md).
 
 | game | directory | state |
@@ -99,6 +102,7 @@ make list                 # the ports, their programs and what they need
 make f29                  # games/f29/release/f29.tos and 3d.lod
 make run-f29              # run it in the patched Hatari
 make comanche             # needs games/comanche/assets/extracted/comanche_hdd and re/unpacked (see its README)
+make comanche060          # the 68060 image with the music; links ../F030OPL2 (OPL2= to override)
 make por                  # por.tos; make -C games/por data falcon-data converts your copy into PORCACHE
 make wc1                  # wc1.tos; make -C games/wc1 data unpacks your disks into WC1DATA
 ```
@@ -118,7 +122,11 @@ a TOS executable, compares it with the game files present locally (any
 32-byte block of the game inside a program stops the release; blocks with
 fewer than 8 distinct byte values and counting sequences are ignored) and writes a
 `README.TXT` with what each player has to supply, each game's state and the
-SHA-256 of every file. No game data is packed.
+SHA-256 of every file. No game data is packed. Comanche goes in twice:
+`COMANCHE.TOS` (68030) and `COMAN060.TOS` with `OPLDATA.BIN` (68060, music
+through F030OPL2, which must be a clean checkout next to this one). Both are
+GPL-3.0-or-later, so the archive also carries `COPYING.TXT` and `README.TXT`
+names the F030DOS and F030OPL2 commits they were built from.
 
 Then tag `v<version>` and attach the zip to a GitHub release (`gh release
 create v<version> release/F030DOS-<version>.zip`) with short notes: what is

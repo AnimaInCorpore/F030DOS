@@ -249,3 +249,32 @@ formats are Comanche formats without evidence.
   Falcon code.
 - [PORTING.md](PORTING.md) is the implementation guide for the DSP-assisted
   VoxelSpace renderer after CPU correctness and profiling gates are met.
+
+## License
+
+Copyright (C) 2026 Sascha Springer.
+
+The port's own work in this repository - the Falcon sources, the JavaScript
+reference, the tools and scripts, the analysis records and the documentation -
+is free software under the GNU General Public License, version 3 or (at your
+option) any later version; see [COPYING](COPYING). It is distributed in the
+hope that it will be useful, but WITHOUT ANY WARRANTY. The licence matches
+F030OPL2's, so an `OPL2=1` build, which links F030OPL2's decoder, stream host
+and DSP kernel, can be distributed as one GPL-3.0-or-later program; whoever
+distributes it must offer the corresponding source of both (this repository's
+or F030DOS's `games/comanche`, and `../F030OPL2`) at the commits it was built
+from.
+
+Not covered, because they are not the port's to license:
+
+- *Comanche: Maximum Overkill* itself (NovaLogic, 1992): its program, data,
+  music and text. None of it is in this repository or in the program; the
+  program reads the player's own copy at startup. The sources and records
+  cite the original's addresses, constants and short code fragments by design;
+  the licence grants no rights in the original.
+- Third-party tools and documents kept here for convenience, under their own
+  terms: `tools/toolchain/` (assemblers, DOSBox, Hatari, a TOS ROM), the
+  Motorola manuals `docs/M68000PRM.pdf` and `docs/MC68000UM.pdf`, and the
+  F29 documents copied into `reference/f030f29/`, which follow F030F29's
+  terms (no licence chosen there yet).
+- F030OPL2, which keeps its own copyright and licence notices.

@@ -54,7 +54,7 @@ TEXT_EXTENSIONS = {
     ".html", ".css", ".json", ".sh", ".ps1", ".bat", ".cmd", ".mk", ".ld", ".patch", ".yml", ".yaml", ".toml", ".cfg",
     ".conf", ".csv",
 }
-TEXT_NAMES = {"Makefile", ".gitignore", ".gitattributes", ".gitkeep", "LICENSE", "NOTICE"}
+TEXT_NAMES = {"Makefile", ".gitignore", ".gitattributes", ".gitkeep", "LICENSE", "NOTICE", "COPYING"}
 
 # Directory names (anywhere in a source path) whose content is the game, a capture of it or generated from it.
 LOCAL_PARTS = {

@@ -21,9 +21,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BLOCK = 32
+DIRS = {"comanche060": "comanche"}
+# Programs under GPL-3.0-or-later (the port's COPYING), and those of them that link F030OPL2: the archive then
+# carries the licence and names the sources.
+GPL = {"comanche", "comanche060"}
+LINKS_OPL2 = {"comanche060"}
+OPL2 = ROOT.parent / "F030OPL2"
 
-# key, title, files (relative to games/<key>/; the first is the program), game file directories for the embedded-
-# content check, what the player has to supply, state.  Keep the states in step with games/<key>/README.md and the
+# key, title, files (relative to games/<dir>/; the first is the program; a (path, NAME) pair renames it in the
+# archive), game file directories for the embedded-content check, what the player has to supply, state.  The key is
+# the make target; DIRS maps a key to its games/ directory when the two differ.  Keep the states in step with games/<key>/README.md and the
 # root README's table.  Ports without a Falcon program (or with only a test harness) are not listed.
 GAMES = [
     ("comanche", "Comanche: Maximum Overkill (1992)",
@@ -33,8 +40,17 @@ GAMES = [
      "flights, sound banks and missions from the other files. COMANCHE.MNU selects the "
      "detail level as in DOS: the shipped file says MEDIUM; the development builds stage a copy set to HIGH.",
      "the attract cycle, menus, briefing, live flight, combat and debrief on the CPU renderer; all 20 mission starts "
-     "equal the original's; this 68030 program plays the sound effects, not the music (that needs a 68060 build with F030OPL2); not "
+     "equal the original's; this 68030 program plays the sound effects, not the music (that is COMAN060.TOS); not "
      "certified against the DOS original, the DSP renderer is dormant, never run on a real Falcon"),
+    ("comanche060", "Comanche: Maximum Overkill (1992), 68060 image with music",
+     [("release/68060/comanche.tos", "COMAN060.TOS"), "release/68060/OPLDATA.BIN"],
+     ["assets/extracted/comanche_hdd", "re/unpacked"],
+     "For a Falcon with a CT60/CT63 (68060) and TT-RAM; it does not run on a 68030.  Copy COMAN060.TOS and "
+     "OPLDATA.BIN (the DSP synthesiser's tables) into the COMANCHE directory as above.  The music is played by "
+     "F030OPL2's OPL2 emulation on the DSP: COMANCHE.CFG must select the AdLib (its third character 3, for example "
+     "0132700000), and nothing else may use the DSP.  This program is GPL-3.0-or-later, see Licences",
+     "the same game as COMANCHE.TOS, built for the 68060 (loaded into TT-RAM) with the music; in Hatari's 68060 "
+     "model about 20 frames a second and the music in time, never run on a real Falcon"),
     ("f29", "F29 Retaliator (1990)",
      ["release/f29.tos", "release/3d.lod"], ["assets"],
      "Keep F29.TOS and 3D.LOD (the DSP program) together.",
@@ -64,12 +80,15 @@ and documentation: https://github.com/AnimaInCorpore/F030DOS  (commit {commit})
 This is a preview: none of the games is complete.  The states below are measured in the patched Hatari of the
 F030Arcade project; speed on a real Falcon has not been measured.
 
-Requirements: a Falcon030 with 14 MB of RAM, an RGB or VGA monitor, and your own copy of each game.  No game data
-is included in this archive.
+Requirements: a Falcon030 with 14 MB of RAM (COMAN060.TOS: a CT60/CT63 68060 with TT-RAM), an RGB or VGA monitor,
+and your own copy of each game.  No game data is included in this archive.
 
 Games
 -----
 {games}
+Licences
+--------
+{licences}
 Files (SHA-256)
 ---------------
 {sums}"""
@@ -122,8 +141,11 @@ def main():
         commit += " + local changes"
 
     sums, texts, stop = [], [], []
+    gpl_names, opl2 = [], None
     for key, title, files, data_dirs, needs, state in GAMES:
-        base = ROOT / "games" / key
+        base = ROOT / "games" / DIRS.get(key, key)
+        names = [f[1] if isinstance(f, tuple) else Path(f).name.upper() for f in files]
+        files = [f[0] if isinstance(f, tuple) else f for f in files]
         if not a.no_build:
             r = subprocess.run(["make", "-C", str(ROOT), key], capture_output=True, text=True)
             if r.returncode:
@@ -142,20 +164,37 @@ def main():
             check = "CARRIES GAME CONTENT: %s." % what
             if not a.allow_embedded:
                 stop.append("%s: the program carries game content (%s)" % (key, what))
-        for f, data in zip(files, blobs):
-            dest = Path(f).name.upper()
+        for dest, data in zip(names, blobs):
             (out / dest).write_bytes(data)
             sums.append("%s  %s" % (hashlib.sha256(data).hexdigest(), dest))
-        print("%-12s %s  %s" % (key, "  ".join("%s %d" % (Path(f).name.upper(), len(b)) for f, b in zip(files, blobs)),
-                                check))
-        texts.append("%s\n  %s\n  State: %s.\n  %s\n  %s\n" % (title, " + ".join(Path(f).name.upper() for f in files),
-                                                           state, needs, check))
+        print("%-12s %s  %s" % (key, "  ".join("%s %d" % (n, len(b)) for n, b in zip(names, blobs)), check))
+        texts.append("%s\n  %s\n  State: %s.\n  %s.\n  %s\n" % (title, " + ".join(names), state, needs.rstrip("."),
+                                                            check))
+        if key in GPL:
+            gpl_names += names
+            copying = (ROOT / "games" / DIRS.get(key, key) / "COPYING").read_bytes()
+            (out / "COPYING.TXT").write_bytes(copying.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
+        if key in LINKS_OPL2:
+            opl2 = subprocess.run(["git", "describe", "--always", "--abbrev=12", "--dirty", "--exclude", "*"],
+                                  cwd=OPL2, capture_output=True, text=True).stdout.strip()
+            if not opl2 or opl2.endswith("-dirty"):
+                sys.exit("%s: F030OPL2 at %s must be a clean checkout (%s)" % (key, OPL2, opl2 or "not found"))
+    licences = []
+    if gpl_names:
+        licences.append(
+            "%s: free software under the GNU General Public License, version 3 or (at your option)\n"
+            "any later version, with no warranty; COPYING.TXT is the licence.  The source is public:\n"
+            "  games/comanche of https://github.com/AnimaInCorpore/F030DOS  (commit %s)\n" % (", ".join(gpl_names), commit)
+            + ("  https://github.com/AnimaInCorpore/F030OPL2  (commit %s), linked into COMAN060.TOS and the source of\n"
+               "  OPLDATA.BIN; its OPL2 kernels derive from ScummVM's\n" % opl2 if opl2 else "")
+            + "The licence covers the port, not Comanche itself: no NovaLogic program or data is in these files.")
+    licences.append("The other programs: no licence has been chosen yet; all rights reserved.")
     if stop:
         shutil.rmtree(out)
         sys.exit("release stopped:\n  " + "\n  ".join(stop) + "\npass --allow-embedded only with the owner's approval")
 
     text = README.format(version=a.version, underline="=" * len("F030DOS " + a.version), commit=commit,
-                         games="\n".join(texts), sums="\n".join(sums) + "\n")
+                         games="\n".join(texts), licences="\n\n".join(licences) + "\n", sums="\n".join(sums) + "\n")
     (out / "README.TXT").write_bytes(text.replace("\n", "\r\n").encode("ascii"))
     archive = out.parent / (name + ".zip")
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:

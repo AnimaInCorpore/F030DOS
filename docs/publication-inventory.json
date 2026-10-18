@@ -1,12 +1,12 @@
 {
- "license": "undecided",
+ "license": "per game: games/comanche GPL-3.0-or-later (games/comanche/COPYING, since F030Comanche 2e71c63); everything else undecided, all rights reserved",
  "status": "approved-for-publication",
  "sources": {
   "comanche": {
    "repository": "F030Comanche",
    "origin": "git@github.com:AnimaInCorpore/F030Comanche.git",
    "directory": "games/comanche",
-   "source_commit": "110b63ca2eea1fe41175ece68326802e1f688258"
+   "source_commit": "2e71c630f46fb5e8cc3ba931a36bac8786a2944d"
   },
   "f29": {
    "repository": "F030F29",
@@ -107,6 +107,15 @@
    "sha256": "917e6e0df2e5e62e168fbd41585e02c54a99802a8aac99ddb4cdc5d78ad630ec"
   },
   {
+   "path": "games/comanche/COPYING",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7",
+   "bytes": 35149,
+   "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+  },
+  {
    "path": "games/comanche/PORTING.md",
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
@@ -120,9 +129,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "a944200cc1ca5c81cf8cdf44533d983c961ca9c1",
-   "bytes": 12698,
-   "sha256": "e724aba5168b149825ecc9b13bee486a871193b804db2b09b85db93739eb3dd3"
+   "git_object": "3ab3d5cf0c28b54d7657ae7d6a3fa918c51af26e",
+   "bytes": 14256,
+   "sha256": "ee461a77f06df3055a125c0ae32ec459f1a75ff2ef3a43da7842189648af8f73"
   },
   {
    "path": "games/comanche/analysis/functions/browser-attract.md",
