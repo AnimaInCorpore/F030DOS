@@ -6,7 +6,7 @@
    "repository": "F030Comanche",
    "origin": "git@github.com:AnimaInCorpore/F030Comanche.git",
    "directory": "games/comanche",
-   "source_commit": "2e71c630f46fb5e8cc3ba931a36bac8786a2944d"
+   "source_commit": "c0bdd5e3861d153bb53f04585de6af852b7ec2ec"
   },
   "f29": {
    "repository": "F030F29",
@@ -129,9 +129,9 @@
    "decision": "candidate",
    "reason": "source/tool/documentation candidate; ownership and license review pending",
    "git_mode": "100644",
-   "git_object": "3ab3d5cf0c28b54d7657ae7d6a3fa918c51af26e",
-   "bytes": 14256,
-   "sha256": "ee461a77f06df3055a125c0ae32ec459f1a75ff2ef3a43da7842189648af8f73"
+   "git_object": "124783dff9d177a2157463efdef3826ff8054c86",
+   "bytes": 14394,
+   "sha256": "2ddabe7b36dc1d75da68b0905dea5aa32bfa584c6f6ad2cefcfe5b5a24e62e9f"
   },
   {
    "path": "games/comanche/analysis/functions/browser-attract.md",
@@ -285,6 +285,15 @@
    "git_object": "92d2c1beb3b6e6e5467aa1763274a9b3c8475dc6",
    "bytes": 7793,
    "sha256": "56a18f405ca31ac8860289dd97772978076d6aa1232e91097ee886a7b6fbc71f"
+  },
+  {
+   "path": "games/comanche/docs/PLAYING.md",
+   "decision": "candidate",
+   "reason": "source/tool/documentation candidate; ownership and license review pending",
+   "git_mode": "100644",
+   "git_object": "fdd30cf06bcd0484455883f0240322cc32d89c86",
+   "bytes": 3776,
+   "sha256": "cbc5d7b1d8dd04de13de3da2187ff7cb6b44b6ca93850db152e2095be12db651"
   },
   {
    "path": "games/comanche/docs/PORT-REVIEW-2026-09-07.md",

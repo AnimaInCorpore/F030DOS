@@ -12,6 +12,7 @@ unless --allow-embedded is given, and the README.TXT then says so.  A game whose
 not checked.  These are engineering checks, not a rights review (docs/PUBLICATION.md).
 """
 import argparse
+import re
 import hashlib
 import shutil
 import subprocess
@@ -26,6 +27,17 @@ DIRS = {"comanche060": "comanche"}
 # carries the licence and names the sources.
 GPL = {"comanche", "comanche060"}
 LINKS_OPL2 = {"comanche060"}
+# A game's player guide (Markdown in games/<dir>/), packed once as plain text.
+GUIDES = {"comanche": ("docs/PLAYING.md", "COMANCHE.TXT")}
+
+
+def plain(md):
+    """Markdown to the README.TXT style: no backticks, emphasis or link targets."""
+    md = re.sub(r"\[([^]]+)\]\([^)]+\)", r"\1", md)
+    md = re.sub(r"\*\*([^*]+)\*\*|\*([^*]+)\*", lambda m: m.group(1) or m.group(2), md)
+    md = md.replace("`", "")
+    md = re.sub(r"(?m)^(#+) (.*)$", lambda m: m.group(2) + "\n" + ("=" if len(m.group(1)) == 1 else "-") * len(m.group(2)), md)
+    return md
 OPL2 = ROOT.parent / "F030OPL2"
 
 # key, title, files (relative to games/<dir>/; the first is the program; a (path, NAME) pair renames it in the
@@ -38,7 +50,8 @@ GAMES = [
      "Copy the files of your installed DOS game (the COMANCHE directory) next to COMANCHE.TOS. The program reads its "
      "tables from COMANCHE.EXE (the 1990 version, 61,154 bytes) and the terrain, palettes, sprites, skies, demo "
      "flights, sound banks and missions from the other files. COMANCHE.MNU selects the "
-     "detail level as in DOS: the shipped file says MEDIUM; the development builds stage a copy set to HIGH.",
+     "detail level as in DOS: the shipped file says MEDIUM; the development builds stage a copy set to HIGH.  "
+     "COMANCHE.TXT is the guide: installation, setup and the keys.",
      "the attract cycle, menus, briefing, live flight, combat and debrief on the CPU renderer; all 20 mission starts "
      "equal the original's; this 68030 program plays the sound effects, not the music (that is COMAN060.TOS); not "
      "certified against the DOS original, the DSP renderer is dormant, never run on a real Falcon"),
@@ -170,6 +183,13 @@ def main():
         print("%-12s %s  %s" % (key, "  ".join("%s %d" % (n, len(b)) for n, b in zip(names, blobs)), check))
         texts.append("%s\n  %s\n  State: %s.\n  %s.\n  %s\n" % (title, " + ".join(names), state, needs.rstrip("."),
                                                             check))
+        if key in GUIDES:
+            src, dest = GUIDES[key]
+            text = plain((base / src).read_text(encoding="utf-8"))
+            (out / dest).write_bytes(text.replace("\n", "\r\n").encode("ascii"))
+            if key in GPL:
+                gpl_names.append(dest)
+            sums.append("%s  %s" % (hashlib.sha256((out / dest).read_bytes()).hexdigest(), dest))
         if key in GPL:
             gpl_names += names
             copying = (ROOT / "games" / DIRS.get(key, key) / "COPYING").read_bytes()

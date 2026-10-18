@@ -41,6 +41,8 @@ renderer remains dormant; the DSP plays the music only in an `OPL2=1` build.
 Nothing has run on a real Falcon yet: `HWTEST=1` builds an image that writes a
 measurement report, and [docs/HARDWARE-TEST.md](docs/HARDWARE-TEST.md) is the
 procedure for the 68060 image's first hardware run.
+[docs/PLAYING.md](docs/PLAYING.md) is the player's guide: installation, setup
+and keys (packed as `COMANCHE.TXT` in the F030DOS release).
 
 ## Priority focus
 
