@@ -88,7 +88,7 @@ decision and the reason for every path of every imported commit.
     method/              F030Method: METHOD.md, CROSS-PROJECT.md, the DOS-oracle harness (dos/), validation/
     tools/publication.py import, sync and check the screened copy
     tools/release.py     packs a release
-    docs/                publication status and inventory
+    docs/                publication status and inventory; go-explore.md, the testing method
     Makefile             build / run / release
 
 Links between the ports' documents still use the development layout
