@@ -42,6 +42,28 @@ Go-Explore finds shortcuts and edge paths; it is not a human-like player. For
 human-like play prefer a rule-based pilot with human timing (Comanche's
 `work/bot/pilot.py`) or imitation of recorded sessions.
 
+## Not chosen: DreamerV3
+
+DreamerV3 (Hafner et al., *Mastering diverse control tasks through world
+models*, Nature 2025; https://github.com/danijar/dreamerv3, MIT licence,
+JAX) learns a world model from pixels and trains its policy inside it. It is
+considered and not chosen as the explorer (2026-10-23):
+
+- It is reward-driven, a stronger form of the PPO variant above, so it goes
+  where the reward points and does not keep side paths; coverage is the goal
+  here.
+- It needs a GPU, a Gym-style wrapper over QEMU and Hatari, a reward per game
+  and still hundreds of thousands of frames; Hatari runs lock-step, one job
+  per frame.
+- Its play is not human-like either.
+
+Where it may still help: as the explore step for action cells (Comanche or
+F29 combat) if random input inside Go-Explore dies before it finds anything
+new - only once Go-Explore runs and stalls there. A world model trained on the
+original and checked against the port's runs could flag divergences, but only
+over game state (VGA and Falcon screens differ), and the lock-step comparison
+(`start_state.py`/`compare_start.py`) already checks that exactly.
+
 ## References
 
 - https://github.com/uber-research/go-explore - code of the papers (archived
